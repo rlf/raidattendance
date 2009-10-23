@@ -22,13 +22,12 @@ This is the "product back log" for those who know about the Scrum way.
 
 The user/player should
   * ... get a table of all raiders as rows, and attended raids as columns
-  * ... update the table manually to reflect the current raid-attendance of "now"
+  * ... update the table manually to reflect the current raid-attendance of "now" (create a new column)
   * ... change state of raiders who are not online to "signed off".
   * ... see a column of "raid-attendance" as a percentage of recorded raid-nights.
-  * ... cancel a raid-night
+  * ... cancel a raid-night (delete a column, or just mark it?)
   * ... be able to configure raid-days and raiding-time in addon-settings
   * the addon must be able to do the "scan" automatically at the raid-time
-  * 
 
 = References =
 
