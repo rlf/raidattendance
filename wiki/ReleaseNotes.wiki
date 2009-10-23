@@ -1,5 +1,7 @@
 #summary Releases of the addon
 
-= v0.1 =
+<wiki:toc max_depth="1" />
 
-_not yet released_
+= v0.1 =
+User stories:
+  * _not yet released_
