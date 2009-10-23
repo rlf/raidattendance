@@ -3,7 +3,7 @@ Basic introduction to the addon, why, when and where.
 
 = Introduction =
 
-This addon is spawned from a need stated by a guild officer in The Awakening on the Bloodhoof realm.
+This addon is spawned from a need stated by a guild officer in [http://www.the-awakening-guild.com The Awakening] on the Bloodhoof realm.
 
 He basically needed a way to track player attendance at raid nights - esp. whether they had signed off or not.
 
