@@ -1,0 +1,5 @@
+#summary Releases of the addon
+
+= v0.1 =
+
+_not yet released_
