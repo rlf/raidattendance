@@ -1,4 +1,6 @@
+#summary Product Backlog along with major design decisions
 #labels Phase-Design,Phase-Implementation
+
 = Libs and dependencies =
 
 This addon will rely on the following libraries:
