@@ -9,6 +9,8 @@ This addon will rely on the following libraries:
 
 = Details =
 
+Design details
+
 == Settings ==
 
   * Raid days (mon - sun) - which days do we raid (when should ppl be available)
@@ -17,6 +19,16 @@ This addon will rely on the following libraries:
   * Tryout Guild Rank (0-?) - Which players should be tracked as well?
 
 == Main Layout ==
+{{{
++---------------------[ RaidAttendance ]--------------------------+
+|                                                   [ Check Now ] |
+| +- Name ----------------+- 21/10 -+- 22/10 -+-----------------+ |
+| | Rapal                 |    G    |    Y    |                 | |
+| | Scathsolas            |    R    |    G    |                 | |
+| | Zee                   |    Y    |    Y    |                 | |
+| +-----------------------+---------+---------+-----------------+ |
++-----------------------------------------------------------------+
+}}}
 
 = Development Plan =
 
