@@ -1,9 +1,14 @@
 #summary Product Backlog along with major design decisions
 #labels Phase-Design,Phase-Implementation
 
+This project is divided into 3 smaller projects:
+1) The Addon - This will be a WoW Lua Addon (Bulrogg)
+2) A Client - This will access the folder of the addon and sync. the addon database with a web-based-database.
+3) A phpBB3 MOD - This will show the data from the database, and allow users to sign off.
+
 = Libs and dependencies =
 
-This addon will rely on the following libraries:
+This addon may rely on the following libraries:
   * Ace-3 lib [http://www.wowace.com/addons/ace3/pages/]
   * lib-ScrollingTable (lib-st) [http://www.wowace.com/addons/lib-st/]
 
@@ -36,6 +41,7 @@ This is the "product back log" for those who know about the Scrum way.
 
 == Product Back Log ==
 
+=== Addon ===
 The user/player should
   * ... get a table of all raiders as rows, and attended raids as columns
   * ... update the table manually to reflect the current raid-attendance of "now" (create a new column)
@@ -44,6 +50,12 @@ The user/player should
   * ... cancel a raid-night (delete a column, or just mark it?)
   * ... be able to configure raid-days and raiding-time in addon-settings
   * the addon must be able to do the "scan" automatically at the raid-time
+
+=== Client ===
+  * TBD
+
+=== phpBB3 ===
+  * TBD
 
 = References =
 
