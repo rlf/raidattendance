@@ -55,7 +55,14 @@ The user/player should
   * TBD
 
 === phpBB3 ===
-  * TBD
+  * admin page - where it's possible to configure raid-nights
+  * profile page - indicate which nights are possible raid nights for the user
+  * signoff page - possible to sign of for upcoming raid-nights
+  * signoff page - possible to sign of for a specific period (vacation)
+  * statistics page - nights and numbers of raiders.
+  * web-service - allows the client to access the current state of signoffs
+  * web-service - allows the client to upload actual attendance
+  * statistics page - shows actual attendance (history)
 
 = References =
 
