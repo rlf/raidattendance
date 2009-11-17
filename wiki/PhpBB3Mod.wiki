@@ -9,6 +9,8 @@ This design is (for now) centered around the user-experience we are aiming at - 
 
 The MOD will add a *table* to the top of a specific *forum*.
 This table will show raiders and whether or not they intend to attend upcoming raids.
+
+*Example*
 || Name              ||  Mon  ||  Wed  ||  Thu  ||  Mon  ||  Wed  ||  Thu  ||  Mon  ||  Wed  ||
 || Rapal             ||       ||       ||       ||       ||       ||       ||       ||       ||
 || Potlach           ||       ||       ||       ||       ||       ||       ||       ||       ||
