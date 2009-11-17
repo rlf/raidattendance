@@ -4,6 +4,19 @@
 
 This page will keep the design decisions and howto's related to the development of the phpBB3 mod.
 
+= Design =
+This design is (for now) centered around the user-experience we are aiming at - i.e. there will be no mentioning about how to configure/install/setup the MOD.
+
+The MOD will add a *table* to the top of a specific *forum*.
+This table will show raiders and whether or not they intend to attend upcoming raids.
+|| Name              ||  Mon  ||  Wed  ||  Thu  ||  Mon  ||  Wed  ||  Thu  ||  Mon  ||  Wed  ||
+|| Rapal             ||       ||       ||       ||       ||       ||       ||       ||       ||
+|| Potlach           ||       ||       ||       ||       ||       ||       ||       ||       ||
+|| Heltvilddyr       ||       ||       ||       ||       ||       ||       ||       ||       ||
+|| Skjold            ||       ||       ||       ||       ||       ||       ||       ||       ||
+|| Ilumina           ||       ||       ||       ||       ||       ||       ||       ||       ||
+
+
 = Architecture =
 The mod will be divided into 3 parts as described below.
 
