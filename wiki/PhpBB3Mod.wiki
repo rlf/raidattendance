@@ -11,12 +11,12 @@ The MOD will add a *table* to the top of a specific *forum*.
 This table will show raiders and whether or not they intend to attend upcoming raids.
 
 *Example*
-|| Name              ||  Mon<br/>2/11  ||  Wed<br/>4/11  ||  Thu<br/>5/11  ||  Mon<br/>9/11  ||  Wed<br/>11/11  ||  Thu<br/>12/11  ||  Mon<br/>16/11  ||  Wed<br/>18/11  ||
-|| Rapal             ||<font color="red">F</font>   ||       ||       ||       ||       ||       ||       ||       ||
-|| Potlach           ||       ||       ||       ||       ||       ||       ||       ||       ||
-|| Heltvilddyr       ||       ||       ||       ||       ||       ||       ||       ||       ||
-|| Skjold            ||       ||       ||       ||       ||       ||       ||       ||       ||
-|| Ilumina           ||       ||       ||       ||       ||       ||       ||       ||       ||
+|| Name  ||Mon<br/>{{{<}}} 2/11||  Wed<br/>4/11  ||  Thu<br/>5/11  ||  Mon<br/>9/11  ||  Wed<br/>11/11  ||  Thu<br/>12/11  ||  Mon<br/>16/11  ||  Wed<br/>18/11  {{{>}}}||
+|| Rapal        || <font color="green">✔</font> ||       ||       ||       ||       ||       ||       ||       ||
+|| Potlach      || <font color="green">✔</font> || ✘ ||       ||       ||       ||       ||       ||       ||
+|| Heltvilddyr  || <font color="green">✔</font> || ✘ ||       ||       ||       ||       ||       ||       ||
+|| Skjold       || <font color="green">✔</font> ||       ||       ||       || ✘ ||       ||       ||       ||
+|| Ilumina      || <font color="green">✔</font> ||       ||       ||       ||       ||       ||       ||       ||
 
 = Architecture =
 The mod will be divided into 3 parts as described below.
@@ -63,6 +63,8 @@ The mod will be divided into 3 parts as described below.
 = Stories =
 Breakdown of the functionality on the back-log in stories.
 
+= References =
+  * HTML entities used above : [http://www.danshort.com/HTMLentities/index.php?w=dingb]
   
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
