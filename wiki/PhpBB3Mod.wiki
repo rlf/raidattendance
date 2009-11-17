@@ -1,0 +1,27 @@
+#summary Page for the phpBB3 mod to go along with the Lua Addon
+
+= Introduction =
+
+This page will keep the design decisions and howto's related to the development of the phpBB3 mod.
+
+= Backlog =
+  * 
+
+= Architecture =
+  * ACP - Admin Control Panel
+    * Settings for the raidattendance mod
+    * Install wizard for database
+    * Sync. feature with wowarmory
+  * MOD - Page under a specific forum
+    * Current raider-status
+    * Signon/Signoff
+    * Change history (who did what)
+
+= Stories =
+Breakdown of the functionality on the back-log in stories.
+
+  
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
