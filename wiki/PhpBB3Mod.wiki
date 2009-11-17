@@ -70,8 +70,4 @@ Breakdown of the functionality on the back-log in stories.
 
 = References =
   * HTML entities used above : [http://www.danshort.com/HTMLentities/index.php?w=dingb]
-  
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  * phpBB wiki [http://wiki.phpbb.com/]
