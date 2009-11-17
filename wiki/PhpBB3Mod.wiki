@@ -12,12 +12,11 @@ This table will show raiders and whether or not they intend to attend upcoming r
 
 *Example*
 || Name              ||  Mon<br/>2/11  ||  Wed<br/>4/11  ||  Thu<br/>5/11  ||  Mon<br/>9/11  ||  Wed<br/>11/11  ||  Thu<br/>12/11  ||  Mon<br/>16/11  ||  Wed<br/>18/11  ||
-|| Rapal             ||       ||       ||       ||       ||       ||       ||       ||       ||
+|| Rapal             ||<font color="red">F</font>   ||       ||       ||       ||       ||       ||       ||       ||
 || Potlach           ||       ||       ||       ||       ||       ||       ||       ||       ||
 || Heltvilddyr       ||       ||       ||       ||       ||       ||       ||       ||       ||
 || Skjold            ||       ||       ||       ||       ||       ||       ||       ||       ||
 || Ilumina           ||       ||       ||       ||       ||       ||       ||       ||       ||
-
 
 = Architecture =
 The mod will be divided into 3 parts as described below.
