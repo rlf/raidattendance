@@ -12,11 +12,16 @@ This table will show raiders and whether or not they intend to attend upcoming r
 
 *Example*
 || Name  ||Mon<br/>{{{<}}} 2/11||  Wed<br/>4/11  ||  Thu<br/>5/11  ||  Mon<br/>9/11  ||  Wed<br/>11/11  ||  Thu<br/>12/11  ||  Mon<br/>16/11  ||  Wed<br/>18/11  {{{>}}}||
-|| Rapal        || <font color="green">✔</font> ||       ||       ||       ||       ||       ||       ||       ||
-|| Potlach      || <font color="green">✔</font> || ✘ ||       ||       ||       ||       ||       ||       ||
-|| Heltvilddyr  || <font color="green">✔</font> || ✘ ||       ||       ||       ||       ||       ||       ||
-|| Skjold       || <font color="green">✔</font> ||       ||       ||       || ✘ ||       ||       ||       ||
-|| Ilumina      || <font color="green">✔</font> ||       ||       ||       ||       ||       ||       ||       ||
+|| Rapal        || <font color="green">*✔*</font> || <font color="yellow">*✚*</font> || <font color="red">*✘*</font> ||       ||       ||       ||       ||       ||
+|| Potlach      || <font color="green">*✔*</font> || <font color="green">*✔*</font>  ||  <font color="green">*✔*</font>     ||       ||       ||       ||       ||       ||
+|| Heltvilddyr  || <font color="green">*✔*</font> || <font color="red">*✘*</font>||  <font color="green">*✔*</font>     ||       ||       ||       ||       ||       ||
+|| Skjold       || <font color="green">*✔*</font> || <font color="green">*✔*</font> || <font color="yellow">*✚*</font>   ||  || <font color="yellow">*✚*</font>||       ||       ||       ||
+|| Ilumina      || <font color="green">*✔*</font> || <font color="green">*✔*</font>      ||  <font color="green">*✔*</font>     ||       ||       ||       ||       ||       ||
+
+Where:
+||<font color="yellow">*✚*</font>||Means signoff (can't show)||
+||<font color="green">*✔*</font>||Means signon (or did show)||
+||<font color="red">*✘*</font>||Means no signoff but didn't show||
 
 = Architecture =
 The mod will be divided into 3 parts as described below.
