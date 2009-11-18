@@ -16,9 +16,10 @@
     * change-history will be updated 
 
 = Completed =
-  * 2009-11-18:acp_raidattendance - it's possible to edit and save settings:
-    * raid-nights : The days we raid - e.g. 'mon,wed,thu'
-    * guildname : The name of the guild - 'The Awakening'
-    * realm : The Realm - 'Bloodhoof'
-    * armory : The armory link - 'eu.wowarmory.com'
-    * forum_id : The id of the forum on which the attendence will be shown. 
+  * 2009-11-18 Initial release comitted in svn/trunk
+    * acp_raidattendance - it's possible to edit and save settings:
+      * raid-nights : The days we raid - e.g. 'mon,wed,thu'
+      * guildname : The name of the guild - 'The Awakening'
+      * realm : The Realm - 'Bloodhoof'
+      * armory : The armory link - 'eu.wowarmory.com'
+      * forum_id : The id of the forum on which the attendence will be shown. 
