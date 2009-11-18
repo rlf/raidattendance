@@ -46,6 +46,7 @@ The mod will be divided into 3 parts as described below.
     * Change history (who did what)
 
 = Completed Functionality =
+  * PhpBB3ReleaseNotes
 
 = Backlog =
   * acp_raidattendance - it's possible to install the mod in phpBB3 (ACP)
