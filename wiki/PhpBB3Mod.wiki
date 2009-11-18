@@ -11,6 +11,7 @@ The MOD will add a *table* to the top of a specific *forum*.
 This table will show raiders and whether or not they intend to attend upcoming raids.
 
 *Example*
+_Note: In the actual design, the cells will be colored instead of the below mentioned icons._
 || Name  ||Mon<br/>{{{<}}} 2/11||  Wed<br/>4/11  ||  Thu<br/>5/11  ||  Mon<br/>9/11  ||  Wed<br/>11/11  ||  Thu<br/>12/11  ||  Mon<br/>16/11  ||  Wed<br/>18/11  {{{>}}}||
 || Rapal        || <font color="green">*✔*</font> || <font color="yellow">*✚*</font> || <font color="red">*✘*</font> ||       ||       ||       ||       ||       ||
 || Potlach      || <font color="green">*✔*</font> || <font color="green">*✔*</font>  ||  <font color="green">*✔*</font>     ||       ||       ||       ||       ||       ||
