@@ -45,33 +45,10 @@ The mod will be divided into 3 parts as described below.
     * Signon/Signoff
     * Change history (who did what)
 
-= Completed Functionality =
-  * PhpBB3ReleaseNotes
-
-= Backlog =
-  * acp_raidattendance - it's possible to install the mod in phpBB3 (ACP)
-  * acp_raidattendance - it's possible to edit and save settings:
-    * raid-nights : The days we raid - e.g. 'mon,wed,thu'
-    * guildname : The name of the guild - 'The Awakening'
-    * realm : The Realm - 'Bloodhoof'
-    * armory : The armory link - 'eu.wowarmory.com'
-    * forum_id : The id of the forum on which the attendence will be shown.
-  * acp_raidattendance - install-wizard - it's possible to create table of raiders
-    * possibly from armory?
-  * forum_raidattendance/view_forum - a page that shows:
-    * raiders in rows, 3 weeks of raid-nights with current week in center
-  * forum_raidattendance - pagination - possible to step forward/back on weeks
-  * raidattendance_history - change-history of signon status
-  * mcp_raidattendance - sync. raiders with armory
-  * mcp_raidattendance - link raider-name with forum-user
-  * forum_raidattendance - moderators can change sign-on status of raiders (signon/signoff/noshow)
-    * change-history will be updated
-  * forum_raidattendance - users with valid raider-forum-user mapping can change status of self (only signon/signoff).
-    * change-history will be updated
-
-= Stories =
-Breakdown of the functionality on the back-log in stories.
-
 = References =
+== Internal ==
+  * [PhpBB3ReleaseNotes]
+  * [PhpBB3Backlog]
+== External ==
   * HTML entities used above : [http://www.danshort.com/HTMLentities/index.php?w=dingb]
   * phpBB wiki [http://wiki.phpbb.com/]
