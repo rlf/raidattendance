@@ -1,0 +1,6 @@
+#summary ReleaseNotes for the phpBB3 MOD Raid Attendance
+
+= Development Release =
+== 
+
+= Release Candidate =
