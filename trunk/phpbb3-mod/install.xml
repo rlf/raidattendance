@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<!-- RaidAttendance by the Hippie Eradicators. Copyright 2008.
+Please check: http://code.google.com/p/raidattendance
+ $Id: install.xml 190 2009-11-08 17:10:54Z exreaction $ -->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
+<header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en">RaidAttendance - Addon</title>
+	<description lang="en"></description>
+
+	<author-notes lang="en"></author-notes>
+
+	<author-group>
+		<author>
+			<username>Rapal</username>
+			<realname>Rasmus Lock Fuglsang</realname>
+			<homepage></homepage>
+			<email>rasmus.lock.larsen@gmail.com</email>
+		</author>
+	</author-group>
+
+	<mod-version>0.0.1</mod-version>
+
+	<installation>
+		<level>easy</level>
+		<time>60</time>
+		<target-version>0.0.1</target-version>
+	</installation>
+
+	<history>
+		<entry>
+			<date>2009-11-19</date>
+			<rev-version>0.0.1</rev-version>
+			<changelog lang="en">
+				<change>Sync with wowarmory</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2009-11-18</date>
+			<rev-version>0.0.0</rev-version>
+			<changelog lang="en">
+				<change>Initial Public Preview Release</change>
+			</changelog>
+		</entry>
+	</history>
+</header>
+
+<action-group>
+	<copy>
+		<file from="root/*.*" to="*.*" />
+	</copy>
+	<copy>
+		<file from="contrib/umil" to="install_raidattendance/umil" />
+	</copy>
+	<diy-instructions lang="en-gb">Open your browser and navigate to your forum.  Once there put install_raidattendance/install_raidattendance.php in the URL and delete once process completes.  Remember to refresh the prosilver template and imageset, and purge the cache.</diy-instructions>
+</action-group>
+</mod>
