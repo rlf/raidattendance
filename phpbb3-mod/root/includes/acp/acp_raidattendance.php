@@ -13,9 +13,18 @@ class acp_raidattendance {
 		{         
 			case 'settings':
 				$this->settings($id, $mode);
-			break;      
+				break;      
+			case 'sync':
+				$this->showSync($id, $mode);
+				break;
+			default:
+				$template->tpl_name = 'acp_raidattendance_error';
+				break;
 		}
 	}
+	// ------------------------------------------------------------------------
+	// Mode: settings
+	// ------------------------------------------------------------------------
 	function settings($id, $mode)
 	{
 		global $db, $user, $auth, $template;
@@ -26,29 +35,29 @@ class acp_raidattendance {
 		$display_vars = array(
 			'title'	=> 'ACP_RAIDATTENDANCE_SETTINGS',
 			'vars'	=> array(
-				'legend1'				=> 'GUILD_SETTINGS',
-				'guild'					=> array('lang' => 'GUILD_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false),
-				'realm'					=> array('lang' => 'REALM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false),
-				'armory_link'			=> array('lang' => 'ARMORY_LINK',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
+				'legend1'					=> 'GUILD_SETTINGS',
+				'raidattendance_guild_name'	=> array('lang' => 'GUILD_NAME',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => false),
+				'raidattendance_realm_name'	=> array('lang' => 'REALM_NAME',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => false),
+				'raidattendance_armory_link'=> array('lang' => 'ARMORY_LINK',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
 
-				'legend2'				=> 'FORUM_SETTINGS',
-				'forum_name'			=> array('lang' => 'FORUM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
+				'legend2'					=> 'FORUM_SETTINGS',
+				'raidattendance_forum_name'	=> array('lang' => 'FORUM_NAME',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
 
-				'legend3'				=> 'RAID_SETTINGS',
-				'raid_night_mon'		=> array('lang' => 'RAID_NIGHT_MON',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raid_night_tue'		=> array('lang' => 'RAID_NIGHT_TUE',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raid_night_wed'		=> array('lang' => 'RAID_NIGHT_WED',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raid_night_thu'		=> array('lang' => 'RAID_NIGHT_THU',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raid_night_fri'		=> array('lang' => 'RAID_NIGHT_FRI',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raid_night_sat'		=> array('lang' => 'RAID_NIGHT_SAT',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raid_night_sun'		=> array('lang' => 'RAID_NIGHT_SUN',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'legend3'					=> 'RAID_SETTINGS',
+				'raidattendance_raid_night_mon'		=> array('lang' => 'RAID_NIGHT_MON','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raid_night_tue'		=> array('lang' => 'RAID_NIGHT_TUE','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raid_night_wed'		=> array('lang' => 'RAID_NIGHT_WED','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raid_night_thu'		=> array('lang' => 'RAID_NIGHT_THU','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raid_night_fri'		=> array('lang' => 'RAID_NIGHT_FRI','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raid_night_sat'		=> array('lang' => 'RAID_NIGHT_SAT','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raid_night_sun'		=> array('lang' => 'RAID_NIGHT_SUN','validate' => 'bool', 'type' => 'radio', 'explain' => false),
 			)
 		);
 		$this->saveConfig($display_vars);
 	}
-	// ------------------------------------------------------------------------
+	// 
 	// Validate and Save Config Data
-	// ------------------------------------------------------------------------
+	// 
 	function saveConfig($display_vars)
 	{
 		global $db, $user, $auth, $template;
@@ -171,6 +180,44 @@ class acp_raidattendance {
 			unset($display_vars['vars'][$config_key]);
 		}
 		
+	}
+	// ------------------------------------------------------------------------
+	// Mode: sync
+	// ------------------------------------------------------------------------
+	function showSync($id, $mode)
+	{
+		global $db, $user, $auth, $template;
+		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
+
+		$error = array();
+		$armory = $config['raidattendance_armory_link'];
+		$guild = $config['raidattendance_guild_name'];
+		$realm = $config['raidattendance_realm_name'];
+
+		$this->tpl_name = 'acp_raidattendance_sync';
+
+		include_once($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
+		$extractor = new raider_extractor();
+		$rows = $extractor->get_raider_list($armory, $realm, $guild, array(1, 3), 80);
+
+		foreach ($rows as $row) {
+			$template->assign_block_vars('raiders', array(
+				'RAIDER_NAME'		=> $row['raider_name'],
+				'RANK'				=> $user->lang['RANK_' . $row['rank']],
+				'LEVEL'				=> $row['level'],
+				'CLASS'				=> $user->lang['CLASS_' . $row['class']],
+			));
+		}
+
+		$template->assign_vars(array(
+			'L_TITLE'			=> $user->lang['ACP_RAIDATTENDANCE_SYNC'],
+			'L_TITLE_EXPLAIN'	=> $user->lang['ACP_RAIDATTENDANCE_SYNC_EXPLAIN'],
+
+			'S_ERROR'			=> (sizeof($error)) ? true : false,
+			'ERROR_MSG'			=> implode('<br />', $error),
+
+			'U_ACTION'			=> $this->u_action)
+		);
 	}
 }
 ?>
