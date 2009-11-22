@@ -68,9 +68,18 @@ $lang = array_merge($lang, array(
 		'DELETE_SELECTED'			=> 'Delete selected raiders',
 		'ERROR_CONTACTING_ARMORY'	=> 'An error occurred during synchronization with wow-armory<br/>%s',
 		'RAIDER_ADDED_FROM_ARMORY'	=> 'Added %s from armory',
+		'ERROR_ADDING_RAIDER'		=> 'Error committing %1$s to the database<br/>%2$s',
+		'ERROR_UPDATING_RAIDER'		=> 'Error updating %1$s to the database<br/>%2$s',
 		'ERROR_DELETING_RAIDER'		=> 'Error deleting %1$s from the raider-list<br/>%2$s',
 		'SUCCESS_DELETING_RAIDER'	=> '%s was deleted from the raider-list',
+		'SUCCESS_ADDING_RAIDER'		=> '%1$s was successfully saved to the database.',
+		'SUCCESS_UPDATING_RAIDER'	=> '%1$s was successfully updated in the database.',
 		'SUCCESS'					=> 'Success',
+		'ADDED_RAIDERS'				=> '%s was successfully added to the raider-list',
+		'NO_NEW_RAIDERS_IN_ARMORY'	=> 'There were no new raiders in the armory',
+		'STATUS_NOT_IN_ARMORY'		=> 'not in armory',
+		'STATUS_UPDATED'			=> 'updated',
+		'STATUS_NEW'				=> 'new',
 	)
 );
 ?>

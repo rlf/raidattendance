@@ -219,7 +219,6 @@ class acp_raidattendance {
 		if ($save or $resync) 
 		{
 			$raider_db->save_raider_list($rows);
-			//$raider_db->get_raider_list($rows);
 		}
 		else if ($delete)
 		{
