@@ -169,11 +169,11 @@ $versions = array(
 			array('raidattendance_min_level', request_var('min_level', 80)),
 			array('raidattendance_raider_rank0', request_var('raider_rank1', false)),
 			array('raidattendance_raider_rank1', request_var('raider_rank1', true)),
-			array('raidattendance_raider_rank2', request_var('raider_rank2', true)),
+			array('raidattendance_raider_rank2', request_var('raider_rank2', false)),
 			array('raidattendance_raider_rank3', request_var('raider_rank3', true)),
 			array('raidattendance_raider_rank4', request_var('raider_rank4', false)),
 			array('raidattendance_raider_rank5', request_var('raider_rank5', false)),
-			array('raidattendance_raider_rank6', request_var('raider_rank6', false)),
+			array('raidattendance_raider_rank6', request_var('raider_rank6', true)),
 		),
 		'permission_add' => array(
 			array('m_raidattendance', true),

@@ -80,7 +80,7 @@ class raider_armory
 	 **/
 	function get_raider_list($armory_link, $realm, $guild, $ranks, $min_level, &$raiders) 
 	{
-		global $error, $user;
+		global $error, $user, $success;
 
 		$this->raiders = &$raiders;
 		$this->min_level = $min_level;
@@ -95,8 +95,24 @@ class raider_armory
 		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, false);
 		xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
 		xml_set_element_handler($parser,  array($this, 'start_elem'), array($this, 'end_elem'));
+		$this->newly_added = array();
 		xml_parse($parser, $data);
 		xml_parser_free($parser);
+		foreach ($raiders as $raider)
+		{
+			if ($raider->__status != 'NEW' && $raider->__status != 'UPDATED')
+			{
+				$raider->__status = 'NOT_IN_ARMORY';
+			}
+		}
+		if (sizeof($this->newly_added)) 
+		{
+			$success[] = sprintf($user->lang['RAIDER_ADDED_FROM_ARMORY'], implode(',', $this->newly_added));
+		}
+		else
+		{
+			$success[] = $user->lang['NO_NEW_RAIDERS_IN_ARMORY'];
+		}
 	}
 
 	function start_elem($parser, $name, array $attrs)
@@ -116,12 +132,14 @@ class raider_armory
 				if (array_key_exists($name, $this->raiders))
 				{
 					$this->raiders[$name]->update($data);
+					$this->raiders[$name]->__status = 'UPDATED';
 				}
 				else
 				{
 					$this->raiders[$name] = new raider($data);
-					$this->raiders[$name]->__status = 'new';
-					$success[] = sprintf($user->lang['RAIDER_ADDED_FROM_ARMORY'], $name);
+					$this->raiders[$name]->__status = 'NEW';
+					$this->newly_added[] = $name;
+					//$success[] = sprintf($user->lang['RAIDER_ADDED_FROM_ARMORY'], $name);
 				}
 			}
 		}
@@ -165,9 +183,11 @@ class raider_db
 	}
 	function save_raider_list(&$rows)
 	{
-		global $error, $debug;
+		global $error, $debug, $user, $success;
 		$umil = new umil(true);
-		foreach ($rows as $name => $raider) 
+		$added = array();
+		$updated = array();
+		foreach ($rows as $raider) 
 		{
 			$res = 'nothing happened';
 			if ($raider->is_saved_in_db()) 
@@ -175,16 +195,33 @@ class raider_db
 				// we have a row, update it
 				$old = array('id' => $raider->id);
 				$res = $umil->table_row_update(RAIDER_TABLE, $old, $raider->as_row());
+				if (strpos($res, '<br />Success') === FALSE)
+				{
+					$error[] = sprintf($user->lang['ERROR_UPDATING_RAIDER'], $raider->name, $res);
+				}
+				else 
+				{
+					$updated[] = $raider->name;
+				}
 			}
 			else 
 			{
 				// we need to create a row
 				$res = $umil->table_row_insert(RAIDER_TABLE, array($raider->as_row()));
+				if (strpos($res, '<br />Success') === FALSE)
+				{
+					$error[] = sprintf($user->lang['ERROR_ADDING_RAIDER'], $raider->name, $res);
+				}
+				else 
+				{
+					//$success[] = sprintf($user->lang['SUCCESS_ADDING_RAIDER'], $raider->name);
+					$added[] = $raider->name;
+				}
 			}
-			if (is_array($res) and sizeof($res) == 2 && $res[1] != 'SUCCESS') 
-			{
-				$error[] = $res;
-			}
+		}
+		if (sizeof($added)) 
+		{
+			$success[] = sprintf($user->lang['ADDED_RAIDERS'], implode(', ', $added));
 		}
 	}
 	function delete_checked_raiders(&$rows)
@@ -231,9 +268,9 @@ class raider
 			'rank' 		=> $this->rank,
 			'class' 	=> $this->class,
 			'id' 		=> $this->id,
-			'user_id' 	=> $this->user_id,
+			'user_id' 	=> isset($this->user_id) ? $this->user_id : 0,
 			'edited'	=> time(),
-			'synced'	=> $this->synced,
+			'synced'	=> $this->synced or 0,
 			'created'	=> $this->created or time(),
 		);
 		return $data;
@@ -253,8 +290,9 @@ class raider
 	}
 	function get_status()
 	{
+		global $user;
 		return ($this->__status != 'same' && $this->__status != '')
-			? '*' . $this->__status . '* ' 
+			? '<b class="STATUS_' . $this->__status . '">*' . $user->lang['STATUS_' . $this->__status] . '*</b>&nbsp;'
 			: '';
 	}
 	function set_user_id($id)

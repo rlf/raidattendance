@@ -14,6 +14,15 @@
 .mini {
 	width: 10px;
 }
+.STATUS_NEW {
+	color: green;
+}
+.STATUS_UPDATED {
+	color: #404040;
+}
+.STATUS_NOT_IN_ARMORY {
+	color: red;
+}
 
 /**
  * Class Colors as taken from http://www.wowwiki.com/Class_colors
