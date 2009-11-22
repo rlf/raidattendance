@@ -15,7 +15,7 @@
 define('UMIL_AUTO', true);
 define('IN_PHPBB', true);
 
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : '../';
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 $install_root_path = './';
 
@@ -63,7 +63,7 @@ $language_file = 'mods/info_acp_raidattendance';
 
 $options = array(
 	'legend1'		=> 'GUILD_SETTINGS',
-	'guild'			=> array('lang' => 'GUILD_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false, 'default' => 'My Guild'),
+	'guild'			=> array('lang' => 'GUILD_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false, 'default' => 'The Awakening'),
 	'realm'			=> array('lang' => 'REALM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false, 'default' => 'Bloodhoof'),
 	'armory_link'	=> array('lang' => 'ARMORY_LINK',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'http://eu.wowarmory.com'),
 
@@ -78,6 +78,16 @@ $options = array(
 	'raid_night_fri'=> array('lang' => 'RAID_NIGHT_FRI',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
 	'raid_night_sat'=> array('lang' => 'RAID_NIGHT_SAT',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
 	'raid_night_sun'=> array('lang' => 'RAID_NIGHT_SUN',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+
+	'legend4'		=> 'RAIDER_RANKS',
+	'min_level'		=> array('lang' => 'MIN_LEVEL',				'validate' => 'int', 	'type' => 'text:2:2', 	'explain' => true, 'default' => '80'),
+	'raider_rank0'	=> array('lang' => 'RANK_0',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
+	'raider_rank1'	=> array('lang' => 'RANK_1',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false, 'default' => true),
+	'raider_rank2'	=> array('lang' => 'RANK_2',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false, 'default' => true),
+	'raider_rank3'	=> array('lang' => 'RANK_3',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false, 'default' => true),
+	'raider_rank4'	=> array('lang' => 'RANK_4',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
+	'raider_rank5'	=> array('lang' => 'RANK_5',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
+	'raider_rank6'	=> array('lang' => 'RANK_6',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
 );
 
  
@@ -153,9 +163,89 @@ $versions = array(
 				), 
 			),
 		),
-	), // end of 0.0.0	
-);
+	), // end of 0.0.1	
+	'0.0.2' => array(
+		'config_add' => array(
+			array('raidattendance_min_level', request_var('min_level', 80)),
+			array('raidattendance_raider_rank0', request_var('raider_rank1', false)),
+			array('raidattendance_raider_rank1', request_var('raider_rank1', true)),
+			array('raidattendance_raider_rank2', request_var('raider_rank2', true)),
+			array('raidattendance_raider_rank3', request_var('raider_rank3', true)),
+			array('raidattendance_raider_rank4', request_var('raider_rank4', false)),
+			array('raidattendance_raider_rank5', request_var('raider_rank5', false)),
+			array('raidattendance_raider_rank6', request_var('raider_rank6', false)),
+		),
+		'permission_add' => array(
+			array('m_raidattendance', true),
+			array('u_raidattendance', true),
+		),
+		'permission_set' => array(
+			array('ROLE_ADMIN_FULL', 	'm_raidattendance'),
+			array('ROLE_MOD_FULL', 		'm_raidattendance'),
+			array('ROLE_MOD_STANDARD', 	'm_raidattendance'),
 
+			array('ROLE_FORUM_FULL', 	'u_raidattendance'),
+		),		
+		'module_add' => array(
+			array('mcp', 0, 'MCP_RAIDATTENDANCE'),
+			array('mcp', 'MCP_RAIDATTENDANCE',
+				array(
+					'module_basename'		=> 'raidattendance',
+					'module_langname'		=> 'MCP_RAIDATTENDANCE_VIEW',
+					'module_mode'			=> 'view',
+					'module_auth'			=> 'acl_u_raidattendance',
+				),
+			),
+		),
+		'table_add' => array(
+			array('phpbb_raidattendance_history', array(
+				'COLUMNS'		=> array(
+					'id'			=> array('UINT', NULL, 'auto_increment'),
+					'user_id'		=> array('UINT', 0),
+					'raider_id'		=> array('UINT', 0),
+					'time'			=> array('TIMESTAMP', 0),
+					'action'		=> array('VCHAR:255', ''),
+				),
+				'PRIMARY_KEY'		=> 'id',
+				'KEYS'				=> array(
+					'user_id'		=> array('INDEX', 'user_id'),
+					'raider_id'		=> array('INDEX', 'raider_id'),
+					),
+				),
+			),
+			array('phpbb_raidattendance_raiders', array(
+				'COLUMNS'		=> array(
+					'id'			=> array('UINT', NULL, 'auto_increment'),
+					'user_id'		=> array('UINT', NULL),
+					'name'			=> array('VCHAR_UNI:255', ''),
+					'class'			=> array('TINT:4', 0),
+					'rank'			=> array('TINT:4', 0),
+					'level'			=> array('TINT:4', 0),
+					'synced'		=> array('TIMESTAMP', NULL),
+					'created'		=> array('TIMESTAMP', 0),
+					'edited'		=> array('TIMESTAMP', 0),
+				),
+				'PRIMARY_KEY'		=> 'id',
+				'KEYS'				=> array(
+					'name'			=> array('UNIQUE', 'name'),
+				),
+			)),
+			array('phpbb_raidattendance', array(
+				'COLUMNS'		=> array(
+					'id'		=> array('UINT', NULL, 'auto_increment'),
+					'raider_id'	=> array('UINT', 0),
+					'night'		=> array('VCHAR:10', ''),
+					'status'	=> array('TINT:4', 0),
+					'time'		=> array('TIMESTAMP', 0),
+				),
+				'PRIMARY_KEY'	=> 'id',
+				'KEYS'			=> array(
+					'rid_night'	=> array('UNIQUE', array('raider_id', 'night')),
+				),
+			)),
+		),
+	), // end of 0.0.2
+);
  
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($install_root_path . 'umil/umil_auto.' . $phpEx);

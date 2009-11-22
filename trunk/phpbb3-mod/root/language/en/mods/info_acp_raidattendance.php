@@ -50,29 +50,27 @@ $lang = array_merge($lang, array(
 		'RAID_NIGHT_FRI'			=> 'Friday',
 		'RAID_NIGHT_SAT'			=> 'Saturday',
 		'RAID_NIGHT_SUN'			=> 'Sunday',
-		'acl_a_raidattendance'		=> array('lang' => 'Can configure Raid Attendance', 'cat' => 'misc'),
-	//
-	// ACP - Sync
-	//
-		'ACP_RAIDATTENDANCE_SYNC'	=> 'Synchronise with wowarmory',
-		'ACP_RAIDATTENDANCE_SYNC_EXPLAIN' => 'Synchronises the list of raiders with wow-armory.',
-		'RAIDERS'					=> 'Raiders',
-		'LEVEL'						=> 'Level',
-		'RANK'						=> 'Rank',
-		'CLASS'						=> 'Class',
 
-		'CLASS_1'					=> 'Warrior',
-		'CLASS_2'					=> 'Paladin',
-		'CLASS_3'					=> 'Hunter',
-		'CLASS_4'					=> 'Rogue',
-		'CLASS_5'					=> 'Priest',
-		'CLASS_6'					=> 'Death Knight',
-		'CLASS_7'					=> 'Shaman',
-		'CLASS_8'					=> 'Mage',
-		'CLASS_9'					=> 'Warlock',
-		'CLASS_11'					=> 'Death Knight',
-		'RANK_1'					=> 'Officer',
-		'RANK_3'					=> 'Raider',
+		'RAIDER_RANKS'				=> 'Rank of Raiders',
+		'MIN_LEVEL'					=> 'Raider Level',
+		'MIN_LEVEL_EXPLAIN'			=> 'At which level a player of the below indicated rank is expected to behave as a raider',
+		
+		'acl_a_raidattendance'		=> array('lang' => 'Can configure Raid Attendance', 'cat' => 'misc'),
+		'acl_m_raidattendance'		=> array('lang' => 'Can synchronize Raid Attendance', 'cat' => 'misc'),
+		'acl_u_raidattendance'		=> array('lang' => 'Can view Raid Attendance', 'cat' => 'misc'),
+
+		'ACP_RAIDATTENDANCE_SYNC'	=> 'Raiders',
+		'ACP_RAIDATTENDANCE_SYNC_EXPLAIN' => 'Manages the raiders in the guild.',
+		'RESYNC'					=> 'Resync with armory',
+		'RESYNC_EXPLAIN'			=> 'Synchronises the raider-table with wow-armory.',
+		'FORUM_USER'				=> 'Forum User',
+		'UNKNOWN_USER'				=> '-',
+		'DELETE_SELECTED'			=> 'Delete selected raiders',
+		'ERROR_CONTACTING_ARMORY'	=> 'An error occurred during synchronization with wow-armory<br/>%s',
+		'RAIDER_ADDED_FROM_ARMORY'	=> 'Added %s from armory',
+		'ERROR_DELETING_RAIDER'		=> 'Error deleting %1$s from the raider-list<br/>%2$s',
+		'SUCCESS_DELETING_RAIDER'	=> '%s was deleted from the raider-list',
+		'SUCCESS'					=> 'Success',
 	)
 );
 ?>
