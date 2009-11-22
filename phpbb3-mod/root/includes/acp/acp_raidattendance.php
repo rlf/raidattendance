@@ -1,13 +1,16 @@
 <?php
+global $phpbb_root_path, $phpEx;
+include_once($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
+
+global $error, $success;
 class acp_raidattendance {
 	var $u_action;
 	var $new_config;
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template;
-		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
-		$user->add_lang(array('viewtopic', 'mods/info_acp_raidattendance'));
+		$user->add_lang(array('viewtopic', 'mods/info_acp_raidattendance', 'mods/mod_raidattendance'));
 		
 		switch($mode)
 		{         
@@ -51,6 +54,16 @@ class acp_raidattendance {
 				'raidattendance_raid_night_fri'		=> array('lang' => 'RAID_NIGHT_FRI','validate' => 'bool', 'type' => 'radio', 'explain' => false),
 				'raidattendance_raid_night_sat'		=> array('lang' => 'RAID_NIGHT_SAT','validate' => 'bool', 'type' => 'radio', 'explain' => false),
 				'raidattendance_raid_night_sun'		=> array('lang' => 'RAID_NIGHT_SUN','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+
+				'legend4'		=> 'RAIDER_RANKS',
+				'raidattendance_min_level'		=> array('lang' => 'MIN_LEVEL',	'validate' => 'int', 'type' => 'text:2:2', 'explain' => true),
+				'raidattendance_raider_rank0'	=> array('lang' => 'RANK_0',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raider_rank1'	=> array('lang' => 'RANK_1',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raider_rank2'	=> array('lang' => 'RANK_2',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raider_rank3'	=> array('lang' => 'RANK_3',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raider_rank4'	=> array('lang' => 'RANK_4',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raider_rank5'	=> array('lang' => 'RANK_5',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raider_rank6'	=> array('lang' => 'RANK_6',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
 			)
 		);
 		$this->saveConfig($display_vars);
@@ -60,8 +73,11 @@ class acp_raidattendance {
 	// 
 	function saveConfig($display_vars)
 	{
-		global $db, $user, $auth, $template;
-		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
+		global $db, $user, $auth, $template, $config, $error;
+		if (!is_array($error))
+		{
+			$error = array();
+		}
 
 		$action	= request_var('action', '');
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -76,7 +92,6 @@ class acp_raidattendance {
 
 		$this->new_config = $config;
 		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc(request_var('config', array('' => ''), true)) : $this->new_config;
-		$error = array();
 
 		// We validate the complete config if whished
 		validate_config_vars($display_vars['vars'], $cfg_array, $error);
@@ -187,26 +202,59 @@ class acp_raidattendance {
 	function showSync($id, $mode)
 	{
 		global $db, $user, $auth, $template;
-		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
-
-		$error = array();
-		$armory = $config['raidattendance_armory_link'];
-		$guild = $config['raidattendance_guild_name'];
-		$realm = $config['raidattendance_realm_name'];
-
+		global $error, $success;
 		$this->tpl_name = 'acp_raidattendance_sync';
+		$resync	= (isset($_POST['resync'])) ? true : false;
+		$save = (isset($_POST['save'])) ? true : false;
+		$delete = (isset($_POST['delete'])) ? true : false;
 
-		include_once($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
-		$extractor = new raider_extractor();
-		$rows = $extractor->get_raider_list($armory, $realm, $guild, array(1, 3), 80);
-
-		foreach ($rows as $row) {
+		$raider_db = new raider_db();
+		$rows = array();
+		$raider_db->get_raider_list($rows);
+		if ($resync) 
+		{
+			$this->resync($rows);
+		}
+		$this->merge_data($rows);
+		if ($save or $resync) 
+		{
+			$raider_db->save_raider_list($rows);
+			//$raider_db->get_raider_list($rows);
+		}
+		else if ($delete)
+		{
+			$raider_db->delete_checked_raiders($rows);
+		}
+		$rowno = 0;
+		$users = $this->get_user_list();
+		$names = array_keys($rows);
+		sort($names);
+		foreach ($names as $name) {
+			$raider = $rows[$name];
 			$template->assign_block_vars('raiders', array(
-				'RAIDER_NAME'		=> $row['raider_name'],
-				'RANK'				=> $user->lang['RANK_' . $row['rank']],
-				'LEVEL'				=> $row['level'],
-				'CLASS'				=> $user->lang['CLASS_' . $row['class']],
+				'ROWNO'				=> $rowno+1,
+				'ID'				=> $raider->id,
+				'NAME'				=> $raider->name,
+				'RANK'				=> $user->lang['RANK_' . $raider->rank],
+				'LEVEL'				=> $raider->level,
+				'CLASS'				=> $user->lang['CLASS_' . $raider->class],
+				'USER'				=> $raider->user_id,
+				'STATUS'			=> $raider->get_status(),
+				'ROW_CLASS'			=> $rowno % 2 == 0 ? 'even' : 'uneven',
+				'USER_OPTIONS'		=> $this->get_user_options($users, $raider->name, $raider->user_id),
+				'CHECKED'			=> $raider->is_checked() ? ' checked' : '',
+
+				'CSS_CLASS'			=> 'class_' . $raider->class,
 			));
+			$rowno++;
+		}
+		if (!is_array($error)) 
+		{
+			$error = array();
+		}
+		if (!is_array($success))
+		{
+			$success = array();
 		}
 
 		$template->assign_vars(array(
@@ -214,10 +262,89 @@ class acp_raidattendance {
 			'L_TITLE_EXPLAIN'	=> $user->lang['ACP_RAIDATTENDANCE_SYNC_EXPLAIN'],
 
 			'S_ERROR'			=> (sizeof($error)) ? true : false,
-			'ERROR_MSG'			=> implode('<br />', $error),
+			'ERROR_MSG'			=> implode('<br/>', $error),
+
+			'S_SUCCESS'			=> (sizeof($success)) ? true : false,
+			'SUCCESS_MSG'		=> implode('<br/>', $success),
 
 			'U_ACTION'			=> $this->u_action)
 		);
+	}
+	function resync(&$old_rows)
+	{
+		global $config;
+		$armory = $config['raidattendance_armory_link'];
+		$guild = $config['raidattendance_guild_name'];
+		$realm = $config['raidattendance_realm_name'];
+		$min_level = $config['raidattendance_min_level'];
+
+		$extractor = new raider_armory();
+		$extractor->get_raider_list($armory, $realm, $guild, get_raider_ranks(), $min_level, $old_rows);
+	}
+	function get_user_options($users, $raider_name, $user_id = 0)
+	{
+		$s = '';
+		foreach ($users as $usr)
+		{
+			$id = $usr['id'];
+			$name = $usr['name'];
+			$selected = '';
+			if ($user_id == $id)
+			{
+				$selected = ' selected';
+			}
+			else if ($user_id == 0 && $raider_name == $name)
+			{
+				$selected = ' selected';
+			}
+			$s .= '<option value="' . $usr['id'] . '"' . $selected . '>' . $name . '</option>';
+		}
+		return $s;
+	}
+	function get_user_list()
+	{
+		global $db, $user;
+		$sql = 'SELECT user_id, username FROM `phpbb_users` WHERE user_email <> \'\'';
+		$result = $db->sql_query($sql);
+		$users = array(array('id' => 0, 'name' => $user->lang['UNKNOWN_USER']));
+		while ($row = $db->sql_fetchrow($result)) 
+		{
+			$users[] = array('id' => $row['user_id'], 'name' => $row['username']);
+		}
+		$db->sql_freeresult($result);
+		return $users;
+	}
+	/** 
+	 * Merges the rows with whatever was supplied in the POST.
+	 **/
+	function merge_data(&$rows) 
+	{
+		$user_ids = array();
+		$checked = array();
+		if (isset($_POST['user_id'])) 
+		{
+			$user_ids = $_POST['user_id'];
+		}
+		if (isset($_POST['checked'])) 
+		{
+			$checked = $_POST['checked'];
+		}
+		foreach ($rows as $raider)
+		{
+			$name = $raider->name;
+			if (isset($user_ids[$raider->id])) 
+			{
+				$raider->set_user_id($user_ids[$raider->id]);
+			}
+			if (isset($checked[$raider->id]))
+			{
+				$raider->set_checked(true);
+			}
+			else
+			{
+				$raider->set_checked(false);
+			}
+		}
 	}
 }
 ?>

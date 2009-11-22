@@ -5,7 +5,7 @@ class acp_raidattendance_info {
 		return array(
 			'filename'	=> 'acp_raidattendance',
 			'title'		=> 'ACP_RAIDATTENDANCE',
-			'version'	=> '0.0.1',
+			'version'	=> '0.0.2',
 			'cat'		=> 'ACP_BOARD_CONFIGURATION',
 			'modes'		=> array(
 			    'settings' => array(
