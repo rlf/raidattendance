@@ -1,0 +1,22 @@
+#summary Installation guide for the phpBB3 MOD
+
+= Prerequisites =
+Make sure your phpBB3 installation has the AutoMOD installed, otherwise go get it at [http://www.phpbb.com/mods/automod/]
+
+= Downloading the MOD =
+  # Download the MOD from the downloads section [http://code.google.com/p/raidattendance/downloads/list]
+  # Unzip the zip-file to a local folder
+  # Upload the folder to the phpBB3/store/mods folder
+
+= Installing the MOD =
+  # Use AutoMOD to install the MOD (login to ACP - go to AutoMOD).
+  # Follow the instructions in the DIY section (run the install_raidattendance.php script).
+  # Follow the instructions of the install-script.
+  # The MOD is installed!
+
+= Configuring =
+During the installation (the script) the MOD is also configured, but the list of raiders is not updated.
+
+  # Find the MOD under the Forums section (ACP).
+  # Navigate to the ? pane
+  # Choose *resync with armory*
