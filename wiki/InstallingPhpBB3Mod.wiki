@@ -18,5 +18,21 @@ Make sure your phpBB3 installation has the AutoMOD installed, otherwise go get i
 During the installation (the script) the MOD is also configured, but the list of raiders is not updated.
 
   # Find the MOD under the Forums section (ACP).
-  # Navigate to the ? pane
-  # Choose *resync with armory*
+  # Navigate to the *Raiders* pane
+  # Choose *Resync with armory* button
+  # A list of raiders as defined on the *Configuration* pane should be shown - and their associated forum-usernames will automatically be updated (if they match).
+  # Assign forum-users to those that have accounts, and press *Save*
+  # The raider-list is now _up to date_ and the MOD should be available under the relevant forum.
+
+= Using the MOD on the Forum =
+The _forum-name_ configured will now show a table on top of the topic list with all raiders and their current attendance.
+
+If the current-user has moderator access, the user can choose to sign ppl on or off specific raid-nights.
+
+If a user is logged in, and the mapping between raider and forum-user is correct, the user can sign off/on of future raids (not possible to edit past raids).
+
+It's possible to see the past week, this week and the upcoming week.
+
+It's possible to navigate further back or forward in time.
+
+It's possible to see a change-history of signon status.
