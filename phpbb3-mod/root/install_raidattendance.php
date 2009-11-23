@@ -53,7 +53,7 @@ $version_config_name = 'raidattendance_version';
 * 'UNINSTALL_' . $mod_name . '_CONFIRM'
 */
 
-$language_file = 'mods/info_acp_raidattendance';
+$language_file = array('mods/info_acp_raidattendance', 'mods/mod_raidattendance');
 
  
 /*
