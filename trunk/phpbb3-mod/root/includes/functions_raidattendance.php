@@ -68,6 +68,94 @@ function is_raidattendance_forum($forum_id)
 	return $found_it;
 }
 
+function get_raiding_days($current_week)
+{
+	$date_array = getdate($current_week);
+	$this_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-$date_array['wday'], $date_array['year']);
+	$date_array = getdate($this_week);
+	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
+	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
+	$day_numbers = get_raiding_day_numbers();
+	$days = get_raiding_day_numbers();
+	$raiding_days = array();
+	$weeks = array($last_week, $this_week, $next_week);
+	foreach ($weeks as $week)
+	{
+		$date_array = getdate($week);
+		foreach ($days as $day)
+		{
+			$raiding_days[] = strftime('%Y%m%d', mktime(0,0,0, $date_array['mon'], $date_array['mday'] + $day, $date_array['year']));
+		}
+	}
+	return $raiding_days;
+}
+function get_raiding_day_numbers()
+{
+	global $config;
+	$days = array();
+	$k = 'raidattendance_raid_night_';
+	$day_map = array('mon' => 1, 'tue' => 2, 'wed' => 3, 'thu' => 4, 'fri' => 5, 'sat' => 6, 'sun' => 0);
+	foreach ($day_map as $day => $number)
+	{
+		if ($config[$k . $day])
+		{
+			$days[] = $number;
+		}
+	}
+	return $days;
+}
+function tm2time($tm) 
+{
+	extract($tm);
+	return mktime(
+		intval($tm_hour),
+		intval($tm_min),
+		intval($tm_sec),
+		intval($tm_mon)+1,
+		intval($tm_mday),
+		intval($tm_year)+1900);
+}
+
+/**
+ * Takes a number and returns it as a string with 'st', 'nd', 'rd' 'th' etc.
+ * added.
+ **/
+function post_num($num)
+{
+	if ($num == 1 or ($num >= 20 and (($num % 10) == 1)))
+	{
+		return $num . 'st';
+	}
+	else if ($num == 2 or ($num >= 20 and (($num % 10 == 2)))) 
+	{
+		return $num . 'nd';
+	}
+	else if ($num == 3 or ($num >= 20 and (($num % 10 == 3))))
+	{
+		return $num . 'rd';
+	}
+	return $num . 'th';
+}
+function get_raider_with_id($raiders, $id)
+{
+	foreach ($raiders as $name => $raider)
+	{
+		if ($raider->id == $id) 
+		{
+			return $raider;
+		}
+	}
+	return null;
+}
+function is_umil_error($res)
+{
+	global $user;
+	if (strpos($res, '<br />' . $user->lang['SUCCESS']) === FALSE) 
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
 // ---------------------------------------------------------------------------
 // Raiders from the wowarmory
 // ---------------------------------------------------------------------------
@@ -195,7 +283,7 @@ class raider_db
 				// we have a row, update it
 				$old = array('id' => $raider->id);
 				$res = $umil->table_row_update(RAIDER_TABLE, $old, $raider->as_row());
-				if (strpos($res, '<br />Success') === FALSE)
+				if (is_umil_error($res))
 				{
 					$error[] = sprintf($user->lang['ERROR_UPDATING_RAIDER'], $raider->name, $res);
 				}
@@ -208,7 +296,7 @@ class raider_db
 			{
 				// we need to create a row
 				$res = $umil->table_row_insert(RAIDER_TABLE, array($raider->as_row()));
-				if (strpos($res, '<br />Success') === FALSE)
+				if (is_umil_error($res))
 				{
 					$error[] = sprintf($user->lang['ERROR_ADDING_RAIDER'], $raider->name, $res);
 				}
@@ -234,7 +322,7 @@ class raider_db
 			if ($raider->is_checked()) 
 			{
 				$res = $umil->table_row_remove(RAIDER_TABLE, array('id' => $raider->id));
-				if (is_array($res) && sizeof($res) == 2 && $res[1] != 'SUCCESS')
+				if (is_umil_error($res))
 				{
 					$error[] = sprintf($user->lang['ERROR_DELETING_RAIDER'], $raider->name, $res[1]);
 				}
@@ -246,6 +334,102 @@ class raider_db
 			}
 		}
 	}
+}
+// ---------------------------------------------------------------------------
+// History Functions
+// ---------------------------------------------------------------------------
+function add_history($raider, $action)
+{
+	global $user;
+	$umil = new umil();
+	$data = array(
+		'user_id' 		=> $user->data['user_id'],
+		'raider_id'		=> $raider->id,
+		'time'			=> time(),
+		'action'		=> is_array($action) ? implode(',', $action) : $action,
+		);
+	$umil->table_row_insert(RAIDER_HISTORY_TABLE, $data);
+}
+function get_history($starttime, $endtime = 0)
+{
+	if ($endtime = 0) 
+	{
+		$endtime = time();
+	}
+	global $db;
+	$sql = 'SELECT * FROM ' . RAIDER_HISTORY_TABLE . ' WHERE time >= ' . $starttime . ' AND time <= ' . $endtime . ' ORDER BY time DESC';
+	$result = $db->sql_query($sql);
+	$history = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$history[] = new history($row);
+	}
+	$db->sql_freeresult($result);
+	return $history;
+}
+class history
+{
+	function __construct($row)
+	{
+		$this->id 			= $row['id'];
+		$this->user_id 		= $row['user_id'];
+		$this->raider_id	= $row['raider_id'];
+		$this->time			= $row['time'];
+		$this->action		= $row['action'];
+	}
+}
+// ---------------------------------------------------------------------------
+// Attendance Access
+// ---------------------------------------------------------------------------
+function set_attendance($raider, $night, $status)
+{
+	$umil = new umil(true);
+	$status_map = array('signon' => 1, 'signoff' => 2, 'noshow' => 3);
+	$ident = array(
+		'raider_id'			=> $raider->id,
+		'night'				=> $night,
+		);
+	$data = array(
+		'raider_id'			=> $raider->id,
+		'night'				=> $night,
+		'status'			=> $status_map[$status],
+		'time'				=> time(),
+		);
+	$res = $umil->table_row_update(RAIDATTENDANCE_TABLE, $ident, $data);
+	if (is_umil_error($res))
+	{
+		$res = $umil->table_row_insert(RAIDATTENDANCE_TABLE, $data);
+		if (is_umil_error($res)) 
+		{
+			global $error;
+			$error[] = $res;
+		}
+	}
+}
+/**
+ * Returns an associative array with _raidername_ => array(_raidnight_ => _status)
+ **/
+function get_attendance($nights)
+{
+	global $db;
+	$in_night = "'" . implode("','", $nights) . "'";
+	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
+		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND n.night IN (' . $in_night . ')';
+	$result = $db->sql_query($sql);
+	$attendance = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		if (is_array($attendance[$row['name']]))
+		{
+			$attendance[$row['name']][$row['night']] = $row['status'];
+		}
+		else
+		{
+			$attendance[$row['name']] = array($row['night'] => $row['status']);
+		}
+	}
+	$db->sql_freeresult($result);
+	return $attendance;
 }
 // ---------------------------------------------------------------------------
 // Raider Class
@@ -335,6 +519,16 @@ class raider
 		{
 			$this->user_id = $row['user_id'];
 		}
+	}
+	function signon($raid)
+	{
+		add_history($this, 'SIGNON');
+		set_attendance($this, $raid, 'signon');
+	}
+	function signoff($raid)
+	{
+		add_history($this, 'SIGNOFF');
+		set_attendance($this, $raid, 'signoff');
 	}
 }
 ?>

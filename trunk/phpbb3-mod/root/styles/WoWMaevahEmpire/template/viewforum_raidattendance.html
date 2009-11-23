@@ -1,2 +1,54 @@
-<h1>RAID ATTENDANCE!!</h1>
-
+<LINK REL="StyleSheet" HREF="{T_TEMPLATE_PATH}/raidattendance.css" TYPE="text/css"/>
+<script language="JavaScript">
+<!--
+function signon(rid, raid) 
+{
+	var form = document.getElementById('attendance');
+	form.rid.value = rid;
+	form.raid.value = raid;
+	form.u_action.value = 'signon';
+	form.submit();
+}
+function signoff(rid, raid)
+{
+	var form = document.getElementById('attendance');
+	form.rid.value = rid;
+	form.raid.value = raid;
+	form.u_action.value = 'signoff';
+	form.submit();
+}
+//-->
+</script>
+<!-- IF S_ERROR -->
+<div class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF S_SUCCESS -->
+<div class="successbox">
+	<h3>{L_SUCCESS}</h3>
+	<p>{SUCCESS_MSG}</p>
+</div>
+<!-- ENDIF -->
+<form method="POST" action="{S_FORUM_ACTION}" name="attendance" id="attendance">
+	<input type="hidden" name="rid" id="rid" value="0"/>
+	<input type="hidden" name="raid" id="raid" value="0"/>
+	<input type="hidden" name="u_action" id="u_action" value="0"/>
+<table id="raid_table" name="raid_table">
+	<tr>
+		<th>Name</th>
+		<!-- BEGIN raid_days -->
+		<th>{raid_days.DAY}<br/>{raid_days.DATE}</th>
+		<!-- END raid_days -->
+	</tr>
+	<!-- BEGIN raiders -->
+	<tr class="{raiders.ROW_CLASS}">
+		<td class="{raiders.CSS_CLASS}">{raiders.NAME}</td>
+		<!-- BEGIN raids -->
+		<td class="{raids.STATUS}"><!-- IF raiders.S_EDITABLE --><a href="javascript:signon({raiders.ID},'{raids.RAID}')">[+]</a><a href="javascript:signoff({raiders.ID},'{raids.RAID}')"/>[-]</a><!-- ENDIF --></td>
+		<!-- END raids -->
+	</tr>
+	<!-- END raiders -->
+</table>
+</form>
