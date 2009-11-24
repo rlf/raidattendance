@@ -1,20 +1,18 @@
 <LINK REL="StyleSheet" HREF="{T_TEMPLATE_PATH}/raidattendance.css" TYPE="text/css"/>
 <script language="JavaScript">
 <!--
-function signon(rid, raid) 
+function go(action, rid, raid)
 {
 	var form = document.getElementById('attendance');
 	form.rid.value = rid;
 	form.raid.value = raid;
-	form.u_action.value = 'signon';
+	form.u_action.value = action;
 	form.submit();
 }
-function signoff(rid, raid)
+function nav(tstamp)
 {
 	var form = document.getElementById('attendance');
-	form.rid.value = rid;
-	form.raid.value = raid;
-	form.u_action.value = 'signoff';
+	form.tstamp.value = tstamp;
 	form.submit();
 }
 //-->
@@ -34,20 +32,32 @@ function signoff(rid, raid)
 <form method="POST" action="{S_FORUM_ACTION}" name="attendance" id="attendance">
 	<input type="hidden" name="rid" id="rid" value="0"/>
 	<input type="hidden" name="raid" id="raid" value="0"/>
+	<input type="hidden" name="tstamp" id="tstamp" value="-1"/>
 	<input type="hidden" name="u_action" id="u_action" value="0"/>
 <table id="raid_table" name="raid_table">
 	<tr>
 		<th>Name</th>
+		<th><a href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
 		<!-- BEGIN raid_days -->
 		<th>{raid_days.DAY}<br/>{raid_days.DATE}</th>
 		<!-- END raid_days -->
+		<th><a href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
 	</tr>
 	<!-- BEGIN raiders -->
 	<tr class="{raiders.ROW_CLASS}">
-		<td class="{raiders.CSS_CLASS}">{raiders.NAME}</td>
+		<td colspan="2" class="{raiders.CSS_CLASS}">{raiders.NAME}</td>
 		<!-- BEGIN raids -->
-		<td class="{raids.STATUS}"><!-- IF raiders.S_EDITABLE --><a href="javascript:signon({raiders.ID},'{raids.RAID}')">[+]</a><a href="javascript:signoff({raiders.ID},'{raids.RAID}')"/>[-]</a><!-- ENDIF --></td>
+		<td class="{raids.STATUS}">
+			<!-- IF S_MODERATOR -->
+			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')">[+]</a><a href="javascript:go('-',{raiders.ID},'{raids.RAID}')"/>[-]</a><a href="javascript:go('!',{raiders.ID},'{raids.RAID}')"/>[!]</a><a href="javascript:go('x',{raiders.ID},'{raids.RAID}')"/>[x]</a>
+			<!-- ELSE -->
+				<!-- IF raids.S_EDITABLE -->
+				<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')">[+]</a><a href="javascript:go('-',{raiders.ID},'{raids.RAID}')"/>[-]</a><a href="javascript:go('x',{raiders.ID},'{raids.RAID}')"/>[x]</a>
+				<!-- ENDIF -->
+			<!-- ENDIF -->
+		</td>
 		<!-- END raids -->
+		<td>&nbsp;</td>
 	</tr>
 	<!-- END raiders -->
 </table>

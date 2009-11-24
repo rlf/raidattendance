@@ -17,10 +17,26 @@
 .noshow {
 	background: red;
 }
-#raid_table a {
+.future {
+	background: #5050ff;
+	filter: alpha(opacity=30);
+	opacity: 0.3;
+}
+.past {
+	background: #ff5050;
+	filter: alpha(opacity=30);
+	opacity: 0.3;
+}
+#raid_table tr td a, #raid_table tr td a:visited, #raid_table tr td a:link, #raid_table tr td a:active {
 	text-decoration: none;
 	font-weight: bold;
-	color: #707070;
+	color: black;
+	font-family: monospace;
+}
+#raid_table tr td a:hover {
+	text-decoration: underline;
+	font-weight: bold;
+	color: black;
 	font-family: monospace;
 }
 
