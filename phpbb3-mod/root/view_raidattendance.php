@@ -17,7 +17,8 @@ if (is_raidattendance_forum($forum_id))
 {
 	global $user, $auth;
 	$success = array();
-	$tstamp = time();
+	$tstamp = isset($_POST['tstamp']) && $_POST['tstamp'] > 0 ? $_POST['tstamp'] : time();
+	$today = strftime('%Y%m%d', time());
 	$raids = get_raiding_days($tstamp);
 	$raider_db = new raider_db();
 	$raiders = array();
@@ -39,7 +40,7 @@ if (is_raidattendance_forum($forum_id))
 		));
 	}
 	sort($names);
-	$statusses = array(1=>'on', 2=>'off', 3=>'noshow', 0=>'nothing');
+	$statusses = array(1=>'on', 2=>'off', 3=>'noshow', 0=>'future', -1=>'past');
 	foreach ($names as $name) {
 		$raider = $raiders[$name];
 		$template->assign_block_vars('raiders', array(
@@ -54,23 +55,30 @@ if (is_raidattendance_forum($forum_id))
 			'ROW_CLASS'			=> $rowno % 2 == 0 ? 'even' : 'uneven',
 			'CHECKED'			=> $raider->is_checked() ? ' checked' : '',
 			'CSS_CLASS'			=> 'class_' . $raider->class,
-			'S_EDITABLE'		=> (($user->data['user_id'] == $raider->user_id) or ($auth->acl_get('m_'))) ? true : false,
 		));
 		foreach ($raids as $raid)
 		{
+			$future = $raid >= $today;
 			$status = $attendance[$raider->name][$raid];
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
-				'STATUS'		=> $statusses[$status ? $status : 0],
+				'STATUS'		=> $statusses[$status ? $status : ($future ? 0 : -1)],
+				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id) and $future ? true : false,
 				));
 		}
 		$rowno++;
 	}
+	$date_array = getdate($tstamp);
+	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
+	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
 	$template->assign_vars(array(
 		'RAIDATTENDANCE_TITLE' 	=> 'Correct forum',
 		'S_RAIDATTENDANCE'		=> true,
 		'S_SUCCESS'				=> sizeof($success) ? true : false,
 		'SUCCESS_MSG'			=> implode('<br/>', $success),
+		'S_MODERATOR'			=> $auth->acl_get('m_'),
+		'TSTAMP_NEXT'			=> $next_week,
+		'TSTAMP_PREV'			=> $last_week,
 		));
 }
 function handle_action($raiders)
@@ -86,15 +94,25 @@ function handle_action($raiders)
 	$action = $_POST['u_action'];
 	if ($raider and $raid and $action) 
 	{
-		if ($action == 'signon')
+		if ($action == '+')
 		{
 			$raider->signon($raid);
 			$success[] = $raider->name . ' signed ON ' . $raid;
 		}
-		else if ($action == 'signoff')
+		else if ($action == '-')
 		{
 			$raider->signoff($raid);
 			$success[] = $raider->name . ' signed OFF ' . $raid;
+		}
+		else if ($action == 'x')
+		{
+			$raider->clear_attendance($raid);
+			$success[] = $raider->name . ' cleared ' . $raid;
+		}
+		else if ($action == '!')
+		{
+			$raider->noshow($raid);
+			$success[] = $raider->name . ' NOSHOW ' . $raid;
 		}
 	}
 }

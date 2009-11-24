@@ -150,11 +150,12 @@ function get_raider_with_id($raiders, $id)
 function is_umil_error($res)
 {
 	global $user;
-	if (strpos($res, '<br />' . $user->lang['SUCCESS']) === FALSE) 
+	$success = $user->lang['SUCCESS'] ? $user->lang['SUCCESS'] : 'SUCCESS';
+	if (strpos($res, '<br />' . $success) === FALSE) 
 	{
-		return FALSE;
+		return TRUE;
 	}
-	return TRUE;
+	return FALSE;
 }
 // ---------------------------------------------------------------------------
 // Raiders from the wowarmory
@@ -195,7 +196,7 @@ class raider_armory
 		}
 		if (sizeof($this->newly_added)) 
 		{
-			$success[] = sprintf($user->lang['RAIDER_ADDED_FROM_ARMORY'], implode(',', $this->newly_added));
+			$success[] = sprintf($user->lang['RAIDER_ADDED_FROM_ARMORY'], implode(', ', $this->newly_added));
 		}
 		else
 		{
@@ -341,7 +342,7 @@ class raider_db
 function add_history($raider, $action)
 {
 	global $user;
-	$umil = new umil();
+	$umil = new umil(true);
 	$data = array(
 		'user_id' 		=> $user->data['user_id'],
 		'raider_id'		=> $raider->id,
@@ -383,6 +384,7 @@ class history
 // ---------------------------------------------------------------------------
 function set_attendance($raider, $night, $status)
 {
+	global $error, $success;
 	$umil = new umil(true);
 	$status_map = array('signon' => 1, 'signoff' => 2, 'noshow' => 3);
 	$ident = array(
@@ -395,13 +397,21 @@ function set_attendance($raider, $night, $status)
 		'status'			=> $status_map[$status],
 		'time'				=> time(),
 		);
-	$res = $umil->table_row_update(RAIDATTENDANCE_TABLE, $ident, $data);
+	if ($status === false) 
+	{
+		$res = $umil->table_row_remove(RAIDATTENDANCE_TABLE, $ident);
+		if (is_umil_error($res))
+		{
+			$error[] = $res;
+		}
+		return;
+	}
+	$res = $umil->table_row_insert(RAIDATTENDANCE_TABLE, $data);
 	if (is_umil_error($res))
 	{
-		$res = $umil->table_row_insert(RAIDATTENDANCE_TABLE, $data);
+		$res = $umil->table_row_update(RAIDATTENDANCE_TABLE, $ident, $data);
 		if (is_umil_error($res)) 
 		{
-			global $error;
 			$error[] = $res;
 		}
 	}
@@ -529,6 +539,16 @@ class raider
 	{
 		add_history($this, 'SIGNOFF');
 		set_attendance($this, $raid, 'signoff');
+	}
+	function clear_attendance($raid)
+	{
+		add_history($this, 'CLEAR');
+		set_attendance($this, $raid, false);
+	}
+	function noshow($raid)
+	{
+		add_history($this, 'NOSHOW');
+		set_attendance($this, $raid, 'noshow');
 	}
 }
 ?>
