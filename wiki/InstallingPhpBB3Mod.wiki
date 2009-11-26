@@ -1,4 +1,5 @@
 #summary Installation guide for the phpBB3 MOD
+#labels Phase-Deploy
 #sidebar ToC
 
 = Prerequisites =
