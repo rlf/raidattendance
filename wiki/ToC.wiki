@@ -3,7 +3,7 @@
   * [Design]
   * phpBB3 MOD
     * [PhpBB3Mod Design]
+    * [PhpBB3Backlog Backlog]
     * [InstallingPhpBB3Mod Installing]
-    * [PhpBB3ReleaseNotes Release Notes]
   * FAQ
     * [FAQphpBB3 phpBB3 MOD]
