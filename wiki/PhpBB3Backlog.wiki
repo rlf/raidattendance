@@ -1,4 +1,5 @@
 #summary Backlog of tasks for the phpBB3 MOD
+#labels Featured,Phase-QA
 #sidebar ToC
 
 = Backlog =
