@@ -6,14 +6,14 @@
   * mcp_raidattendance - sync. raiders with armory + link forum-users
 
 = Completed =
-=== v0.0.3 - 2009-11-24 - Integration of raid-attendance in viewforum ==
+=== v0.0.3 - 2009-11-24 - Signon/signoff + pagination ==
   * forum_raidattendance - pagination - possible to step forward/back on weeks
   * forum_raidattendance - moderators can change sign-on status of raiders (signon/signoff/noshow)
     * change-history is updated (updated, but not viewable yet)
   * forum_raidattendance - users with valid raider-forum-user mapping can change status of self (only signon/signoff).
     * change-history is updated 
 
-=== v0.0.2 - 2009-11-24 - Integration of raid-attendance in viewforum ==
+=== v0.0.2 - 2009-11-20 - Integration of raid-attendance in viewforum ==
   * acp_raidattendance - it's possible to install the mod in phpBB3 (ACP)
   * acp_raidattendance - install-wizard - it's possible to create table of raiders
     * possibly from armory? 
