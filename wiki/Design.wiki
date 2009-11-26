@@ -53,18 +53,8 @@ The user/player should
   * the addon must be able to do the "scan" automatically at the raid-time
 
 === Client ===
-  * TBD
-
-=== phpBB3 ===
-  * admin page - where it's possible to configure raid-nights + raiders
-  * calendar page - Shows raid-nights and current status of signon/signoff.
-  * signoff page - possible to sign of for upcoming raid-nights
-  * signoff page - possible to sign of for a specific period (vacation)
-  * web-service - allows the client to access the current state of signoffs
-  * web-service - allows the client to upload actual attendance
-  * statistics page - shows actual attendance (history)
+  * Will most likely not be neccesary, if we manage to integrate the addon and the php-mod correctly, it will become a simple upload/download task
 
 = References =
-
   * [http://www.wowace.com/addons/ace3/pages/]
   * [http://www.wowace.com/addons/lib-st/]
