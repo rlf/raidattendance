@@ -1,4 +1,4 @@
-#summary Product Backlog along with major design decisions
+#summary Overall design of the raidattendance project
 #labels Phase-Design,Phase-Implementation
 #sidebar ToC
 
