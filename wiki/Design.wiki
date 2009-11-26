@@ -1,5 +1,6 @@
 #summary Product Backlog along with major design decisions
 #labels Phase-Design,Phase-Implementation
+#sidebar ToC
 
 This project is divided into 3 smaller projects:
   # The Addon - This will be a WoW Lua Addon (Bulrogg)
