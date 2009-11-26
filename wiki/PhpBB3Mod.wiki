@@ -1,4 +1,5 @@
 #summary Page for the phpBB3 mod to go along with the Lua Addon
+#sidebar ToC
 
 = Introduction =
 
