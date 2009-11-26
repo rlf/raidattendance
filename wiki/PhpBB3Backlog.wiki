@@ -4,6 +4,8 @@
   * beutification - better icons for changing attendancy-status
   * raidattendance_history - change-history of signon status
   * mcp_raidattendance - sync. raiders with armory + link forum-users
+  * ucp_raidattendance - allow users to permanently signoff for specific days.
+  * raidattendance - include a FAQ - possibly link to a wiki - or use the forum options.
 
 = Completed =
 === v0.0.3 - 2009-11-24 - Signon/signoff + pagination ==
