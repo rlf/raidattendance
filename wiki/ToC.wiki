@@ -1,4 +1,4 @@
 #summary Table of Content for raidattendance
 
-  * [FAQ]
+  * FAQ
     * [FAQphpBB3]
