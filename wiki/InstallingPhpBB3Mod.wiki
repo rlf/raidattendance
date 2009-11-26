@@ -1,4 +1,5 @@
 #summary Installation guide for the phpBB3 MOD
+#sidebar ToC
 
 = Prerequisites =
 Make sure your phpBB3 installation has the AutoMOD installed, otherwise go get it at [http://www.phpbb.com/mods/automod/]
