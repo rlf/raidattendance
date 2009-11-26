@@ -1,5 +1,5 @@
 #summary Frequently Asked Questions about the phpBB3 MOD
-#sidebar FAQphpBB3ToC
+#sidebar ToC
 
 <wiki:toc max_depth="2" />
 
