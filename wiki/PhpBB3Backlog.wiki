@@ -1,4 +1,5 @@
 #summary Backlog of tasks for the phpBB3 MOD
+#sidebar ToC
 
 = Backlog =
   * beutification - better icons for changing attendancy-status
