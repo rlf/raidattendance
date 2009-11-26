@@ -1,0 +1,3 @@
+#summary Frequently Asked Questions about the phpBB3 MOD
+
+= Introduction =
