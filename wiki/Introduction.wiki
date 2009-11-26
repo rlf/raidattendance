@@ -1,5 +1,6 @@
 #summary Basic introduction to the addon, why, when and where.
 #labels Phase-Requirements,Featured
+#sidebar ToC
 
 = Introduction =
 
