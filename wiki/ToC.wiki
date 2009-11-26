@@ -1,4 +1,9 @@
 #summary Table of Content for raidattendance
-
-  * FAQ - Frequently Asked Questions
+  * [Introduction]
+  * [Design]
+  * phpBB3 MOD
+    * [PhpBB3Mod Design]
+    * [InstallingPhpBB3Mod Installing]
+    * [PhpBB3ReleaseNotes Release Notes]
+  * FAQ
     * [FAQphpBB3 phpBB3 MOD]
