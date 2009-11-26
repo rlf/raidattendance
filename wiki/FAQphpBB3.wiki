@@ -1,3 +1,8 @@
 #summary Frequently Asked Questions about the phpBB3 MOD
+#sidebar FAQphpBB3ToC
 
-= Introduction =
+<wiki:toc max_depth="2" />
+
+= Installation =
+= Configuration =
+= Usage =
