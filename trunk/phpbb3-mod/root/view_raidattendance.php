@@ -63,7 +63,7 @@ if (is_raidattendance_forum($forum_id))
 				'RAID'			=> $raid,
 				'STATUS'		=> $statusses[$status ? $status : ($future ? 0 : -1)],
 				'S_FUTURE'		=> $future ? '1' : '0',
-				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id) and $future ? true : false,
+				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				));
 		}
 		$rowno++;
