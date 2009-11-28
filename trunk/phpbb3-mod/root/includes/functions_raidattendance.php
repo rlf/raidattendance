@@ -20,6 +20,7 @@ global $table_prefix, $phpbb_root_path, $phpEx;
 define('RAIDER_TABLE', $table_prefix . 'raidattendance_raiders');
 define('RAIDER_HISTORY_TABLE', $table_prefix . 'raidattendance_history');
 define('RAIDATTENDANCE_TABLE', $table_prefix . 'raidattendance');
+define('RAIDER_CONFIG', $table_prefix . 'raidattendance_config');
 
 // UMIL is used for database updates
 include_once($phpbb_root_path . 'umil/umil.' . $phpEx);
@@ -104,16 +105,31 @@ function get_raiding_day_numbers()
 	}
 	return $days;
 }
+function get_raiding_day_keys($numbers = null)
+{
+	if (!$numbers) 
+	{
+		$numbers = get_raiding_day_numbers();
+	}
+	$key_base = 'RAID_NIGHT_';
+	$num2name = array(0=>'SUN', 1=>'MON', 2=>'TUE', 3=>'WED', 4=>'THU', 5=>'FRI', 6=>'SAT');
+	$names = array();
+	foreach ($numbers as $num)
+	{
+		$names[] = $key_base . $num2name[$num];
+	}
+	return $names;
+}
 function tm2time($tm) 
 {
 	extract($tm);
 	return mktime(
-		intval($tm_hour),
-		intval($tm_min),
-		intval($tm_sec),
-		intval($tm_mon)+1,
-		intval($tm_mday),
-		intval($tm_year)+1900);
+		(int) $tm_hour,
+		(int) $tm_min,
+		(int) $tm_sec,
+		((int) $tm_mon)+1,
+		(int) $tm_mday,
+		((int) $tm_year)+1900);
 }
 
 /**
@@ -192,6 +208,11 @@ class raider_armory
 			if ($raider->__status != 'NEW' && $raider->__status != 'UPDATED')
 			{
 				$raider->__status = 'NOT_IN_ARMORY';
+				$raider->__checked = true;
+			}
+			else 
+			{
+				$raider->__checked = false;
 			}
 		}
 		if (sizeof($this->newly_added)) 
@@ -246,7 +267,7 @@ class raider_db
 	function get_raider_list(&$raiders)
 	{
 		global $db, $error;
-		$sql = 'SELECT * FROM ' . RAIDER_TABLE . ' ORDER BY name, rank, level DESC';
+		$sql = 'SELECT * FROM ' . RAIDER_TABLE . ' ORDER BY rank, name, level DESC';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{

@@ -211,11 +211,11 @@ class acp_raidattendance {
 		$raider_db = new raider_db();
 		$rows = array();
 		$raider_db->get_raider_list($rows);
+		$this->merge_data($rows);
 		if ($resync) 
 		{
 			$this->resync($rows);
 		}
-		$this->merge_data($rows);
 		if ($save or $resync) 
 		{
 			$raider_db->save_raider_list($rows);
@@ -226,10 +226,7 @@ class acp_raidattendance {
 		}
 		$rowno = 0;
 		$users = $this->get_user_list();
-		$names = array_keys($rows);
-		sort($names);
-		foreach ($names as $name) {
-			$raider = $rows[$name];
+		foreach ($rows as $name => $raider) {
 			$template->assign_block_vars('raiders', array(
 				'ROWNO'				=> $rowno+1,
 				'ID'				=> $raider->id,
@@ -266,7 +263,11 @@ class acp_raidattendance {
 			'S_SUCCESS'			=> (sizeof($success)) ? true : false,
 			'SUCCESS_MSG'		=> implode('<br/>', $success),
 
-			'U_ACTION'			=> $this->u_action)
+			'U_ACTION'			=> $this->u_action,
+			'OPTIONS_NEW_RANK'	=> $this->get_rank_options(),
+			'OPTIONS_NEW_CLASS'	=> $this->get_class_options(),
+			'OPTIONS_NEW_USER'	=> $this->get_user_options($users, ''),
+		)
 		);
 	}
 	function resync(&$old_rows)
@@ -279,6 +280,30 @@ class acp_raidattendance {
 
 		$extractor = new raider_armory();
 		$extractor->get_raider_list($armory, $realm, $guild, get_raider_ranks(), $min_level, $old_rows);
+	}
+	function get_class_options()
+	{
+		global $user;
+		$s = '';
+		for ($i = 0; $i <= 11; ++$i)
+		{
+			$class_name = $user->lang['CLASS_' . $i];
+			if ($class_name)
+			{
+				$s .= '<option value="' . $i . '">' . $class_name . '</option>';
+			}
+		}
+		return $s;
+	}
+	function get_rank_options()
+	{
+		global $user;
+		$s = '';
+		for ($i = 0; $i <= 6; ++$i)
+		{
+			$s .= '<option value="' . $i . '">' . $user->lang['RANK_' . $i] . '</option>';
+		}
+		return $s;
 	}
 	function get_user_options($users, $raider_name, $user_id = 0)
 	{
@@ -318,6 +343,7 @@ class acp_raidattendance {
 	 **/
 	function merge_data(&$rows) 
 	{
+		global $error;
 		$user_ids = array();
 		$checked = array();
 		if (isset($_POST['user_id'])) 
@@ -327,6 +353,19 @@ class acp_raidattendance {
 		if (isset($_POST['checked'])) 
 		{
 			$checked = $_POST['checked'];
+		}
+		$new_raider = null;
+		if (isset($_POST['new_name']) and is_string($_POST['new_name']) and strlen($_POST['new_name']) > 0)
+		{
+			$row = array(
+				'name' => $_POST['new_name'],
+				'level' => $_POST['new_level'],
+				'rank' => $_POST['new_rank'],
+				'class' => $_POST['new_class'],
+				'user_id' => $_POST['new_user_id'],
+			);
+			// TODO verify input!
+			$new_raider = new raider($row);
 		}
 		foreach ($rows as $raider)
 		{
@@ -343,6 +382,15 @@ class acp_raidattendance {
 			{
 				$raider->set_checked(false);
 			}
+			if ($new_raider and $name == $new_raider->name)
+			{
+				$error[] = sprintf($user->lang['RAIDER_ALREADY_EXISTS'], $name);
+				$new_raider = null;
+			}
+		}
+		if ($new_raider)
+		{
+			$rows[$new_raider->name] = $new_raider;
 		}
 	}
 }

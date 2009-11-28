@@ -80,6 +80,8 @@ $lang = array_merge($lang, array(
 		'STATUS_NOT_IN_ARMORY'		=> 'not in armory',
 		'STATUS_UPDATED'			=> 'updated',
 		'STATUS_NEW'				=> 'new',
+		'RAIDER_ALREADY_EXISTS'		=> 'A raider named %s already exists!',
+		'ADD_RAIDER'				=> 'Add raider',
 	)
 );
 ?>

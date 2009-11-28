@@ -25,10 +25,17 @@ Please check: http://code.google.com/p/raidattendance
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>0.0.2</target-version>
+		<target-version>0.0.4</target-version>
 	</installation>
 
 	<history>
+		<entry>
+			<date>2009-11-27</date>
+			<rev-version>0.0.4</rev-version>
+			<changelog lang="en">
+				<change>User control panel to permanently sign off from days.</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2009-11-20</date>
 			<rev-version>0.0.2</rev-version>

@@ -55,6 +55,11 @@ $lang = array_merge($lang, array(
 		'RANK_6'					=> 'Initiate',
 
 		'SAVE'						=> 'Save',
+
+		'SIGNON'					=> 'Sign on',
+		'SIGNOFF'					=> 'Sign off',
+		'NOSHOW'					=> "Raider didn't show",
+		'EMPTY'						=> 'Clear selection',
 	)
 );
 ?>

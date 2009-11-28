@@ -16,6 +16,7 @@ include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
 if (is_raidattendance_forum($forum_id)) 
 {
 	global $user, $auth;
+	$user->add_lang(array('mods/mod_raidattendance', 'mods/info_acp_raidattendance'));
 	$success = array();
 	$tstamp = isset($_POST['tstamp']) && $_POST['tstamp'] > 0 ? $_POST['tstamp'] : time();
 	$today = strftime('%Y%m%d', time());
@@ -39,15 +40,13 @@ if (is_raidattendance_forum($forum_id))
 			'DAY'			=> strftime('%A', $time),
 		));
 	}
-	sort($names);
 	$statusses = array(1=>'on', 2=>'off', 3=>'noshow', 0=>'future', -1=>'past');
-	foreach ($names as $name) {
-		$raider = $raiders[$name];
+	foreach ($raiders as $name => $raider) {
 		$template->assign_block_vars('raiders', array(
 			'ROWNO'				=> $rowno+1,
 			'ID'				=> $raider->id,
 			'NAME'				=> $raider->name,
-			'RANK'				=> $user->lang['RANK_' . $raider->rank],
+			'RANK'				=> $user->lang['RANK_' . $raider->rank] ? $user->lang['RANK_' . $raider->rank] : 'no lang',
 			'LEVEL'				=> $raider->level,
 			'CLASS'				=> $user->lang['CLASS_' . $raider->class],
 			'USER'				=> $raider->user_id,
@@ -63,6 +62,7 @@ if (is_raidattendance_forum($forum_id))
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
 				'STATUS'		=> $statusses[$status ? $status : ($future ? 0 : -1)],
+				'S_FUTURE'		=> $future ? '1' : '0',
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id) and $future ? true : false,
 				));
 		}
