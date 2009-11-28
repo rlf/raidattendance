@@ -37,6 +37,7 @@ function nav(tstamp)
 <table id="raid_table" name="raid_table">
 	<tr>
 		<th>Name</th>
+		<th>Rank</th>
 		<th><a href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
 		<!-- BEGIN raid_days -->
 		<th>{raid_days.DAY}<br/>{raid_days.DATE}</th>
@@ -45,14 +46,30 @@ function nav(tstamp)
 	</tr>
 	<!-- BEGIN raiders -->
 	<tr class="{raiders.ROW_CLASS}">
-		<td colspan="2" class="{raiders.CSS_CLASS}">{raiders.NAME}</td>
+		<td class="{raiders.CSS_CLASS}">{raiders.NAME}</td>
+		<td colspan="2">{raiders.RANK}</td>
 		<!-- BEGIN raids -->
 		<td class="{raids.STATUS}">
 			<!-- IF S_MODERATOR -->
-			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')">[+]</a><a href="javascript:go('-',{raiders.ID},'{raids.RAID}')"/>[-]</a><a href="javascript:go('!',{raiders.ID},'{raids.RAID}')"/>[!]</a><a href="javascript:go('x',{raiders.ID},'{raids.RAID}')"/>[x]</a>
+			<!-- IF raids.STATUS != 'on' and raids.S_FUTURE == 0 -->
+			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')"><img src="images/raidattendance_signon.png" alt="{L_SIGNON}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'off' -->
+			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')"><img src="images/raidattendance_signoff.png" alt="{L_SIGNOFF}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'noshow' and raids.S_FUTURE == 0 -->
+			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')"/><img src="images/raidattendance_noshow.png" alt="{L_NOSHOW}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'past' and raids.STATUS != 'future' -->
+			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')"><img src="images/raidattendance_empty.png" alt="{L_EMPTY}"/></a>
+			<!-- ENDIF -->
 			<!-- ELSE -->
 				<!-- IF raids.S_EDITABLE -->
-				<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')">[+]</a><a href="javascript:go('-',{raiders.ID},'{raids.RAID}')"/>[-]</a><a href="javascript:go('x',{raiders.ID},'{raids.RAID}')"/>[x]</a>
+				<!-- IF raids.STATUS == 'off' -->
+				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')"><img src="images/raidattendance_empty.png" alt="{L_EMPTY}"/></a>
+				<!-- ELSE -->
+				<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')"><img src="images/raidattendance_signoff.png" alt="{L_SIGNOFF}"/></a>
+				<!-- ENDIF -->
 				<!-- ENDIF -->
 			<!-- ENDIF -->
 		</td>

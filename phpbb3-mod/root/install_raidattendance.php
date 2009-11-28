@@ -241,10 +241,38 @@ $versions = array(
 				'PRIMARY_KEY'	=> 'id',
 				'KEYS'			=> array(
 					'rid_night'	=> array('UNIQUE', array('raider_id', 'night')),
+					'night'		=> array('INDEX', 'night'),
 				),
 			)),
 		),
 	), // end of 0.0.2
+	'0.0.4' => array(
+		'table_add' => array(
+			array('phpbb_raidattendance_user_config' => array(
+				'COLUMNS'		=> array(
+					'id'		=> array('UINT', NULL, 'auto_increment'),
+					'user_id'	=> array('UINT', 0),
+					'night'		=> array('TINT:4', 0),
+					'status'	=> array('TINT:4', 0),
+				),
+				'PRIMARY_KEY'	=> 'id',
+				'KEYS'			=> array(
+					'uniq'		=> array('UNIQUE', array('user_id', 'night')),
+				),
+			)
+			),
+		),
+		'module_add' => array(
+			array('ucp', 'UCP_MAIN',
+				array(
+					'module_basename'		=> 'raidattendance',
+					'module_langname'		=> 'UCP_RAIDATTENDANCE_CONFIG',
+					'module_mode'			=> 'config',
+					'module_auth'			=> 'acl_u_raidattendance',
+				),
+			),		
+		),
+	), // end of 0.0.4
 );
  
 // Include the UMIF Auto file and everything else will be handled automatically.

@@ -23,6 +23,9 @@
 .STATUS_NOT_IN_ARMORY {
 	color: red;
 }
+.new_raider {
+	background: #ffd0d0;
+}
 
 /**
  * Class Colors as taken from http://www.wowwiki.com/Class_colors
