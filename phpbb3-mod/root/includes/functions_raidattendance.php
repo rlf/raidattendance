@@ -90,6 +90,35 @@ function get_raiding_days($current_week)
 	}
 	return $raiding_days;
 }
+function get_raiding_day_name($raid)
+{
+	$tm = strptime($raid, '%Y%m%d');
+	$time = tm2time($tm);
+	$day_name = date('D', $time);
+	return $day_name;
+}
+/**
+ * Converts an array of 'YYYYMMDD' timestamps to an array of day-names 'MON', 'TUE' .. 'SUN'
+ **/
+function get_raiding_day_names($raiding_days)
+{
+	// On purpose we use date()
+	$day_names = array();
+	foreach ($raiding_days as $raid)
+	{
+		$day_name = get_raiding_day_name($raid);
+		if (array_search($day_name, $day_names) === FALSE)
+		{
+			$day_names[] = $day_name;
+		}
+		else
+		{
+			// Means we've already scanned a whole week.
+			break;
+		}
+	}
+	return $day_names;
+}
 function get_raiding_day_numbers()
 {
 	global $config;
@@ -105,33 +134,22 @@ function get_raiding_day_numbers()
 	}
 	return $days;
 }
-function get_raiding_day_keys($numbers = null)
+function get_raiding_day_key($day_of_week_number)
 {
-	if (!$numbers) 
-	{
-		$numbers = get_raiding_day_numbers();
-	}
-	$key_base = 'RAID_NIGHT_';
 	$num2name = array(0=>'SUN', 1=>'MON', 2=>'TUE', 3=>'WED', 4=>'THU', 5=>'FRI', 6=>'SAT');
-	$names = array();
-	foreach ($numbers as $num)
-	{
-		$names[] = $key_base . $num2name[$num];
-	}
-	return $names;
+	return $num2name[$day_of_week_number];
 }
 function tm2time($tm) 
 {
 	extract($tm);
 	return mktime(
-		(int) $tm_hour,
-		(int) $tm_min,
-		(int) $tm_sec,
-		((int) $tm_mon)+1,
-		(int) $tm_mday,
-		((int) $tm_year)+1900);
+		intval($tm_hour),
+		intval($tm_min),
+		intval($tm_sec),
+		intval($tm_mon)+1,
+		intval($tm_mday),
+		intval($tm_year)+1900);
 }
-
 /**
  * Takes a number and returns it as a string with 'st', 'nd', 'rd' 'th' etc.
  * added.
@@ -460,7 +478,57 @@ function get_attendance($nights)
 		}
 	}
 	$db->sql_freeresult($result);
+	add_static_attendance($attendance, $nights);
 	return $attendance;
+}
+function get_static_attendance($raids)
+{
+	global $db, $success;
+	$day_names = get_raiding_day_names($raids);
+	$in_night = "'" . implode("','", $day_names) . "'";
+	$sql = 'SELECT n.status status, r.name name, n.night FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND n.night IN (' . $in_night . ')';
+	$success[] = $sql;
+	$result = $db->sql_query($sql);
+	$raider_day_attendance = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		if (is_array($raider_day_attendance[$row['name']]))
+		{
+			$raider_day_attendance[$row['name']][$row['night']] = $row['status'];
+		}
+		else
+		{
+			$raider_day_attendance[$row['name']] = array($row['night'] => $row['status']);
+		}
+	}
+	$db->sql_freeresult($result);
+	ob_start();
+	print_r($raider_day_attendance);
+	$success[] = '<pre>' . ob_get_contents() . '</pre>';
+	ob_end_clean();
+	return $raider_day_attendance;
+}
+/**
+ * Adds the "static signoff" to the attendance array.
+ **/
+function add_static_attendance(&$attendance, $raids)
+{
+	$raider_day_attendance = get_static_attendance($raids);
+	foreach ($raider_day_attendance as $raider => $days)
+	{
+		if (!is_array($attendance[$raider]))
+		{
+			$attendance[$raider] = array();
+		}
+		foreach ($raids as $raid)
+		{
+			$day_name = get_raiding_day_name($raid);
+			if (!isset($attendance[$raider][$raid]) and array_key_exists($day_name, $days))
+			{
+				$attendance[$raider][$raid] = $days[$day_name];
+			}
+		}
+	}
 }
 // ---------------------------------------------------------------------------
 // Raider Class
