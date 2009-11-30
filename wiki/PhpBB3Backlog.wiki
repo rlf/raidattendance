@@ -2,15 +2,23 @@
 #labels Featured,Phase-QA
 #sidebar ToC
 
+<wiki:toc maxdepth="2"/>
+
+*Legend*
+||<font color="red">red</font>||Must be solved before next release||
+||<font color="black">black</font>||Should be solved before next release||
+||<font color="green">green</font>||Nice to have - can be a future release||
+
 = Backlog =
-  * general - better support for multiple ranks (currently hardcoded to 0-6)
+<font color="red">
+  * general - better support for multiple ranks (currently hardcoded to 0-6)</font>
   * forum_raidattendance - allow users to permanently signoff for specific days.
   * beutification - better icons for changing attendancy-status - part 2
   * raidattendance_history - change-history of signon status
-  * mcp_raidattendance - sync. raiders with armory + link forum-users
   * raidattendance - include a FAQ - possibly link to a wiki - or use the forum options.
+  * <font color="green">mcp_raidattendance - sync. raiders with armory + link forum-users
   * statistics - Show some overall statistics on raid-days
-  * statistics - Show some specific statistics on an individual per raider basis
+  * statistics - Show some specific statistics on an individual per raider basis</font>
 
 = Completed =
 
