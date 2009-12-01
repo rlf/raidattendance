@@ -1,4 +1,5 @@
 #summary Overall design of the WoW Addon
+#sidebar ToC
 
 = Libs and dependencies =
 
