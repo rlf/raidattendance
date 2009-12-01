@@ -15,18 +15,9 @@ This is the "product back log" for those who know about the Scrum way.
 
 == Product Back Log ==
 
-=== Addon ===
-The user/player should
-  * ... get a table of all raiders as rows, and attended raids as columns
-  * ... update the table manually to reflect the current raid-attendance of "now" (create a new column)
-  * ... change state of raiders who are not online to "signed off".
-  * ... see a column of "raid-attendance" as a percentage of recorded raid-nights.
-  * ... cancel a raid-night (delete a column, or just mark it?)
-  * ... be able to configure raid-days and raiding-time in addon-settings
-  * the addon must be able to do the "scan" automatically at the raid-time
-
-=== Client ===
-  * Will most likely not be neccesary, if we manage to integrate the addon and the php-mod correctly, it will become a simple upload/download task
+The product back log is divided into backlogs for each sub-project.
+  * [PhpBB3ModBacklog Backlog for the phpBB3 MOD]
+  * [WoWAddonBacklog Backlog for the WoW Addon]
 
 = References =
   * [http://www.wowace.com/addons/ace3/pages/]
