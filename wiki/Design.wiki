@@ -16,7 +16,7 @@ This is the "product back log" for those who know about the Scrum way.
 == Product Back Log ==
 
 The product back log is divided into backlogs for each sub-project.
-  * [PhpBB3ModBacklog Backlog for the phpBB3 MOD]
+  * [PhpBB3Backlog Backlog for the phpBB3 MOD]
   * [WoWAddonBacklog Backlog for the WoW Addon]
 
 = References =
