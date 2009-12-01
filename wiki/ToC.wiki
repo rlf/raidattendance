@@ -6,5 +6,7 @@
     * [PhpBB3Backlog Backlog]
     * [InstallingPhpBB3Mod Installing]
     * [FAQphpBB3 FAQ]
+  * WoW Addon
+    * [WoWAddonDesign Design]
   * FAQ
     * [FAQphpBB3 phpBB3 MOD]
