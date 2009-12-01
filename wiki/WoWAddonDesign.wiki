@@ -12,10 +12,7 @@ Design details
 
 == Settings ==
 
-  * Raid days (mon - sun) - which days do we raid (when should ppl be available)
-  * Raid time (19:45) - exact time
-  * Raider Guild Rank (0-?) - Which players should be accountable?
-  * Tryout Guild Rank (0-?) - Which players should be tracked as well?
+  * Should be snagged (downloaded) from the phpBB MOD page
 
 == Main Layout ==
 {{{
