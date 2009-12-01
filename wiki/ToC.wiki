@@ -8,5 +8,6 @@
     * [FAQphpBB3 FAQ]
   * WoW Addon
     * [WoWAddonDesign Design]
+    * [WowAddonBacklog Backlog]
   * FAQ
     * [FAQphpBB3 phpBB3 MOD]
