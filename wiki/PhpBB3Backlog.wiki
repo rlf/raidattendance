@@ -24,19 +24,19 @@
 
 = Completed =
 
-=== v0.0.4 - 28th of November 2009 - Icons and better sign[on|off] actions ===
+== v0.0.4 - 28th of November 2009 - Icons and better sign[on|off] actions ==
   * beutification - better icons for changing attendancy-status - part 1
   * forum_raidattendance - Uses icons and only relevant actions
   * forum_raidattendance - If no user_id is mapped to a raider, but the username matches the raider-name, the user can edit the raider signon status.
 
-=== v0.0.3 - 24th of November 2009 - Signon/signoff + pagination ===
+== v0.0.3 - 24th of November 2009 - Signon/signoff + pagination ==
   * forum_raidattendance - pagination - possible to step forward/back on weeks
   * forum_raidattendance - moderators can change sign-on status of raiders (signon/signoff/noshow)
     * change-history is updated (updated, but not viewable yet)
   * forum_raidattendance - users with valid raider-forum-user mapping can change status of self (only signon/signoff).
     * change-history is updated 
 
-=== v0.0.2 - 20th of November 2009 - Integration of raid-attendance in viewforum ===
+== v0.0.2 - 20th of November 2009 - Integration of raid-attendance in viewforum ==
   * acp_raidattendance - it's possible to install the mod in phpBB3 (ACP)
   * acp_raidattendance - install-wizard - it's possible to create table of raiders
     * possibly from armory? 
@@ -44,7 +44,7 @@
     * raiders in rows, 3 weeks of raid-nights with current week in center 
   * acp_raidattendance - link raider-name with forum-user
 
-=== v0.0.1 - 18th of November 2009 - Initial release comitted in svn/trunk ===
+== v0.0.1 - 18th of November 2009 - Initial release comitted in svn/trunk ==
   * acp_raidattendance - it's possible to edit and save settings:
     * raid-nights : The days we raid - e.g. 'mon,wed,thu'
     * guildname : The name of the guild - 'The Awakening'
