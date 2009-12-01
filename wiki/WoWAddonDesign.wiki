@@ -26,3 +26,7 @@ Design details
 | +-----------------------+---------+---------+-----------------+ |
 +-----------------------------------------------------------------+
 }}}
+
+= References =
+  * [http://www.wowace.com/addons/ace3/pages/]
+  * [http://www.wowace.com/addons/lib-st/]
