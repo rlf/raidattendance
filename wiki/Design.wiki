@@ -7,34 +7,7 @@ This project is divided into 3 smaller projects:
   # A Client - This will access the folder of the addon and sync. the addon database with a web-based-database.
   # A phpBB3 MOD - This will show the data from the database, and allow users to sign off.
 
-= Libs and dependencies =
 
-This addon may rely on the following libraries:
-  * Ace-3 lib [http://www.wowace.com/addons/ace3/pages/]
-  * lib-ScrollingTable (lib-st) [http://www.wowace.com/addons/lib-st/]
-
-= Details =
-
-Design details
-
-== Settings ==
-
-  * Raid days (mon - sun) - which days do we raid (when should ppl be available)
-  * Raid time (19:45) - exact time
-  * Raider Guild Rank (0-?) - Which players should be accountable?
-  * Tryout Guild Rank (0-?) - Which players should be tracked as well?
-
-== Main Layout ==
-{{{
-+---------------------[ RaidAttendance ]--------------------------+
-|                                                   [ Check Now ] |
-| +- Name ----------------+- 21/10 -+- 22/10 -+-----------------+ |
-| | Rapal                 |    G    |    Y    |                 | |
-| | Scathsolas            |    R    |    G    |                 | |
-| | Zee                   |    Y    |    Y    |                 | |
-| +-----------------------+---------+---------+-----------------+ |
-+-----------------------------------------------------------------+
-}}}
 
 = Development Plan =
 
