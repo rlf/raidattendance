@@ -1,4 +1,12 @@
 #summary Backlog of the WoW Addon
+#sidebar ToC
+
+<wiki:toc maxdepth="2"/>
+
+*Legend*
+||<font color="red">red</font>||Must be solved before next release||
+||<font color="black">black</font>||Should be solved before next release||
+||<font color="green">green</font>||Nice to have - can be a future release||
 
 === Backlog ===
 The user/player should
