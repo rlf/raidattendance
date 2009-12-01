@@ -13,6 +13,8 @@
 <font color="red">
   * general - better support for multiple ranks (currently hardcoded to 0-6)</font>
   * forum_raidattendance - allow users to permanently signoff for specific days.
+  * forum_raidattendance - add comment to signon/signoff
+  * forum_raidattendance - add thread/post when signing off
   * beutification - better icons for changing attendancy-status - part 2
   * raidattendance_history - change-history of signon status
   * raidattendance - include a FAQ - possibly link to a wiki - or use the forum options.
