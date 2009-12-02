@@ -23,3 +23,7 @@ Metanoias original post:
  ok story time over
  As you can gather what I'd be looking for is an addon that could do the job of my old  spreadsheet in game.
  If interested enjoy if not I think I might take a stab at this one myself as thinking  about how I'd do it was fun
+
+The project then consists of different smaller sub-projects:
+  * PhpBB3Mod - A MOD to the phpBB3 forum, which allows users to signon/signoff for raid nights.
+  * WoWAddon - An Addon for WoW - which integrates with the PhpBB3Mod to show who has signed off, and sync. who was actually online in game.
