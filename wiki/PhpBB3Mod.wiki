@@ -48,7 +48,6 @@ The mod will be divided into 3 parts as described below.
 
 = References =
 == Internal ==
-  * [PhpBB3ReleaseNotes]
   * [PhpBB3Backlog]
 == External ==
   * HTML entities used above : [http://www.danshort.com/HTMLentities/index.php?w=dingb]
