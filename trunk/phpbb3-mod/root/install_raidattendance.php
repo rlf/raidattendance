@@ -55,7 +55,6 @@ $version_config_name = 'raidattendance_version';
 
 $language_file = array('mods/info_acp_raidattendance', 'mods/mod_raidattendance');
 
- 
 /*
 * Options to display to the user (this is purely optional, if you do not need the options you do not have to set up this variable at all)
 * Uses the acp_board style of outputting information, with some extras (such as the 'default' and 'select_user' options)
@@ -69,25 +68,6 @@ $options = array(
 
 	'legend2'		=> 'FORUM_SETTINGS',
 	'forum_name'	=> array('lang' => 'FORUM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'Raid Availability'),
-
-	'legend3'		=> 'RAID_SETTINGS',
-	'raid_night_mon'=> array('lang' => 'RAID_NIGHT_MON',		'validate' => 'bool', 'type' => 'radio', 'explain' => false, 'default' => true),
-	'raid_night_tue'=> array('lang' => 'RAID_NIGHT_TUE',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-	'raid_night_wed'=> array('lang' => 'RAID_NIGHT_WED',		'validate' => 'bool', 'type' => 'radio', 'explain' => false, 'default' => true),
-	'raid_night_thu'=> array('lang' => 'RAID_NIGHT_THU',		'validate' => 'bool', 'type' => 'radio', 'explain' => false, 'default' => true),
-	'raid_night_fri'=> array('lang' => 'RAID_NIGHT_FRI',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-	'raid_night_sat'=> array('lang' => 'RAID_NIGHT_SAT',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-	'raid_night_sun'=> array('lang' => 'RAID_NIGHT_SUN',		'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-
-	'legend4'		=> 'RAIDER_RANKS',
-	'min_level'		=> array('lang' => 'MIN_LEVEL',				'validate' => 'int', 	'type' => 'text:2:2', 	'explain' => true, 'default' => '80'),
-	'raider_rank0'	=> array('lang' => 'RANK_0',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
-	'raider_rank1'	=> array('lang' => 'RANK_1',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false, 'default' => true),
-	'raider_rank2'	=> array('lang' => 'RANK_2',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false, 'default' => true),
-	'raider_rank3'	=> array('lang' => 'RANK_3',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false, 'default' => true),
-	'raider_rank4'	=> array('lang' => 'RANK_4',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
-	'raider_rank5'	=> array('lang' => 'RANK_5',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
-	'raider_rank6'	=> array('lang' => 'RANK_6',				'validate' => 'bool', 	'type' => 'radio', 	'explain' => false),
 );
 
  
@@ -110,9 +90,10 @@ $options = array(
 
 $versions = array(
 	// Version 0.0.1 - Initial version
-	'0.0.1'	=> array(
+	'1.0.0'	=> array(
 		// Lets add a config setting named test_enable and set it to true
 		'config_add' => array(
+			// v0.0.1
 			array('raidattendance_enable', true),
 			array('raidattendance_guild_name', request_var('guild', 'no guild given')),
 			array('raidattendance_realm_name', request_var('realm', 'no realm given')),
@@ -125,19 +106,50 @@ $versions = array(
 			array('raidattendance_raid_night_fri', request_var('raid_night_fri', false)),
 			array('raidattendance_raid_night_sat', request_var('raid_night_sat', false)),
 			array('raidattendance_raid_night_sun', request_var('raid_night_sun', false)),
+			// v0.0.2
+			array('raidattendance_min_level', request_var('min_level', 80)),
+			array('raidattendance_raider_rank0', request_var('rank0', false)),
+			array('raidattendance_raider_rank1', request_var('rank1', true)),
+			array('raidattendance_raider_rank2', request_var('rank2', false)),
+			array('raidattendance_raider_rank3', request_var('rank3', true)),
+			array('raidattendance_raider_rank4', request_var('rank4', false)),
+			array('raidattendance_raider_rank5', request_var('rank5', false)),
+			array('raidattendance_raider_rank6', request_var('rank6', true)),
+			array('raidattendance_raider_rank7', request_var('rank7', false)),
+			array('raidattendance_raider_rank8', request_var('rank8', false)),
+			array('raidattendance_raider_rank9', request_var('rank9', false)),
+			// v0.0.4
+			array('raidattendance_raider_rank0_name', request_var('rank0_name', 'Guild Leader')),
+			array('raidattendance_raider_rank1_name', request_var('rank1_name', 'Rank 1')),
+			array('raidattendance_raider_rank2_name', request_var('rank2_name', 'Rank 2')),
+			array('raidattendance_raider_rank3_name', request_var('rank3_name', 'Rank 3')),
+			array('raidattendance_raider_rank4_name', request_var('rank4_name', 'Rank 4')),
+			array('raidattendance_raider_rank5_name', request_var('rank5_name', 'Rank 5')),
+			array('raidattendance_raider_rank6_name', request_var('rank6_name', 'Rank 6')),
+			array('raidattendance_raider_rank7_name', request_var('rank7_name', 'Rank 7')),
+			array('raidattendance_raider_rank8_name', request_var('rank8_name', 'Rank 8')),
+			array('raidattendance_raider_rank9_name', request_var('rank9_name', 'Rank 9')),
 		),
 
 		// Now to add some permission settings
 
 		'permission_add' => array(
 			array('a_raidattendance', true),
+			array('m_raidattendance', true),
+			array('u_raidattendance', true),
 		),
 
 
 		// How about we give some default permissions then as well?
 		'permission_set' => array(
 			// Global Role permissions
-			array('ROLE_ADMIN_FULL', 'a_raidattendance'),
+			array('ROLE_ADMIN_FULL', 		'a_raidattendance'),
+			array('ROLE_ADMIN_STANDARD', 	'a_raidattendance'),
+			array('ROLE_ADMIN_FULL', 		'm_raidattendance'),
+			array('ROLE_MOD_FULL', 			'm_raidattendance'),
+			array('ROLE_MOD_STANDARD', 		'm_raidattendance'),
+
+			array('ROLE_FORUM_FULL', 		'u_raidattendance'),
 		),
 
 		// Alright, now lets add some modules to the ACP
@@ -161,40 +173,6 @@ $versions = array(
 					'module_mode'                => 'sync',
 					'module_auth'                => 'acl_a_raidattendance',
 				), 
-			),
-		),
-	), // end of 0.0.1	
-	'0.0.2' => array(
-		'config_add' => array(
-			array('raidattendance_min_level', request_var('min_level', 80)),
-			array('raidattendance_raider_rank0', request_var('raider_rank1', false)),
-			array('raidattendance_raider_rank1', request_var('raider_rank1', true)),
-			array('raidattendance_raider_rank2', request_var('raider_rank2', false)),
-			array('raidattendance_raider_rank3', request_var('raider_rank3', true)),
-			array('raidattendance_raider_rank4', request_var('raider_rank4', false)),
-			array('raidattendance_raider_rank5', request_var('raider_rank5', false)),
-			array('raidattendance_raider_rank6', request_var('raider_rank6', true)),
-		),
-		'permission_add' => array(
-			array('m_raidattendance', true),
-			array('u_raidattendance', true),
-		),
-		'permission_set' => array(
-			array('ROLE_ADMIN_FULL', 	'm_raidattendance'),
-			array('ROLE_MOD_FULL', 		'm_raidattendance'),
-			array('ROLE_MOD_STANDARD', 	'm_raidattendance'),
-
-			array('ROLE_FORUM_FULL', 	'u_raidattendance'),
-		),		
-		'module_add' => array(
-			array('mcp', 0, 'MCP_RAIDATTENDANCE'),
-			array('mcp', 'MCP_RAIDATTENDANCE',
-				array(
-					'module_basename'		=> 'raidattendance',
-					'module_langname'		=> 'MCP_RAIDATTENDANCE_VIEW',
-					'module_mode'			=> 'view',
-					'module_auth'			=> 'acl_u_raidattendance',
-				),
 			),
 		),
 		'table_add' => array(
@@ -245,34 +223,7 @@ $versions = array(
 				),
 			)),
 		),
-	), // end of 0.0.2
-	'0.0.4' => array(
-		'table_add' => array(
-			array('phpbb_raidattendance_user_config' => array(
-				'COLUMNS'		=> array(
-					'id'		=> array('UINT', NULL, 'auto_increment'),
-					'user_id'	=> array('UINT', 0),
-					'night'		=> array('TINT:4', 0),
-					'status'	=> array('TINT:4', 0),
-				),
-				'PRIMARY_KEY'	=> 'id',
-				'KEYS'			=> array(
-					'uniq'		=> array('UNIQUE', array('user_id', 'night')),
-				),
-			)
-			),
-		),
-		'module_add' => array(
-			array('ucp', 'UCP_MAIN',
-				array(
-					'module_basename'		=> 'raidattendance',
-					'module_langname'		=> 'UCP_RAIDATTENDANCE_CONFIG',
-					'module_mode'			=> 'config',
-					'module_auth'			=> 'acl_u_raidattendance',
-				),
-			),		
-		),
-	), // end of 0.0.4
+	), // end of 1.0.0
 );
  
 // Include the UMIF Auto file and everything else will be handled automatically.

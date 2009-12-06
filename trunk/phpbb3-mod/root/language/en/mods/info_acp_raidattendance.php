@@ -75,6 +75,7 @@ $lang = array_merge($lang, array(
 		'SUCCESS_ADDING_RAIDER'		=> '%1$s was successfully saved to the database.',
 		'SUCCESS_UPDATING_RAIDER'	=> '%1$s was successfully updated in the database.',
 		'SUCCESS'					=> 'Success',
+		'WARNING'					=> 'Warning',
 		'ADDED_RAIDERS'				=> '%s was successfully added to the raider-list',
 		'NO_NEW_RAIDERS_IN_ARMORY'	=> 'There were no new raiders in the armory',
 		'STATUS_NOT_IN_ARMORY'		=> 'not in armory',
