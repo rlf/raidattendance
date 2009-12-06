@@ -31,6 +31,13 @@ Please check: http://code.google.com/p/raidattendance
 	<history>
 		<entry>
 			<date>2009-12-06</date>
+			<rev-version>1.0.1</rev-version>
+			<changelog lang="en">
+				<change>Minor authentication bugfix and new icons from Yorrick.
+			</changelog>
+		</entry>
+		<entry>
+			<date>2009-12-06</date>
 			<rev-version>1.0.0</rev-version>
 			<changelog lang="en">
 				<change>First Official Release.
