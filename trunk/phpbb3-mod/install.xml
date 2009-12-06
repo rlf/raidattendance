@@ -30,31 +30,23 @@ Please check: http://code.google.com/p/raidattendance
 
 	<history>
 		<entry>
-			<date>2009-11-27</date>
-			<rev-version>0.0.4</rev-version>
+			<date>2009-12-06</date>
+			<rev-version>1.0.0</rev-version>
 			<changelog lang="en">
-				<change>User control panel to permanently sign off from days.</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2009-11-20</date>
-			<rev-version>0.0.2</rev-version>
-			<changelog lang="en">
-				<change>Sync with wowarmory</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2009-11-19</date>
-			<rev-version>0.0.1</rev-version>
-			<changelog lang="en">
-				<change>Sync with wowarmory</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2009-11-18</date>
-			<rev-version>0.0.0</rev-version>
-			<changelog lang="en">
-				<change>Initial Public Preview Release</change>
+				<change>First Official Release.
+					Supports:
+					ADMIN:
+					* UMIL + AutoMOD for installing the MOD.
+					* Configuration of rank-names, rank-status, raider-level etc.
+					* Automatical sync with armory.
+					* Manually adding raider
+					* Deleting raiders
+					USERS:
+					* Signing off from raids in the future.
+					* Permanently signing off from specific raiding days.
+					MODERATORS:
+					* Signing off on behalf of raiders.
+					* Recording raiders attendance on raids already completed.</change>
 			</changelog>
 		</entry>
 	</history>
@@ -87,6 +79,6 @@ include($phpbb_root_path . 'view_raidattendance.' . $phpEx);
 			</action>
 		</edit>
 	</open>
-	<diy-instructions lang="en-gb">Go to the following page install_raidattendance.php</diy-instructions>
+	<diy-instructions lang="en-gb">Go to the following page install_raidattendance.php, and once completed configure the MOD under FORUMS &gt; RAIDATTENDANCE &gt; CONFIGURATION</diy-instructions>
 </action-group>
 </mod>
