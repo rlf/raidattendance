@@ -1,0 +1,159 @@
+/*  RaidAttendance Stylesheet
+    --------------------------------------------------------------
+*/
+
+.even {
+	/*background: #c0c0ff;*/
+}
+.uneven {
+	/*background: #d0d0ff;*/
+}
+.on {
+	background: green;
+}
+.off {
+	background: yellow;
+}
+.noshow {
+	background: red;
+}
+.future {
+	background: #5050ff;
+	filter: alpha(opacity=30);
+	opacity: 0.3;
+}
+.past {
+	background: #ff5050;
+	filter: alpha(opacity=30);
+	opacity: 0.3;
+}
+.future a {
+	filter: alpha(opacity=100);
+	opacity: 1.0;
+}
+.past a {
+	filter: alpha(opacity=100);
+	opacity: 1.0;
+}
+#raid_table tr td a, #raid_table tr td a:visited, #raid_table tr td a:link, #raid_table tr td a:active {
+	text-decoration: none;
+	font-weight: bold;
+	color: #777777;
+}
+#raid_table tr td a.off, #raid_table tr td a:visited.signoff, #raid_table tr td a:link.off, #raid_table tr td a:active.off {
+	color: yellow;
+	background: none;
+}
+#raid_table tr td a:hover {
+	text-decoration: underline;
+	font-weight: bold;
+	color: #777777;
+}
+
+/**
+ * Status Boxes
+ **/
+.successbox, .errorbox {
+	padding: 8px;
+	margin: 10px 0;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.success {
+	color: #228822;
+}
+
+.error {
+	color: #BC2A4D;
+}
+
+.successbox {
+	background-color: #228822;
+}
+
+.errorbox {
+	background-color: #BC2A4D;
+}
+
+* html .errorbox, * html .successbox { height: 1%; } /* Pixel shift fix for IE */
+
+.successbox h3, .errorbox h3 {
+	color: #FFFFFF;
+	margin: 0 0 0.5em;
+	font-size: 1.10em;
+	font-family: "Lucida Grande",Verdana,Helvetica,Arial,sans-serif;
+}
+
+.successbox p, .errorbox p {
+	color: #FFFFFF;
+	font-size: 0.85em;
+	margin-bottom: 0;
+}
+
+.errorbox a:link, .errorbox a:active, .errorbox a:visited,
+.successbox a:link, .successbox a:active, .successbox a:visited {
+	color: #DBD7D1;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.errorbox a:hover, .successbox a:hover {
+	color: #FFFFFF;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+/**
+ * Class Colors as taken from http://www.wowwiki.com/Class_colors
+ **/
+/* Warrior */
+.class_1 {
+	color: #C79C6E;
+	font-weight: bold;
+}
+/* Paladin */
+.class_2 {
+	color: #F58CBA;
+	font-weight: bold;
+}
+/* Hunter */
+.class_3 {
+	color: #ABD473;
+	font-weight: bold;
+}
+/* Rogue */
+.class_4 {
+	color: #FFF569;
+	font-weight: bold;
+}
+/* Priest */
+.class_5 {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+/* Death Knight */
+.class_6 {
+	color: #C41F3B;
+	font-weight: bold;
+}
+/* Shaman */
+.class_7 {
+	color: #2459FF;
+	font-weight: bold;
+}
+/* Mage */
+.class_8 {
+	color: #69CCF0;
+	font-weight: bold;
+}
+/* Warlock */
+.class_9 {
+	color: #9482C9;
+	font-weight: bold;
+}
+/* Druid */
+.class_11 {
+	color: #FF7D0A;
+	font-weight: bold;
+}

@@ -1,0 +1,72 @@
+<!-- INCLUDE overall_header.html -->
+<a name="maincontent"></a>
+
+<LINK REL="StyleSheet" HREF="style/raidattendance.css" TYPE="text/css"/>
+<h1>{L_TITLE}</h1>
+
+<p>{L_TITLE_EXPLAIN}</p>
+
+<!-- IF S_ERROR -->
+<div class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF S_SUCCESS -->
+<div class="successbox">
+	<h3>{L_SUCCESS}</h3>
+	<p>{SUCCESS_MSG}</p>
+</div>
+<!-- ENDIF -->
+<form id="acp_ban" method="post" action="{U_ACTION}">
+
+<table class="raiders">
+	<thead>
+		<tr>
+			<th colspan="2">&nbsp;</th>
+			<th>{L_RAIDERS}</th>
+			<th>{L_LEVEL}</th>
+			<th>{L_RANK}</th>
+			<th>{L_CLASS}</th>
+			<th>{L_FORUM_USER}</th>
+		</tr>
+	</thead>
+	<tbody>
+<!-- BEGIN raiders -->
+<tr class="{raiders.ROW_CLASS}">
+	<td class="small">#{raiders.ROWNO}</td>
+	<td class="mini"><input type="checkbox" name="checked[{raiders.ID}]" id="checked[{raiders.ID}]"{raiders.CHECKED}/></td>
+	<td class="{raiders.CSS_CLASS}">{raiders.STATUS}{raiders.NAME}</td>
+	<td>{raiders.LEVEL}</td>
+	<td>{raiders.RANK}</td>
+	<td>{raiders.CLASS}</td>
+	<td><select name="user_id[{raiders.ID}]" width="100%">{raiders.USER_OPTIONS}</select></td>
+</tr>
+<!-- END raiders -->
+<tr class="new_raider">
+	<td colspan="2">{L_ADD_RAIDER}</td>
+	<td><input id="new_name" name="new_name" size="35" maxlength="255" type="text" value=""/></td>
+	<td><input id="new_level" name="new_level" size="2" maxlength="2" type="text" value="80"/></td>
+	<td><select id="new_rank" name="new_rank">{OPTIONS_NEW_RANK}</select></td>
+	<td><select id="new_class" name="new_class">{OPTIONS_NEW_CLASS}</select></td>
+	<td><select id="new_user_id" name="new_user_id">{OPTIONS_NEW_USER}</select></td>
+</tr>
+<!-- IF S_AUTH -->
+	<!-- BEGIN auth_tpl -->
+		{auth_tpl.TPL}
+	<!-- END auth_tpl -->
+<!-- ENDIF -->
+</tbody>
+</table>
+
+<p class="submit-buttons">
+	<input class="button1" type="submit" id="delete" name="delete" value="{L_DELETE_SELECTED}" />&nbsp;
+	<input class="button1" type="submit" id="resync" name="resync" value="{L_RESYNC}" />&nbsp;
+	<input class="button1" type="submit" id="save" name="save" value="{L_SAVE}" />&nbsp;
+</p>
+{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->
+
