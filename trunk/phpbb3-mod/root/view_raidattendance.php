@@ -60,6 +60,7 @@ if (is_raidattendance_forum($forum_id))
 			'ROW_CLASS'			=> $rowno % 2 == 0 ? 'even' : 'uneven',
 			'CHECKED'			=> $raider->is_checked() ? ' checked' : '',
 			'CSS_CLASS'			=> 'class_' . $raider->class,
+			'S_EDITABLE'		=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)),
 		));
 		foreach ($day_names as $day)
 		{
