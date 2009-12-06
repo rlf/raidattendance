@@ -57,13 +57,16 @@ class acp_raidattendance {
 
 				'legend4'		=> 'RAIDER_RANKS',
 				'raidattendance_min_level'		=> array('lang' => 'MIN_LEVEL',	'validate' => 'int', 'type' => 'text:2:2', 'explain' => true),
-				'raidattendance_raider_rank0'	=> array('lang' => 'RANK_0',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raider_rank1'	=> array('lang' => 'RANK_1',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raider_rank2'	=> array('lang' => 'RANK_2',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raider_rank3'	=> array('lang' => 'RANK_3',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raider_rank4'	=> array('lang' => 'RANK_4',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raider_rank5'	=> array('lang' => 'RANK_5',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raider_rank6'	=> array('lang' => 'RANK_6',	'validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'raidattendance_raider_rank0'	=> array('lang' => 'RANK_0',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank1'	=> array('lang' => 'RANK_1',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank2'	=> array('lang' => 'RANK_2',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank3'	=> array('lang' => 'RANK_3',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank4'	=> array('lang' => 'RANK_4',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank5'	=> array('lang' => 'RANK_5',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank6'	=> array('lang' => 'RANK_6',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank7'	=> array('lang' => 'RANK_7',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank8'	=> array('lang' => 'RANK_8',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
+				'raidattendance_raider_rank9'	=> array('lang' => 'RANK_9',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
 			)
 		);
 		$this->saveConfig($display_vars);
@@ -107,6 +110,7 @@ class acp_raidattendance {
 		}
 
 		// We go through the display_vars to make sure no one is trying to set variables he/she is not allowed to...
+		// Add the "names"...
 		foreach ($display_vars['vars'] as $config_name => $null)
 		{
 			if (!isset($cfg_array[$config_name]) || strpos($config_name, 'legend') !== false)
@@ -125,7 +129,17 @@ class acp_raidattendance {
 			{
 				set_config($config_name, $config_value);
 			}
-		}		
+		}
+		// Set the names
+		if ($submit) 
+		{		
+			for ($ix = 0; $ix < 10; ++$ix) 
+			{
+				$config_name = 'raidattendance_raider_rank' . $ix . '_name';
+				$config_value = $cfg_array[$config_name];
+				set_config($config_name, $config_value);
+			}
+		}
 
 		if ($submit)
 		{
@@ -201,7 +215,7 @@ class acp_raidattendance {
 	// ------------------------------------------------------------------------
 	function showSync($id, $mode)
 	{
-		global $db, $user, $auth, $template;
+		global $db, $user, $auth, $template, $config;
 		global $error, $success;
 		$this->tpl_name = 'acp_raidattendance_sync';
 		$resync	= (isset($_POST['resync'])) ? true : false;
@@ -231,7 +245,7 @@ class acp_raidattendance {
 				'ROWNO'				=> $rowno+1,
 				'ID'				=> $raider->id,
 				'NAME'				=> $raider->name,
-				'RANK'				=> $user->lang['RANK_' . $raider->rank],
+				'RANK'				=> $raider->get_rank_name(),
 				'LEVEL'				=> $raider->level,
 				'CLASS'				=> $user->lang['CLASS_' . $raider->class],
 				'USER'				=> $raider->user_id,
@@ -394,4 +408,22 @@ class acp_raidattendance {
 		}
 	}
 }
+function raider_rank($default, $key)
+{
+	global $user, $config;
+	$rank_name = $config[$key . '_name'];
+	$checked = $config[$key] ? true : false;
+
+	$name = 'config[' . $key . ']';
+	$name_yes	= ($checked) ? ' checked="checked"' : '';
+	$name_no	= (!$checked) ? ' checked="checked"' : '';
+
+	$tpl_no = '<label><input type="radio" name="' . $name . '" value="0"' . $name_no . ' class="radio" /> ' . $user->lang['NO'] . '</label>';
+	$tpl_yes = '<label><input type="radio" id="' . $name . '" name="' . $name . '" value="1"' . $name_yes . ' class="radio" /> ' . $user->lang['YES'] . '</label>';
+
+	return '<input id="config[' . $key . '_name]" name="config[' . $key . '_name]" type="text" value="' . $rank_name . '"/>' .
+		'&nbsp;' . $user->lang['IS_RAIDER'] . '&nbsp;' .
+		$tpl_yes . $tpl_no;
+}
+
 ?>

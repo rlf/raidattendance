@@ -47,12 +47,15 @@ $lang = array_merge($lang, array(
 		'CLASS_11'					=> 'Druid',
 
 		'RANK_0'					=> 'Guild Leader',
-		'RANK_1'					=> 'Officer',
-		'RANK_2'					=> 'Officer Alt',
-		'RANK_3'					=> 'Raider',
-		'RANK_4'					=> 'Member',
-		'RANK_5'					=> 'Member Alt',
-		'RANK_6'					=> 'Initiate',
+		'RANK_1'					=> 'Rank 1',
+		'RANK_2'					=> 'Rank 2',
+		'RANK_3'					=> 'Rank 3',
+		'RANK_4'					=> 'Rank 4',
+		'RANK_5'					=> 'Rank 5',
+		'RANK_6'					=> 'Rank 6',
+		'RANK_7'					=> 'Rank 7',
+		'RANK_8'					=> 'Rank 8',
+		'RANK_9'					=> 'Rank 9',
 
 		'SAVE'						=> 'Save',
 
@@ -60,6 +63,18 @@ $lang = array_merge($lang, array(
 		'SIGNOFF'					=> 'Sign off',
 		'NOSHOW'					=> "Raider didn't show",
 		'EMPTY'						=> 'Clear selection',
+		'IS_RAIDER'					=> 'Expected to raid?',
+
+		'DAY_MONTH'					=> '%1$s of %2$s', // 1st of November
+		'DAY_NUMBER1'				=> '%dst', // 1st, 21st, 31st ...
+		'DAY_NUMBER2'				=> '%dnd', // 2nd, 22nd, 32nd ...
+		'DAY_NUMBER3'				=> '%drd', // 3rd, 23rd, 33rd ... 
+		'DAY_NUMBER_OTHER'			=> '%dth', // 4th .. 19th, 24th-30th, etc.
+
+		'STATUS_CHANGE_ON'			=> '%1$s marked %2$s as being online for raid %3$s',
+		'STATUS_CHANGE_OFF'			=> '%1$s signed off for %2$s from raid %3$s',
+		'STATUS_CHANGE_CLEAR'		=> '%1$s cleared status for %2$s on raid %3$s',
+		'STATUS_CHANGE_NOSHOW'		=> '%1$s marked %2$s as being AWOL from raid %3$s',
 	)
 );
 ?>

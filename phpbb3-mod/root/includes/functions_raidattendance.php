@@ -156,19 +156,20 @@ function tm2time($tm)
  **/
 function post_num($num)
 {
+	global $user;
 	if ($num == 1 or ($num >= 20 and (($num % 10) == 1)))
 	{
-		return $num . 'st';
+		return sprintf($user->lang['DAY_NUMBER1'], $num);
 	}
 	else if ($num == 2 or ($num >= 20 and (($num % 10 == 2)))) 
 	{
-		return $num . 'nd';
+		return sprintf($user->lang['DAY_NUMBER2'], $num);
 	}
 	else if ($num == 3 or ($num >= 20 and (($num % 10 == 3))))
 	{
-		return $num . 'rd';
+		return sprintf($user->lang['DAY_NUMBER3'], $num);
 	}
-	return $num . 'th';
+	return sprintf($user->lang['DAY_NUMBER_OTHER'], $num);
 }
 function get_raider_with_id($raiders, $id)
 {
@@ -478,16 +479,18 @@ function get_attendance($nights)
 		}
 	}
 	$db->sql_freeresult($result);
-	add_static_attendance($attendance, $nights);
 	return $attendance;
 }
 function get_static_attendance($raids)
 {
-	global $db, $success;
 	$day_names = get_raiding_day_names($raids);
+	return get_static_attendance_days($day_names);
+}
+function get_static_attendance_days($day_names)
+{
+	global $db, $success;
 	$in_night = "'" . implode("','", $day_names) . "'";
 	$sql = 'SELECT n.status status, r.name name, n.night FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND n.night IN (' . $in_night . ')';
-	$success[] = $sql;
 	$result = $db->sql_query($sql);
 	$raider_day_attendance = array();
 	while ($row = $db->sql_fetchrow($result))
@@ -502,18 +505,13 @@ function get_static_attendance($raids)
 		}
 	}
 	$db->sql_freeresult($result);
-	ob_start();
-	print_r($raider_day_attendance);
-	$success[] = '<pre>' . ob_get_contents() . '</pre>';
-	ob_end_clean();
 	return $raider_day_attendance;
 }
 /**
- * Adds the "static signoff" to the attendance array.
+ * Merges the two attendance arrays.
  **/
-function add_static_attendance(&$attendance, $raids)
+function add_static_attendance($raids, &$attendance, $raider_day_attendance)
 {
-	$raider_day_attendance = get_static_attendance($raids);
 	foreach ($raider_day_attendance as $raider => $days)
 	{
 		if (!is_array($attendance[$raider]))
@@ -585,6 +583,16 @@ class raider
 	function set_checked($b)
 	{
 		$this->__checked = $b;
+	}
+	function get_rank_name()
+	{
+		global $config, $user;
+		$rank_name = $config['raidattendance_raider_rank' . $this->rank . '_name'];
+		if (!$rank_name) 
+		{
+			$rank_name = $user->lang['RANK_' . $raider->rank];
+		}
+		return $rank_name;
 	}
 	function update($row)
 	{
