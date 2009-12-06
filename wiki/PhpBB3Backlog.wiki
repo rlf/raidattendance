@@ -11,8 +11,6 @@
 
 = Backlog =
 <font color="red">
-  * general - better support for multiple ranks (currently hardcoded to 0-6)
-  * forum_raidattendance - allow users to permanently signoff for specific days.
   * forum_raidattendance - add comment to signon/signoff
   * forum_raidattendance - add thread/post when signing off</font>
   * beutification - better icons for changing attendancy-status - part 2
@@ -23,6 +21,14 @@
   * statistics - Show some specific statistics on an individual per raider basis</font>
 
 = Completed =
+
+== v1.0.1 - 6th of December 2009 - Multiple ranks and permanent signoff ==
+  * bugfix - users can now only signoff for them selves permanently.
+  * improvement - better icons (Yorrick rulez).
+
+== v1.0.0 - 6th of December 2009 - Multiple ranks and permanent signoff ==
+  * general - better support for multiple ranks 0-9 + naming of these.
+  * forum_raidattendance - allow users to permanently signoff for specific days.
 
 == v0.0.4 - 28th of November 2009 - Icons and better sign[on|off] actions ==
   * beutification - better icons for changing attendancy-status - part 1
