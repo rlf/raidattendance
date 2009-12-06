@@ -47,6 +47,7 @@ function nav(tstamp)
 	<!-- BEGIN raiders -->
 	<tr class="{raiders.ROW_CLASS}">
 		<td class="{raiders.CSS_CLASS}">{raiders.NAME}<br/>
+		<!-- IF S_MODERATOR or raiders.S_EDITABLE -->
 		<!-- BEGIN days -->
 			<!-- IF days.STATUS == 'unset' -->
 			<a class="{days.STATUS}" href="javascript:go('-', {raiders.ID}, '{days.DAY_KEY}')">{days.DAY}</a>
@@ -54,29 +55,33 @@ function nav(tstamp)
 			<a class="{days.STATUS}" href="javascript:go('x', {raiders.ID}, '{days.DAY_KEY}')">{days.DAY}</a>
 			<!-- ENDIF -->
 		<!-- END -->
+		<!-- ENDIF -->
 		</td>
 		<td colspan="2">{raiders.RANK}</td>
 		<!-- BEGIN raids -->
 		<td class="{raids.STATUS}">
+			<!-- IF raids.STATUS != 'future' and raids.STATUS != 'past' -->
+			<img src="images/{raids.STATUS}_active.png"/>
+			<!-- ENDIF -->
 			<!-- IF S_MODERATOR -->
 			<!-- IF raids.STATUS != 'on' and raids.S_FUTURE == 0 -->
-			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/raidattendance_signon.png" alt="{L_SIGNON}"/></a>
+			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on_inactive.png" alt="{L_SIGNON}"/></a>
 			<!-- ENDIF raids.STATUS != on -->
 			<!-- IF raids.STATUS != 'off' -->
-			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/raidattendance_signoff.png" alt="{L_SIGNOFF}"/></a>
+			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}"/></a>
 			<!-- ENDIF raids.STATUS != off -->
 			<!-- IF raids.STATUS != 'noshow' and raids.S_FUTURE == 0 -->
-			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')" alt="{L_NOSHOW}"><img src="images/raidattendance_noshow.png" alt="{L_NOSHOW}"/></a>
+			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')" alt="{L_NOSHOW}"><img src="images/noshow_inactive.png" alt="{L_NOSHOW}"/></a>
 			<!-- ENDIF raids.STATUS != noshow -->
 			<!-- IF raids.STATUS != 'past' and raids.STATUS != 'future' and raids.S_STATIC != 1 -->
-			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/raidattendance_empty.png" alt="{L_EMPTY}"/></a>
+			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}"/></a>
 			<!-- ENDIF -->
 			<!-- ELSE S_MODERATOR -->
 				<!-- IF raids.S_EDITABLE and raids.S_STATIC != 1 -->
 				<!-- IF raids.STATUS == 'off' -->
-				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/raidattendance_empty.png" alt="{L_EMPTY}"/></a>
+				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}"/></a>
 				<!-- ELSE -->
-				<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/raidattendance_signoff.png" alt="{L_SIGNOFF}"/></a>
+				<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}"/></a>
 				<!-- ENDIF -->
 				<!-- ENDIF -->
 			<!-- ENDIF S_MODERATOR -->
