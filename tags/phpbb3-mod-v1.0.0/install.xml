@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<!-- RaidAttendance by the Hippie Eradicators. Copyright 2008.
+Please check: http://code.google.com/p/raidattendance
+ $Id: install.xml 190 2009-11-08 17:10:54Z exreaction $ -->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
+<header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en">RaidAttendance - Addon</title>
+	<description lang="en"></description>
+
+	<author-notes lang="en"></author-notes>
+
+	<author-group>
+		<author>
+			<username>Rapal</username>
+			<realname>Rasmus Lock Fuglsang</realname>
+			<homepage></homepage>
+			<email>rasmus.lock.larsen@gmail.com</email>
+		</author>
+	</author-group>
+
+	<mod-version>0.0.2</mod-version>
+
+	<installation>
+		<level>easy</level>
+		<time>60</time>
+		<target-version>0.0.4</target-version>
+	</installation>
+
+	<history>
+		<entry>
+			<date>2009-12-06</date>
+			<rev-version>1.0.0</rev-version>
+			<changelog lang="en">
+				<change>First Official Release.
+					Supports:
+					ADMIN:
+					* UMIL + AutoMOD for installing the MOD.
+					* Configuration of rank-names, rank-status, raider-level etc.
+					* Automatical sync with armory.
+					* Manually adding raider
+					* Deleting raiders
+					USERS:
+					* Signing off from raids in the future.
+					* Permanently signing off from specific raiding days.
+					MODERATORS:
+					* Signing off on behalf of raiders.
+					* Recording raiders attendance on raids already completed.</change>
+			</changelog>
+		</entry>
+	</history>
+</header>
+
+<action-group>
+	<copy>
+		<file from="root/*.*" to="*.*" />
+	</copy>
+	<copy>
+		<file from="contrib/umil" to="umil" />
+	</copy>
+	<open src="viewforum.php">
+		<edit>
+			<find><![CDATA[// Build navigation links]]></find>
+			<action type="before-add"><![CDATA[// Raidattendance
+include($phpbb_root_path . 'view_raidattendance.' . $phpEx);
+]]>
+			</action>
+		</edit>
+	</open>
+	<open src="styles/WoWMaevahEmpire/template/viewforum_body.html">
+		<edit>
+			<find><![CDATA[<div id="pagecontent">]]></find>
+			<action type="before-add"><![CDATA[
+<!-- IF S_RAIDATTENDANCE -->
+<!-- INCLUDE viewforum_raidattendance.html --> 
+<!-- ENDIF -->			
+]]>
+			</action>
+		</edit>
+	</open>
+	<diy-instructions lang="en-gb">Go to the following page install_raidattendance.php, and once completed configure the MOD under FORUMS &gt; RAIDATTENDANCE &gt; CONFIGURATION</diy-instructions>
+</action-group>
+</mod>
