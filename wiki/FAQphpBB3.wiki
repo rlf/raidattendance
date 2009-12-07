@@ -28,7 +28,7 @@ Simply click the signoff icon (gray question mark) of the future raid you wish t
 Because it's in the past... You should've signed off before hand... SLACKER!
 
 === How come I can't sign off? ===
-_When I login as 'CoolForumUser' I cannot sign off as 'CoolRaider', how come?_
-Because the MOD doesn't know you well enough to map 'CoolForumUser' to 'CoolRaider'.
+_When I login as 'Cool Forum User' I cannot sign off as 'Cool Raider', how come?_
+Because the MOD doesn't know you well enough to map 'Cool Forum User' to 'Cool Raider'.
 
 An admin of the forum may be able to help you out there - otherwise change your forum-username to your raider-name.
