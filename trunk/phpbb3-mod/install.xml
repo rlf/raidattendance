@@ -20,20 +20,27 @@ Please check: http://code.google.com/p/raidattendance
 		</author>
 	</author-group>
 
-	<mod-version>0.0.2</mod-version>
+	<mod-version>1.0.2</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>0.0.4</target-version>
+		<target-version>3.0.6</target-version>
 	</installation>
 
 	<history>
 		<entry>
+			<date>2009-12-07</date>
+			<rev-version>1.0.2</rev-version>
+			<changelog lang="en">
+				<change>Update to install.xml to be MODX compliant.</change>
+			</changelog>
+		</entry>
+		<entry>
 			<date>2009-12-06</date>
 			<rev-version>1.0.1</rev-version>
 			<changelog lang="en">
-				<change>Minor authentication bugfix and new icons from Yorrick.
+				<change>Minor authentication bugfix and new icons from Yorrick.</change>
 			</changelog>
 		</entry>
 		<entry>
