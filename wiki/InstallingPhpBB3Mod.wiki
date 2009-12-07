@@ -5,6 +5,11 @@
 = Prerequisites =
 Make sure your phpBB3 installation has the AutoMOD installed, otherwise go get it at [http://www.phpbb.com/mods/automod/]
 
+Your version of PHP need to have enabled the allow_url_fopen in the php.ini file:
+{{{
+allow_url_fopen true
+}}}
+
 = Downloading the MOD =
   # Download the MOD from the downloads section [http://code.google.com/p/raidattendance/downloads/list]
   # Unzip the zip-file to a local folder
