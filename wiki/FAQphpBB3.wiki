@@ -21,3 +21,14 @@ It is located under the FORUMS tab (per default the second tab):
 As an administrator you can add raiders from the armory using the _Resync with armory_ button on the _Raiders_ pane, or manually add raiders using the very last row on the list and the _Save_ button.
 
 == Forum Users ==
+=== How do I sign off from a raid? ===
+Simply click the signoff icon (gray question mark) of the future raid you wish to signoff from.
+
+=== How come I can't signoff from a raid in the past? ===
+Because it's in the past... You should've signed off before hand... SLACKER!
+
+=== How come I can't sign off? ===
+_When I login as 'CoolForumUser' I cannot sign off as 'CoolRaider', how come?_
+Because the MOD doesn't know you well enough to map 'CoolForumUser' to 'CoolRaider'.
+
+An admin of the forum may be able to help you out there - otherwise change your forum-username to your raider-name.
