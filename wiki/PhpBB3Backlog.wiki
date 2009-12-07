@@ -24,6 +24,11 @@
 
 = Completed =
 
+== v1.0.2 - 7th of December 2009 - Icons + bugfix ==
+  * bugfix - tooltips on actions
+  * bugfix - MODX compliance
+  * improvement - better icons and colors
+
 == v1.0.1 - 6th of December 2009 - Icons + bugfix ==
   * bugfix - users can now only signoff for them selves permanently.
   * improvement - better icons (Yorrick rulez).
