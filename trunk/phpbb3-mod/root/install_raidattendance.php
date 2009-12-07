@@ -226,5 +226,5 @@ $versions = array(
 );
  
 // Include the UMIF Auto file and everything else will be handled automatically.
-include($install_root_path . 'umil/umil_auto.' . $phpEx);
+include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 ?> 

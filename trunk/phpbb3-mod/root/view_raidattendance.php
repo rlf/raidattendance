@@ -33,10 +33,10 @@ if (is_raidattendance_forum($forum_id))
 	$raider_db = new raider_db();
 	$raiders = array();
 	$raider_db->get_raider_list($raiders);
-	$action = request_var('u_action');
+	$action = request_var('u_action', '');
 	if ($action)
 	{
-		handle_action($raiders);
+		handle_action($action, $raiders);
 	}
 	$day_names = get_raiding_day_names($raids);
 	$attendance = get_attendance($raids);
@@ -74,10 +74,13 @@ if (is_raidattendance_forum($forum_id))
 		foreach ($day_names as $day)
 		{
 			$status = $static_attendance[$raider->name][$day];
+			$status = $status ? $status : -2;
+			$tooltip_key = array(2=>'STATIC_SIGNOFF_CLEAR', -2=>'STATIC_SIGNOFF');
 			$template->assign_block_vars('raiders.days', array(
 				'DAY'			=> isset($user->lang['DAY_' . $day]) ? $user->lang['DAY_' . $day] : $day,
 				'DAY_KEY'		=> $day,
-				'STATUS'		=> $statusses[$status ? $status : -2],
+				'STATUS'		=> $statusses[$status],
+				'TOOLTIP'		=> sprintf($user->lang[$tooltip_key[$status]], $user->lang['DAY_LONG_' . $day]),
 				));
 		}
 		foreach ($raids as $raid)
@@ -111,12 +114,11 @@ if (is_raidattendance_forum($forum_id))
 		'TSTAMP_PREV'			=> $last_week,
 		));
 }
-function handle_action($raiders)
+function handle_action($action, $raiders)
 {
 	global $success, $user, $error;
-	$action = request_var('u_action', null);
 	$rid = request_var('rid', 0);
-	$raid = request_var('raid', 0);
+	$raid = request_var('raid', '');
 	if (!$action or !$rid or !$raid)
 	{
 		return;

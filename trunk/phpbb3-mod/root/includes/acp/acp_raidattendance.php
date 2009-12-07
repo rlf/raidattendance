@@ -90,8 +90,7 @@ class acp_raidattendance {
 			$error = array();
 		}
 
-		$action	= request_var('action', '');
-		$submit = request_var('submit', false);
+		$submit = request_var('submit', '');
 
 		$form_key = 'acp_raidattendance';
 		add_form_key($form_key);
@@ -102,8 +101,8 @@ class acp_raidattendance {
 		}
 
 		$this->new_config = $config;
-		$cfg_array = request_var('config', null);
-		$cfg_array = ($cfg_array and is_array($cfg_array)) ? utf8_normalize_nfc($cfg_array) : $this->new_config;
+		$cfg_array = request_var('config', array(''=>''));
+		$cfg_array = sizeof($cfg_array) > 1 ? utf8_normalize_nfc($cfg_array) : $this->new_config;
 
 		// We validate the complete config if whished
 		validate_config_vars($display_vars['vars'], $cfg_array, $error);
@@ -227,9 +226,9 @@ class acp_raidattendance {
 		global $db, $user, $auth, $template, $config;
 		global $error, $success;
 		$this->tpl_name = 'acp_raidattendance_sync';
-		$resync	= request_var('resync', false);
-		$save = request_var('save', false);
-		$delete = request_var('delete', false);
+		$resync	= request_var('resync', '');
+		$save = request_var('save', '');
+		$delete = request_var('delete', '');
 
 		$raider_db = new raider_db();
 		$rows = array();
@@ -320,11 +319,14 @@ class acp_raidattendance {
 	}
 	function get_rank_options()
 	{
-		global $user;
+		global $user, $config;
 		$s = '';
-		for ($i = 0; $i <= 6; ++$i)
+		$basekey = 'raidattendance_raider_rank';
+		for ($i = 0; $i < 10; ++$i)
 		{
-			$s .= '<option value="' . $i . '">' . $user->lang['RANK_' . $i] . '</option>';
+			$rank_name = $config[$basekey . $i . '_name'];
+			$rank_name = $rank_name ? $rank_name : $user->lang['RANK_' . $i];
+			$s .= '<option value="' . $i . '">' . $rank_name . '</option>';
 		}
 		return $s;
 	}
@@ -351,7 +353,7 @@ class acp_raidattendance {
 	function get_user_list()
 	{
 		global $db, $user;
-		$sql = 'SELECT user_id, username FROM ' . USER_TABLE . " WHERE user_email <> ''";
+		$sql = 'SELECT user_id, username FROM ' . USERS_TABLE . " WHERE user_email <> ''";
 		$result = $db->sql_query($sql);
 		$users = array(array('id' => 0, 'name' => $user->lang['UNKNOWN_USER']));
 		while ($row = $db->sql_fetchrow($result)) 
@@ -373,7 +375,7 @@ class acp_raidattendance {
 		$checked = request_var('checked', array());
 		$new_raider = null;
 		$new_name = request_var('new_name', '');
-		if (is_string($new_name) and strlen($new_name) > 0)
+		if (strlen($new_name) > 0)
 		{
 			$row = array(
 				'name' => $new_name,
