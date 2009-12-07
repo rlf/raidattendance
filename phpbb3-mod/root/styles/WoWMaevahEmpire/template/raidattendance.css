@@ -9,31 +9,19 @@
 	/*background: #d0d0ff;*/
 }
 .on {
-	background: green;
+	background: #065c00;
 }
 .off {
-	background: yellow;
+	background: #005abf;
 }
 .noshow {
-	background: red;
+	background: #ab1f03;
 }
 .future {
-	background: #5050ff;
-	filter: alpha(opacity=30);
-	opacity: 0.3;
+	background: #005000;
 }
 .past {
-	background: #ff5050;
-	filter: alpha(opacity=30);
-	opacity: 0.3;
-}
-.future a {
-	filter: alpha(opacity=100);
-	opacity: 1.0;
-}
-.past a {
-	filter: alpha(opacity=100);
-	opacity: 1.0;
+	background: #500000;
 }
 #raid_table tr td a, #raid_table tr td a:visited, #raid_table tr td a:link, #raid_table tr td a:active {
 	text-decoration: none;

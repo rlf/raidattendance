@@ -1,6 +1,14 @@
 <?php
+/**
+* @ignore
+*/
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}  
+
 global $phpbb_root_path, $phpEx;
-include_once($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
 
 global $error, $success;
 class acp_raidattendance {
@@ -83,7 +91,7 @@ class acp_raidattendance {
 		}
 
 		$action	= request_var('action', '');
-		$submit = (isset($_POST['submit'])) ? true : false;
+		$submit = request_var('submit', false);
 
 		$form_key = 'acp_raidattendance';
 		add_form_key($form_key);
@@ -94,7 +102,8 @@ class acp_raidattendance {
 		}
 
 		$this->new_config = $config;
-		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc(request_var('config', array('' => ''), true)) : $this->new_config;
+		$cfg_array = request_var('config', null);
+		$cfg_array = ($cfg_array and is_array($cfg_array)) ? utf8_normalize_nfc($cfg_array) : $this->new_config;
 
 		// We validate the complete config if whished
 		validate_config_vars($display_vars['vars'], $cfg_array, $error);
@@ -218,9 +227,9 @@ class acp_raidattendance {
 		global $db, $user, $auth, $template, $config;
 		global $error, $success;
 		$this->tpl_name = 'acp_raidattendance_sync';
-		$resync	= (isset($_POST['resync'])) ? true : false;
-		$save = (isset($_POST['save'])) ? true : false;
-		$delete = (isset($_POST['delete'])) ? true : false;
+		$resync	= request_var('resync', false);
+		$save = request_var('save', false);
+		$delete = request_var('delete', false);
 
 		$raider_db = new raider_db();
 		$rows = array();
@@ -342,7 +351,7 @@ class acp_raidattendance {
 	function get_user_list()
 	{
 		global $db, $user;
-		$sql = 'SELECT user_id, username FROM `phpbb_users` WHERE user_email <> \'\'';
+		$sql = 'SELECT user_id, username FROM ' . USER_TABLE . " WHERE user_email <> ''";
 		$result = $db->sql_query($sql);
 		$users = array(array('id' => 0, 'name' => $user->lang['UNKNOWN_USER']));
 		while ($row = $db->sql_fetchrow($result)) 
@@ -360,23 +369,18 @@ class acp_raidattendance {
 		global $error;
 		$user_ids = array();
 		$checked = array();
-		if (isset($_POST['user_id'])) 
-		{
-			$user_ids = $_POST['user_id'];
-		}
-		if (isset($_POST['checked'])) 
-		{
-			$checked = $_POST['checked'];
-		}
+		$user_ids = request_var('user_id', array());
+		$checked = request_var('checked', array());
 		$new_raider = null;
-		if (isset($_POST['new_name']) and is_string($_POST['new_name']) and strlen($_POST['new_name']) > 0)
+		$new_name = request_var('new_name', '');
+		if (is_string($new_name) and strlen($new_name) > 0)
 		{
 			$row = array(
-				'name' => $_POST['new_name'],
-				'level' => $_POST['new_level'],
-				'rank' => $_POST['new_rank'],
-				'class' => $_POST['new_class'],
-				'user_id' => $_POST['new_user_id'],
+				'name' => $new_name,
+				'level' => request_var('new_level', 80),
+				'rank' => request_var('new_rank', 9),
+				'class' => request_var('new_class', 1),
+				'user_id' => request_var('new_user_id', 0),
 			);
 			// TODO verify input!
 			$new_raider = new raider($row);

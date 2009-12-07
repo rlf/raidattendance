@@ -1,5 +1,4 @@
 <?php
-
 /**
 *
 * @author Rapal
@@ -8,6 +7,14 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
+
+/**
+* @ignore
+*/
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}  
 
 global $forum_id, $phpbb_root_path, $phpEx, $template;
 
@@ -19,13 +26,15 @@ if (is_raidattendance_forum($forum_id))
 	$user->add_lang(array('mods/mod_raidattendance', 'mods/info_acp_raidattendance'));
 	$success = array();
 	$error = array();
-	$tstamp = isset($_POST['tstamp']) && $_POST['tstamp'] > 0 ? $_POST['tstamp'] : time();
+	$tstamp = request_var('tstamp', 0);
+	$tstamp = $tstamp > 0 ? $tstamp : time();
 	$today = strftime('%Y%m%d', time());
 	$raids = get_raiding_days($tstamp);
 	$raider_db = new raider_db();
 	$raiders = array();
 	$raider_db->get_raider_list($raiders);
-	if (isset($_POST['u_action']))
+	$action = request_var('u_action');
+	if ($action)
 	{
 		handle_action($raiders);
 	}
@@ -105,58 +114,59 @@ if (is_raidattendance_forum($forum_id))
 function handle_action($raiders)
 {
 	global $success, $user, $error;
-	if (!isset($_POST['u_action']) or !isset($_POST['rid']) or !isset($_POST['raid']))
+	$action = request_var('u_action', null);
+	$rid = request_var('rid', 0);
+	$raid = request_var('raid', 0);
+	if (!$action or !$rid or !$raid)
 	{
 		return;
 	}
 	// TODO: Additional checking
-	$raider = get_raider_with_id($raiders, $_POST['rid']);
-	$raid = $_POST['raid'];
-	$action = $_POST['u_action'];
-	if ($raider and $raid and $action) 
+	$raider = get_raider_with_id($raiders, $rid);
+	if (!$raider) 
 	{
-		$day = $raid;
-		if (strlen($raid) == 8)
-		{
-			$tm = strptime($raid, '%Y%m%d');
-			$time = tm2time($tm);
-			$day = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%B', $time));
-		}
-		$username = $user->data['username'];
+		return;
+	}
+	$day = $raid;
+	if (strlen($raid) == 8)
+	{
+		$tm = strptime($raid, '%Y%m%d');
+		$time = tm2time($tm);
+		$day = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%B', $time));
+	}
+	$username = $user->data['username'];
 
-		if ($action == '+')
-		{
-			$raider->signon($raid);
-		}
-		else if ($action == '-')
-		{
-			$raider->signoff($raid);
-		}
-		else if ($action == 'x')
-		{
-			$raider->clear_attendance($raid);
-		}
-		else if ($action == '!')
-		{
-			$raider->noshow($raid);
-		}
+	if ($action == '+')
+	{
+		$raider->signon($raid);
+	}
+	else if ($action == '-')
+	{
+		$raider->signoff($raid);
+	}
+	else if ($action == 'x')
+	{
+		$raider->clear_attendance($raid);
+	}
+	else if ($action == '!')
+	{
+		$raider->noshow($raid);
+	}
 
-		$lang_array = array(
-			'+' => 'STATUS_CHANGE_ON', 
-			'-' => 'STATUS_CHANGE_OFF', 
-			'x' => 'STATUS_CHANGE_CLEAR', 
-			'!' => 'STATUS_CHANGE_NOSHOW', 
-		);
-		$lang_key = $lang_array[$action];
-		if ($username && $raider->name && $day && $user->lang[$lang_key]) 
-		{
-			$success[] = sprintf($user->lang[$lang_key], $username, $raider->name, $day);
-		}
-		else 
-		{
-			$error[] = "Error! $username, $raider->name, $day, $lang_key, " . $user->lang[$lang_key];
-		}
-
+	$lang_array = array(
+		'+' => 'STATUS_CHANGE_ON', 
+		'-' => 'STATUS_CHANGE_OFF', 
+		'x' => 'STATUS_CHANGE_CLEAR', 
+		'!' => 'STATUS_CHANGE_NOSHOW', 
+	);
+	$lang_key = $lang_array[$action];
+	if ($username && $raider->name && $day && $user->lang[$lang_key]) 
+	{
+		$success[] = sprintf($user->lang[$lang_key], $username, $raider->name, $day);
+	}
+	else 
+	{
+		$error[] = "Error! $username, $raider->name, $day, $lang_key, " . $user->lang[$lang_key];
 	}
 }
 ?>

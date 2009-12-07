@@ -23,7 +23,10 @@ define('RAIDATTENDANCE_TABLE', $table_prefix . 'raidattendance');
 define('RAIDER_CONFIG', $table_prefix . 'raidattendance_config');
 
 // UMIL is used for database updates
-include_once($phpbb_root_path . 'umil/umil.' . $phpEx);
+if (!class_exists('umil'))
+{
+	include($phpbb_root_path . 'umil/umil.' . $phpEx);
+}
 
 $error = array();
 $success = array();
