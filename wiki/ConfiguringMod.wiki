@@ -1,5 +1,34 @@
 #summary Describes what can be configured on the ACP about the mod.
 
-<wiki:toc maxDepth="2"/>
+<wiki:toc max_depth="2"/>
 
 The _Configuration_ of the MOD can be done under the FORUMS > RAIDATTENDANCE > CONFIGURATION pane on the ACP.
+
+= Static Configuration =
+_Configuration that should hopefully only be done once._
+
+== GuildConfiguration ==
+In this section it's possible to supply information about the guild hosted by the phpBB.
+
+The information is used when synchronizing the list of raiders with the wowarmory.
+
+  * _Guild Name_ - The name of the guild.
+  * _Realm_ - The name of the realm
+  * _Armory_ - A link to the appropriate wowarmory (e.g. http://eu.wowarmory.com), for the MOD to work as expected, it must be possible to locate the above guild-name and realm on the supplied armory.
+
+== Forum Configuration ==
+In this section it is possible to type in the _name_ of the forum in which the raid attendancy should be shown.
+
+All forums that have a name matching this string will show a table on top of the forum showing raid-attendance.
+
+== Raid Night Configuration ==
+This section defines which days are considered raiding days.
+
+In the current release it's only possible to choose named days, e.g. "Monday", "Thursday" etc.
+
+The days chosen will effect the size of the "raid-calendar", which shows only raiding days, but for last-week, this-week and next-week.
+
+== Rank of Raiders ==
+In this section it's possible to assign descriptive names to the guild-ranks as well as indicate which ranks are expected to raid.
+
+These settings, together with the settings in the [#GuildConfiguration] section defines which guild-members will be added to the raider-list when synchronizing with the armory.
