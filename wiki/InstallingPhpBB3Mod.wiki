@@ -5,9 +5,9 @@
 = Prerequisites =
 Make sure your phpBB3 installation has the AutoMOD installed, otherwise go get it at [http://www.phpbb.com/mods/automod/]
 
-Your version of PHP need to have enabled the allow_url_fopen in the php.ini file:
+Your version of PHP need to have enabled the allow_url_fopen in the php.ini file, this is usually the default value, but it may differ between different web-hosting services:
 {{{
-allow_url_fopen true
+allow_url_fopen On
 }}}
 See http://www.php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen for details.
 
