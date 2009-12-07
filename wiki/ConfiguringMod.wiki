@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="2"/>
 
-The _Configuration_ of the MOD can be done under the FORUMS > RAIDATTENDANCE > CONFIGURATION pane on the ACP.
+The _Configuration_ of the MOD can be done under the FORUMS > RAIDATTENDANCE > Configuration pane on the ACP.
 
 = Static Configuration =
 _Configuration that should hopefully only be done once._
@@ -32,3 +32,6 @@ The days chosen will effect the size of the "raid-calendar", which shows only ra
 In this section it's possible to assign descriptive names to the guild-ranks as well as indicate which ranks are expected to raid.
 
 These settings, together with the settings in the _Guild Configuration_ section defines which guild-members will be added to the raider-list when synchronizing with the armory.
+
+= Administration =
+_General administration of raiders in the guild_
