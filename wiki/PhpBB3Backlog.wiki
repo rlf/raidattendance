@@ -24,9 +24,9 @@
 
 = Completed =
 
-== v1.0.2 - 7th of December 2009 - Icons + bugfix ==
-  * bugfix - tooltips on actions
-  * bugfix - MODX compliance
+== v1.0.2 - 7th of December 2009 - MODX compliance ==
+  * bugfix#2 - tooltips on actions
+  * bugfix#1 - MODX compliance
   * improvement - better icons and colors
 
 == v1.0.1 - 6th of December 2009 - Icons + bugfix ==
