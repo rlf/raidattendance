@@ -35,3 +35,22 @@ These settings, together with the settings in the _Guild Configuration_ section 
 
 = Administration =
 _General administration of raiders in the guild_
+
+== Resyncing the raider-list from the armory ==
+Once all the proper configuration have been done with regard to _Guild Configuration_ and _Rank of Raiders_, it is possible to generate/update the list of raiders for the guild.
+
+This is done under the _Raiders_ pane.
+
+*Note:* The resync may time-out, since it is accessing the armory directly, in which case it's safe to simply try again.
+
+Once the resync completes, all raiders in the list, which was not found in the armory is marked - so they can easily be deleted if they are no longer in the guild.
+
+== Deleting raiders from the raid-list ==
+Simply check the appropriate row and press the _Delete selected raiders_ button.
+
+== Manually adding a raider to the raid-list ==
+If, for some reason, a member of the guild which does not have any of the raid-designated ranks, is expected to raid anyway, the raider can be added manually.
+
+Simply fill in the very last row of the list with _Name_, _Level_, _Rank_ and _Class_ and press the _Save_ button.
+
+*Note:* A member added manually will most likely be marked as *not in armory* on next resync.
