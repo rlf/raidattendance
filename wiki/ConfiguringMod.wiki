@@ -1,0 +1,3 @@
+#summary Describes what can be configured on the ACP about the mod.
+
+The _Configuration_ of the MOD can be done under the FORUMS > RAIDATTENDANCE > CONFIGURATION pane on the ACP.
