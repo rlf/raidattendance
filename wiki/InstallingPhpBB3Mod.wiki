@@ -9,6 +9,7 @@ Your version of PHP need to have enabled the allow_url_fopen in the php.ini file
 {{{
 allow_url_fopen true
 }}}
+See http://www.php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen for details.
 
 = Downloading the MOD =
   # Download the MOD from the downloads section [http://code.google.com/p/raidattendance/downloads/list]
