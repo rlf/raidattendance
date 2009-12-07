@@ -223,6 +223,9 @@ $versions = array(
 			)),
 		),
 	), // end of 1.0.0
+	'1.0.2' => array(
+		// No actual changes in 1.0.2, but we like the option
+	), // end of 1.0.2
 );
  
 // Include the UMIF Auto file and everything else will be handled automatically.
