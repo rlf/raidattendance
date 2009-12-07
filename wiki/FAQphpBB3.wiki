@@ -18,5 +18,6 @@ _I've logged in as administrator in the ACP, but can't find the freaking Raid at
 It is located under the FORUMS tab (per default the second tab):
 
 === How do I add raiders to the raider-list?===
-You can only add rai
+As an administrator you can add raiders from the armory using the _Resync with armory_ button on the _Raiders_ pane, or manually add raiders using the very last row on the list and the _Save_ button.
+
 == Forum Users ==
