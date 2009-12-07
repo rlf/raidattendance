@@ -50,9 +50,9 @@ function nav(tstamp)
 		<!-- IF S_MODERATOR or raiders.S_EDITABLE -->
 		<!-- BEGIN days -->
 			<!-- IF days.STATUS == 'unset' -->
-			<a class="{days.STATUS}" href="javascript:go('-', {raiders.ID}, '{days.DAY_KEY}')">{days.DAY}</a>
+			<a class="{days.STATUS}" href="javascript:go('-', {raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
 			<!-- ELSE -->
-			<a class="{days.STATUS}" href="javascript:go('x', {raiders.ID}, '{days.DAY_KEY}')">{days.DAY}</a>
+			<a class="{days.STATUS}" href="javascript:go('x', {raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
 			<!-- ENDIF -->
 		<!-- END -->
 		<!-- ENDIF -->

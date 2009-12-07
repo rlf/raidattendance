@@ -82,6 +82,16 @@ $lang = array_merge($lang, array(
 		'STATUS_CHANGE_OFF'			=> '%1$s signed off for %2$s from raid %3$s',
 		'STATUS_CHANGE_CLEAR'		=> '%1$s cleared status for %2$s on raid %3$s',
 		'STATUS_CHANGE_NOSHOW'		=> '%1$s marked %2$s as being AWOL from raid %3$s',
+		'STATIC_SIGNOFF'			=> "Sorry, but I'm never able to raid on %s",
+		'STATIC_SIGNOFF_CLEAR'		=> 'Forget it, I might be able raid on %s anyway!',
+
+		'DAY_LONG_Mon'				=> 'Mondays',
+		'DAY_LONG_Tue'				=> 'Tuesdays',
+		'DAY_LONG_Wed'				=> 'Wednesdays',
+		'DAY_LONG_Thu'				=> 'Thursdays',
+		'DAY_LONG_Fri'				=> 'Fridays',
+		'DAY_LONG_Sat'				=> 'Saturdays',
+		'DAY_LONG_Sun'				=> 'Sundays',
 	)
 );
 ?>
