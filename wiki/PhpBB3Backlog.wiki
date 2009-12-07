@@ -12,7 +12,10 @@
 = Backlog =
 <font color="red">
   * forum_raidattendance - add comment to signon/signoff
-  * forum_raidattendance - add thread/post when signing off</font>
+    * Possibly just link to a post? Use the phpbb post feature?
+  * forum_raidattendance - add thread/post when signing off
+    * Configuring "post here" text in configuration?
+</font>
   * beutification - better icons for changing attendancy-status - part 2
   * raidattendance_history - change-history of signon status
   * raidattendance - include a FAQ - possibly link to a wiki - or use the forum options.
