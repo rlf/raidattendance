@@ -20,7 +20,8 @@
   * raidattendance - include a FAQ - possibly link to a wiki - or use the forum options.
   * <font color="green">mcp_raidattendance - sync. raiders with armory + link forum-users
   * statistics - Show some overall statistics on raid-days
-  * statistics - Show some specific statistics on an individual per raider basis</font>
+  * statistics - Show some specific statistics on an individual per raider basis
+  * statistics - Get raid-attendance automatically from WWS.</font>
 
 = Completed =
 
