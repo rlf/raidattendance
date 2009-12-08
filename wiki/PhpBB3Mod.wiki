@@ -52,3 +52,5 @@ The mod will be divided into 3 parts as described below.
 == External ==
   * HTML entities used above : [http://www.danshort.com/HTMLentities/index.php?w=dingb]
   * phpBB wiki [http://wiki.phpbb.com/]
+  * http://eu.wowarmory.com
+  * http://forums.worldoflogs.com/viewtopic.php?f=2&t=461
