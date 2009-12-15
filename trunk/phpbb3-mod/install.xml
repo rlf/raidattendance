@@ -20,7 +20,7 @@ Please check: http://code.google.com/p/raidattendance
 		</author>
 	</author-group>
 
-	<mod-version>1.0.2</mod-version>
+	<mod-version>1.0.3</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -29,6 +29,13 @@ Please check: http://code.google.com/p/raidattendance
 	</installation>
 
 	<history>
+		<entry>
+			<date>2009-12-15</date>
+			<rev-version>1.0.3</rev-version>
+			<changelog lang="en">
+				<change>Bugfixes to save and delete functionality + experimental integration with World of Logs</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2009-12-07</date>
 			<rev-version>1.0.2</rev-version>
