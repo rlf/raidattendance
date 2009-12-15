@@ -64,6 +64,7 @@ $options = array(
 	'guild'			=> array('lang' => 'GUILD_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false, 'default' => 'The Awakening'),
 	'realm'			=> array('lang' => 'REALM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false, 'default' => 'Bloodhoof'),
 	'armory_link'	=> array('lang' => 'ARMORY_LINK',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'http://eu.wowarmory.com'),
+	'wws_guild_id'	=> array('lang' => 'WWS_GUILD_ID',			'validate' => 'int',	'type' => 'text:5:5', 'explain' => true, 'default' => '15320'),
 
 	'legend2'		=> 'FORUM_SETTINGS',
 	'forum_name'	=> array('lang' => 'FORUM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'Raid Availability'),
@@ -226,6 +227,38 @@ $versions = array(
 	'1.0.2' => array(
 		// No actual changes in 1.0.2, but we like the option
 	), // end of 1.0.2
+	'1.0.3' => array(
+		'module_add' => array(
+			// Add the wws mode 
+			array('acp', 'ACP_CAT_RAIDATTENDANCE', 
+				array(
+					'module_basename'		=> 'raidattendance',
+					'module_langname'		=> 'ACP_RAIDATTENDANCE_WWS',
+					'module_mode'			=> 'wws',
+					'module_auth'			=> 'acl_a_raidattendance',
+				), 
+			),
+		),
+		'table_column_add' => array(
+			array('phpbb_raidattendance', 'comment', array('VCHAR_UNI', '')
+		)),
+		'table_add' => array(
+			array('phpbb_raidattendance_wws', array(
+				'COLUMNS'		=> array(
+					'id'		=> array('UINT', NULL, 'auto_increment'),
+					'raid'		=> array('VCHAR:10', ''),
+					'synced'	=> array('TIMESTAMP', 0),
+					'wws_id'	=> array('VCHAR:16', ''),
+					'raiders'	=> array('MTEXT_UNI', ''),
+				),
+				'PRIMARY_KEY' => 'id',
+			)),
+		),
+		'config_add' => array(
+			
+			array('raidattendance_wws_guild_id', request_var('wws_guild_id', 15320)),
+		),
+	),// v1.0.3
 );
  
 // Include the UMIF Auto file and everything else will be handled automatically.

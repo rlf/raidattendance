@@ -1,0 +1,65 @@
+<!-- INCLUDE overall_header.html -->
+<a name="maincontent"></a>
+
+<LINK REL="StyleSheet" HREF="style/raidattendance.css" TYPE="text/css"/>
+<h1>{L_TITLE}</h1>
+
+<p>{L_TITLE_EXPLAIN}</p>
+
+<div class="errorbox">
+	<h3>THIS IS STILL WORK IN PROGRESS!</h3>
+	<p>Please do not use the functionality until released!</p>
+</div>
+
+<!-- IF S_ERROR -->
+<div class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF S_SUCCESS -->
+<div class="successbox">
+	<h3>{L_SUCCESS}</h3>
+	<p>{SUCCESS_MSG}</p>
+</div>
+<!-- ENDIF -->
+<form id="acp_raidattendance_wws" method="post" action="{U_ACTION}">
+
+<table class="raids">
+	<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<th>{L_RAID}</th>
+			<th>{L_WWS_ID}</th>
+			<th>{L_SYNCED}</th>
+			<th>{L_RAIDERS}</th>
+		</tr>
+	</thead>
+	<tbody>
+<!-- BEGIN raids -->
+<tr class="{raids.ROW_CLASS}">
+	<td class="mini"><input type="checkbox" name="checked[{raids.ID}]" id="checked[{raids.ID}]"{raids.CHECKED}/></td>
+	<td class="{raids.CSS_CLASS}">{raids.STATUS}{raids.RAID}</td>
+	<td>{raids.WWS_ID}</td>
+	<td>{raids.SYNCED}</td>
+	<td>{raids.RAIDERS}</td>
+</tr>
+<!-- END raiders -->
+<!-- IF S_AUTH -->
+	<!-- BEGIN auth_tpl -->
+		{auth_tpl.TPL}
+	<!-- END auth_tpl -->
+<!-- ENDIF -->
+</tbody>
+</table>
+
+<p class="submit-buttons">
+	<input class="button1" type="submit" id="resync" name="resync" value="{L_RESYNC_WWS}" />&nbsp;
+	<input class="button1" type="submit" id="delete" name="delete" value="{L_DELETE_WWS}" />&nbsp;
+</p>
+{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->
+
