@@ -21,6 +21,7 @@ define('RAIDER_TABLE', $table_prefix . 'raidattendance_raiders');
 define('RAIDER_HISTORY_TABLE', $table_prefix . 'raidattendance_history');
 define('RAIDATTENDANCE_TABLE', $table_prefix . 'raidattendance');
 define('RAIDER_CONFIG', $table_prefix . 'raidattendance_config');
+define('TABLE_WWS_RAID', $table_prefix . 'raidattendance_wws');
 
 // UMIL is used for database updates
 if (!class_exists('umil'))
@@ -31,10 +32,15 @@ if (!class_exists('umil'))
 $error = array();
 $success = array();
 
+function get_text($key)
+{
+	global $user;
+	return $user->lang[$key] ? $user->lang[$key] : $key;
+}
 /**
  * Error handler used around the armory-lookup.
  **/
-function armory_error_handler($errno, $errstr, $errfile, $errline)
+function url_error_handler($errno, $errstr, $errfile, $errline)
 {
 	global $error, $user;
 	$error[] = sprintf($user->lang['ERROR_CONTACTING_ARMORY'], $errstr);
@@ -215,7 +221,7 @@ class raider_armory
 		$url = $armory_link . '/guild-info.xml?r=' . urlencode($realm) . '&gn=' . urlencode($guild) . '&rhtml=n';
 		//$this->raiders['url'] = array('raider_name' => $url);
 
-		$old_err = set_error_handler('armory_error_handler');
+		$old_err = set_error_handler('url_error_handler');
 		$data = file_get_contents($url, false);
 		set_error_handler($old_err);
 		$parser = xml_parser_create('UTF-8');
@@ -230,11 +236,11 @@ class raider_armory
 			if ($raider->__status != 'NEW' && $raider->__status != 'UPDATED')
 			{
 				$raider->__status = 'NOT_IN_ARMORY';
-				$raider->__checked = true;
+				$raider->set_checked(true);
 			}
 			else 
 			{
-				$raider->__checked = false;
+				$raider->set_checked(false);
 			}
 		}
 		if (sizeof($this->newly_added)) 
@@ -361,22 +367,187 @@ class raider_db
 		global $error, $success, $user;
 		$umil = new umil(true);
 		// TODO: Optimize this so we use the checked array directly
-		foreach ($rows as $name => $raider)
+		foreach ($rows as $k => $raider)
 		{
 			if ($raider->is_checked()) 
 			{
 				$res = $umil->table_row_remove(RAIDER_TABLE, array('id' => $raider->id));
 				if (is_umil_error($res))
 				{
-					$error[] = sprintf($user->lang['ERROR_DELETING_RAIDER'], $raider->name, $res[1]);
+					$error[] = sprintf($user->lang['ERROR_DELETING_RAIDER'], $raider->name, $res);
 				}
 				else 
 				{
 					$success[] = sprintf($user->lang['SUCCESS_DELETING_RAIDER'], $raider->name);
 				}
-				unset($rows[$name]);
+				unset($rows[$k]);
 			}
 		}
+	}
+}
+function checked2list($checked)
+{
+	return '(' . implode(',', array_keys($checked)) . ')';
+}
+// ---------------------------------------------------------------------------
+// WWS from the DB
+// ---------------------------------------------------------------------------
+function wws_delete($checked)
+{
+	global $db, $success, $error, $user;
+	$sql = 'DELETE FROM ' . TABLE_WWS_RAID . ' WHERE id IN ' . checked2list($checked);
+	$res = $db->sql_query($sql);
+	if ($res === FALSE) 
+	{
+		$error[] = sprintf($user->lang['ERROR_DELETING_WWS'], sizeof($checked));
+	}
+	else 
+	{
+		$success[] = sprintf($user->lang['SUCCESS_DELETING_WWS'], sizeof($checked));
+	}
+}
+class wws_db
+{
+	// TODO: Add a time-filter... for when many raids are in the database
+	function get_raid_list()
+	{
+		global $db, $error, $success;
+		$sql = 'SELECT * FROM ' . TABLE_WWS_RAID . ' ORDER BY synced DESC';
+		$result = $db->sql_query($sql);
+		$list = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$list[] = new wws_entry($row);
+		}
+		$db->sql_freeresult($result);
+		return $list;
+	}
+	function refetch(&$list)
+	{
+		global $db, $error, $success, $config;
+		if (!$config['raidattendance_wws_guild_id'])
+		{
+			$error[] = get_text('NO_WWS_CONFIGURED');
+		}
+		$url = 'http://www.worldoflogs.com/feeds/guilds/' . $config['raidattendance_wws_guild_id'] . '/raids/?t=xml';
+
+		$old_err = set_error_handler('url_error_handler');
+		$data = file_get_contents($url, false);
+		set_error_handler($old_err);
+		$parser = xml_parser_create('UTF-8');
+		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, false);
+		xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+		xml_set_element_handler($parser,  array($this, 'start_elem'), array($this, 'end_elem'));
+
+		$this->raids = $list;
+		$this->raiders = array();
+		$raider_db = new raider_db();
+		$this->raiders = array();
+		$raider_db->get_raider_list($this->raiders);
+
+		xml_parse($parser, $data);
+		xml_parser_free($parser);
+		
+		return $this->raids;
+	}
+	function start_elem($parser, $name, array $attrs)
+	{
+		if ($name == 'Raid') 
+		{
+			$this->raiders = array(); // Clean the array... no exception handling
+			$date = $attrs['date'];
+			$raid = strftime('%Y%m%d', $date * 1000);
+			$this->raid = array('date'=>$attrs['date'], 'wws_id'=>$attrs['id'], 'raid'=>$raid);
+		}
+		else if ($name == 'Participant')
+		{
+			$this->raiders[] = $attrs['name'];
+		}
+	}
+	function end_elem($parser, $name)
+	{
+		global $success, $error;
+		if ($name == 'Raid' && $this->raid)
+		{
+			$this->raid['synced'] = time();
+			$wws = new wws_entry($this->raid);
+			if ($this->raids[$wws->raid])
+			{
+				$wws->id = $this->raids[$wws->raid]->id;
+			}
+			$wws->raiders = $this->raiders;
+			$wws->save();
+			$this->raids[$wws->raid] = $wws;
+			$this->raid = NULL;
+		}
+	}
+}
+// ---------------------------------------------------------------------------
+// Class WWS Raid Entry
+//---------------------------------------------------------------------------
+class wws_entry
+{
+	function __construct($row)
+	{
+		if ($row['id']) 
+		{
+			$this->id = $row['id'];
+		}
+		$this->wws_id = $row['wws_id'] ? $row['wws_id'] : '';
+		$this->raid = $row['raid'] ? $row['raid'] : '';
+		$this->synced = $row['synced'] ? $row['synced'] : 0;
+		$this->raiders = $row['raiders'];
+		if ($this->raiders and is_string($this->raiders))
+		{
+			$this->raiders = explode(',', $this->raiders); 
+		}
+	}
+	function save()
+	{
+		global $error, $success;
+		$umil = new umil(true);
+		if ($this->id) 
+		{
+			$res = $umil->table_row_update(TABLE_WWS_RAID, array('id'=>$this->id), $this->as_row());
+			if (is_umil_error($res)) 
+			{
+				$error[] = 'Error updating WWS entry with id ' . $this->id . '<br/>' . $res;
+			}
+			else
+			{
+				$success[] = 'Successfully updated WWS entry with wws_id ' . $this->wws_id . '<br/>' . $res;
+			}
+		}
+		else
+		{
+			$res = $umil->table_row_insert(TABLE_WWS_RAID, $this->as_row());
+			if (is_umil_error($res)) 
+			{
+				$error[] = 'Error inserting WWS entry with wws_id ' . $this->wws_id . '<br/>' . $res;
+			}
+			else
+			{
+				$success[] = 'Successfully inserted WWS entry with wws_id ' . $this->wws_id . ' <br/>' . $res;
+			}
+		}
+	}
+	function as_row()
+	{
+		$ary = array(
+			'raid'		=> $this->raid,
+			'wws_id'	=> $this->wws_id,
+			'synced'	=> $this->synced,
+			'raiders'	=> $this->get_raiders(),
+			);
+		if ($this->id) 
+		{
+			$ary['id'] = $this->id;
+		}
+		return $ary;
+	}
+	function get_raiders()
+	{
+		return is_array($this->raiders) ? implode(', ', $this->raiders) : '';
 	}
 }
 // ---------------------------------------------------------------------------

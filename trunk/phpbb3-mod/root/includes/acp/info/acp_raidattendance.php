@@ -18,12 +18,17 @@ class acp_raidattendance_info {
 			    'settings' => array(
 					'title'	=> 'ACP_RAIDATTENDANCE_SETTINGS',
 					'auth'	=> 'acl_a_raidattendance',
-					'cat'	=> array('ACP_CAT_RAIDATTENDANCE')
+					'cat'	=> array('ACP_CAT_RAIDATTENDANCE'),
 				),
 			    'sync' => array(
 					'title'	=> 'ACP_RAIDATTENDANCE_SYNC',
 					'auth'	=> 'acl_a_raidattendance',
-					'cat'	=> array('ACP_CAT_RAIDATTENDANCE')
+					'cat'	=> array('ACP_CAT_RAIDATTENDANCE'),
+				),
+				'wws' => array(
+					'title' => 'ACP_RAIDATTENDANCE_WWS',
+					'auth'	=> 'acl_a_raidattendance',
+					'cat'	=> array('ACP_CAT_RAIDATTENDANCE'),
 				),
 			)
 		);

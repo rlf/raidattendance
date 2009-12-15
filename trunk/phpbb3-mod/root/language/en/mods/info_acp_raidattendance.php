@@ -91,6 +91,23 @@ $lang = array_merge($lang, array(
 		'STATUS_NEW'				=> 'new',
 		'RAIDER_ALREADY_EXISTS'		=> 'A raider named %s already exists!',
 		'ADD_RAIDER'				=> 'Add raider',
+	//
+	// ACP - WWS
+	//
+		'ACP_RAIDATTENDANCE_WWS'	=> 'World of Logs',
+		'ACP_RAIDATTENDANCE_WWS_EXPLAIN' => 'Synchronizes the raids with WWS.',
+		'WWS_GUILD_ID'				=> 'WWS Guild ID',
+		'WWS_GUILD_ID_EXPLAIN'		=> 'The Guild ID from http://www.worldoflogs.com, set to 0 if no wws account!',
+		'RESYNC_WWS'				=> 'Resync with World of Logs',
+		'RESYNC_WWS_EXPLAIN'		=> 'Synchronizes the attendance of raiders bases on world-of-logs.',
+		'DATE_TIME_FORMAT'			=> '%a %d. %b %Y %H:%M:%S',
+		'DELETE_WWS'				=> 'Delete selected raids',
+		'SYNCED'					=> 'Synced',
+		'WWS_ID'					=> 'WWS-ID',
+		'RAID'						=> 'Raid-ID',
+		'ERROR_DELETING_WWS'		=> 'Error deleting %d raids',
+		'SUCCESS_DELETING_WWS'		=> 'Successfully deleted %d raids',
+		'SAVED'						=> 'Changes have been saved',
 	)
 );
 ?>

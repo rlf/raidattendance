@@ -28,6 +28,9 @@ class acp_raidattendance {
 			case 'sync':
 				$this->showSync($id, $mode);
 				break;
+			case 'wws':
+				$this->wwsSync($id, $mode);
+				break;
 			default:
 				$template->tpl_name = 'acp_raidattendance_error';
 				break;
@@ -50,6 +53,7 @@ class acp_raidattendance {
 				'raidattendance_guild_name'	=> array('lang' => 'GUILD_NAME',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => false),
 				'raidattendance_realm_name'	=> array('lang' => 'REALM_NAME',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => false),
 				'raidattendance_armory_link'=> array('lang' => 'ARMORY_LINK',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
+				'raidattendance_wws_guild_id'=> array('lang' => 'WWS_GUILD_ID',	'validate' => 'int',	'type' => 'text:5:5', 'explain' => true),
 
 				'legend2'					=> 'FORUM_SETTINGS',
 				'raidattendance_forum_name'	=> array('lang' => 'FORUM_NAME',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
@@ -241,6 +245,10 @@ class acp_raidattendance {
 		if ($save or $resync) 
 		{
 			$raider_db->save_raider_list($rows);
+			if ($save) 
+			{
+				$success[] = get_text('SAVED');
+			}
 		}
 		else if ($delete)
 		{
@@ -369,10 +377,8 @@ class acp_raidattendance {
 	function merge_data(&$rows) 
 	{
 		global $error;
-		$user_ids = array();
-		$checked = array();
-		$user_ids = request_var('user_id', array());
-		$checked = request_var('checked', array());
+		$user_ids = request_var('user_id', array(0=>0));
+		$checked = request_var('checked', array(0=>'false'));
 		$new_raider = null;
 		$new_name = request_var('new_name', '');
 		if (strlen($new_name) > 0)
@@ -412,6 +418,67 @@ class acp_raidattendance {
 		{
 			$rows[$new_raider->name] = $new_raider;
 		}
+	}
+	// ------------------------------------------------------------------------
+	// Mode: wws
+	// ------------------------------------------------------------------------
+	function wwsSync($id, $mode)
+	{
+		global $db, $user, $auth, $template, $config;
+		global $error, $success;
+		if (!is_array($error)) 
+		{
+			$error = array();
+		}
+		if (!is_array($success))
+		{
+			$success = array();
+		}
+		
+		$this->tpl_name = 'acp_raidattendance_wws';
+		$resync	= request_var('resync', '');
+		$save = request_var('save', '');
+		$delete = request_var('delete', '');
+
+		if ($delete && isset($_POST['checked'])) 
+		{
+			$checked = request_var('checked', array(0=>''));
+			wws_delete($checked);
+		}
+		if ($resync)
+		{
+			$wws_db->refetch($list);
+			// TODO: Update the attendance based on $list[]->raiders
+		}
+		$wws_db = new wws_db();
+		$list = $wws_db->get_raid_list();
+
+		$rowno = 0;
+		foreach ($list as $raid) {
+			$template->assign_block_vars('raids', array(
+				'ROWNO'				=> $rowno+1,
+				'ID'				=> $raid->id,
+				'RAID'				=> $raid->raid,
+				'WWS_ID'			=> $raid->wws_id,
+				'SYNCED'			=> strftime(get_text('DATE_TIME_FORMAT'), $raid->synced),
+				'RAIDERS'			=> $raid->get_raiders(),
+			));
+			$rowno++;
+		}
+
+		$template->assign_vars(array(
+			'L_TITLE'			=> $user->lang['ACP_RAIDATTENDANCE_WWS'],
+			'L_TITLE_EXPLAIN'	=> $user->lang['ACP_RAIDATTENDANCE_WWS_EXPLAIN'],
+
+			'S_ERROR'			=> (sizeof($error)) ? true : false,
+			'ERROR_MSG'			=> implode('<br/>', $error),
+
+			'S_SUCCESS'			=> (sizeof($success)) ? true : false,
+			'SUCCESS_MSG'		=> implode('<br/>', $success),
+
+			'U_ACTION'			=> $this->u_action,
+		)
+		);		
 	}
 }
 function raider_rank($default, $key)

@@ -109,7 +109,7 @@ if (is_raidattendance_forum($forum_id))
 		'SUCCESS_MSG'			=> implode('<br/>', $success),
 		'S_ERROR'				=> sizeof($error) ? true : false,
 		'ERROR_MSG'				=> implode('<br/>', $error),
-		'S_MODERATOR'			=> $auth->acl_get('m_'),
+		'S_MODERATOR'			=> $auth->acl_get('m_') or $auth->acl_get('a_'),
 		'TSTAMP_NEXT'			=> $next_week,
 		'TSTAMP_PREV'			=> $last_week,
 		));
