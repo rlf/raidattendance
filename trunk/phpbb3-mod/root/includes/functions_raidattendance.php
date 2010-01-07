@@ -664,7 +664,7 @@ function get_static_attendance_days($day_names)
 {
 	global $db, $success;
 	$in_night = "'" . implode("','", $day_names) . "'";
-	$sql = 'SELECT n.status status, r.name name, n.night FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND n.night IN (' . $in_night . ')';
+	$sql = 'SELECT n.status status, r.name name, n.night, n.time time FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND n.night IN (' . $in_night . ')';
 	$result = $db->sql_query($sql);
 	$raider_day_attendance = array();
 	while ($row = $db->sql_fetchrow($result))

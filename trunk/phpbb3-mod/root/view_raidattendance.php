@@ -102,16 +102,26 @@ if (is_raidattendance_forum($forum_id))
 	$date_array = getdate($tstamp);
 	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
 	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
+
+	$mode = request_var('mode', 'normal');
+	$is_admin = $auth->acl_get('m_') or $auth->acl_get('a_');
+	$is_moderator = $is_admin && $mode == 'admin';
+	$num_cols = 4 + sizeof($raids);
 	$template->assign_vars(array(
+		'NUM_COLS'				=> $num_cols,
+		'NUM_COLS_LEGEND'		=> $num_cols - 2,
+		'NUM_COLS_ACTION'		=> 2,
 		'RAIDATTENDANCE_TITLE' 	=> 'Correct forum',
 		'S_RAIDATTENDANCE'		=> true,
 		'S_SUCCESS'				=> sizeof($success) ? true : false,
 		'SUCCESS_MSG'			=> implode('<br/>', $success),
 		'S_ERROR'				=> sizeof($error) ? true : false,
 		'ERROR_MSG'				=> implode('<br/>', $error),
-		'S_MODERATOR'			=> $auth->acl_get('m_') or $auth->acl_get('a_'),
+		'S_MODERATOR'			=> $is_moderator,
 		'TSTAMP_NEXT'			=> $next_week,
 		'TSTAMP_PREV'			=> $last_week,
+		'MODE'					=> $mode,
+		'S_ADMIN'				=> $is_admin,
 		));
 }
 function handle_action($action, $raiders)
@@ -120,7 +130,7 @@ function handle_action($action, $raiders)
 	$rid = request_var('rid', 0);
 	$raid = request_var('raid', '');
 	if (!$action or !$rid or !$raid)
-	{
+	{	
 		return;
 	}
 	// TODO: Additional checking

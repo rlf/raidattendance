@@ -92,6 +92,12 @@ $lang = array_merge($lang, array(
 		'DAY_LONG_Fri'				=> 'Fridays',
 		'DAY_LONG_Sat'				=> 'Saturdays',
 		'DAY_LONG_Sun'				=> 'Sundays',
+
+		'LEGEND_ON'					=> 'Raider attended the raid',
+		'LEGEND_OFF'				=> 'Raider signed off',
+		'LEGEND_NOSHOW'				=> 'Raider didn\'t show for raid',
+		'LEGEND_CLEAR'				=> 'Undo previous sign-off',
+
 	)
 );
 ?>
