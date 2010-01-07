@@ -1,0 +1,118 @@
+<LINK REL="StyleSheet" HREF="{T_TEMPLATE_PATH}/raidattendance.css" TYPE="text/css"/>
+<script language="JavaScript">
+<!--
+function go(action, rid, raid)
+{
+	var form = document.getElementById('attendance');
+	form.rid.value = rid;
+	form.raid.value = raid;
+	form.u_action.value = action;
+	form.submit();
+}
+function nav(tstamp)
+{
+	var form = document.getElementById('attendance');
+	form.tstamp.value = tstamp;
+	form.submit();
+}
+function mode(mode)
+{
+	var form = document.getElementById('attendance');
+	form.mode.value = mode;
+	form.submit();
+}
+//-->
+</script>
+<!-- IF S_ERROR -->
+<div class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF S_SUCCESS -->
+<div class="successbox">
+	<h3>{L_SUCCESS}</h3>
+	<p>{SUCCESS_MSG}</p>
+</div>
+<!-- ENDIF -->
+<form method="POST" action="{S_FORUM_ACTION}" name="attendance" id="attendance">
+	<input type="hidden" name="rid" id="rid" value="0"/>
+	<input type="hidden" name="raid" id="raid" value="0"/>
+	<input type="hidden" name="tstamp" id="tstamp" value="-1"/>
+	<input type="hidden" name="u_action" id="u_action" value="0"/>
+	<input type="hidden" name="mode" id="mode" value="{MODE}"/>
+<table id="raid_table" name="raid_table">
+	<tr>
+		<th>Name</th>
+		<th>Rank</th>
+		<th><a href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
+		<!-- BEGIN raid_days -->
+		<th>{raid_days.DAY}<br/>{raid_days.DATE}</th>
+		<!-- END raid_days -->
+		<th><a href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
+	</tr>
+	<!-- BEGIN raiders -->
+	<tr class="{raiders.ROW_CLASS}">
+		<td class="{raiders.CSS_CLASS}">{raiders.NAME}<br/>
+		<!-- IF S_MODERATOR or raiders.S_EDITABLE -->
+		<!-- BEGIN days -->
+			<!-- IF days.STATUS == 'unset' -->
+			<a class="{days.STATUS}" href="javascript:go('-', {raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
+			<!-- ELSE -->
+			<a class="{days.STATUS}" href="javascript:go('x', {raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
+			<!-- ENDIF -->
+		<!-- END -->
+		<!-- ENDIF -->
+		</td>
+		<td colspan="2">{raiders.RANK}</td>
+		<!-- BEGIN raids -->
+		<td class="{raids.STATUS}" align="center">
+			<!-- IF raids.STATUS == 'on' or raids.STATUS == 'off' or raids.STATUS == 'noshow' -->
+			<img src="images/{raids.STATUS}_active.png"/>
+			<!-- IF S_ADMIN --><br/><!-- ENDIF -->
+			<!-- ENDIF -->
+			<!-- IF S_MODERATOR -->
+			<!-- IF raids.STATUS != 'on' and raids.S_FUTURE == 0 -->
+			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on_inactive.png" alt="{L_SIGNON}" title="{L_SIGNON}"/></a>
+			<!-- ENDIF raids.STATUS != on -->
+			<!-- IF raids.STATUS != 'off' -->
+			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+			<!-- ENDIF raids.STATUS != off -->
+			<!-- IF raids.STATUS != 'noshow' and raids.S_FUTURE == 0 -->
+			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')" alt="{L_NOSHOW}"><img src="images/noshow_inactive.png" alt="{L_NOSHOW}" title="{L_NOSHOW}"/></a>
+			<!-- ENDIF raids.STATUS != noshow -->
+			<!-- IF raids.STATUS != 'past' and raids.STATUS != 'future' and raids.S_STATIC != 1 -->
+			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+			<!-- ENDIF -->
+			<!-- ELSE S_MODERATOR -->
+				<!-- IF raids.S_EDITABLE and raids.S_STATIC != 1 -->
+				<!-- IF raids.STATUS == 'off' -->
+				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+				<!-- ELSE -->
+				<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+				<!-- ENDIF -->
+				<!-- ENDIF -->
+			<!-- ENDIF S_MODERATOR -->
+		</td>
+		<!-- END raids -->
+		<td>&nbsp;</td>
+	</tr>
+	<!-- END raiders -->
+	<tr>
+		<td colspan="{NUM_COLS_LEGEND}" valign="middle" align="left">
+			<img src="images/off_inactive.png"> {L_LEGEND_OFF}&nbsp;
+			<img src="images/on_inactive.png"> {L_LEGEND_ON}&nbsp;
+			<img src="images/noshow_inactive.png"> {L_LEGEND_NOSHOW}&nbsp;
+			<img src="images/clear_inactive.png"> {L_LEGEND_CLEAR}&nbsp;
+		</td><td colspan="2" valign="top" align="right">
+		<!-- IF S_ADMIN -->
+		<!-- IF MODE == 'admin' -->
+		<a href="javascript:mode('normal')"/>{L_NORMAL}</a>
+		<!-- ELSE -->
+		<a href="javascript:mode('admin')"/>{L_ADMIN}</a>
+		<!-- ENDIF -->
+		<!-- ENDIF -->
+		</td>
+	</tr>
+</table>
+</form>
