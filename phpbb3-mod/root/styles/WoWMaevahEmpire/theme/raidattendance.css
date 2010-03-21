@@ -3,41 +3,90 @@
 */
 
 .even {
-	/*background: #c0c0ff;*/
+	background: #00002f;
 }
 .uneven {
-	/*background: #d0d0ff;*/
+	background: #00003f;
 }
-.on {
-	background: #0db300;
+.small {
+	width: 20px;
 }
-.off {
-	background: #005abf;
+.mini {
+	width: 10px;
 }
-.noshow {
-	background: #ab1f03;
+.STATUS_NEW {
+	color: green;
 }
-.future {
+.STATUS_UPDATED {
+	color: #404040;
+}
+.STATUS_NOT_IN_ARMORY {
+	color: red;
+}
+.new_raider {
+	background: #ffd0d0;
+}
+td.sum {
+	text-align: center;
+}
+b.on {
+	color: #005000;
+}
+b.off {
+	color: #000080;
+}
+b.noshow {
+	color: #500000;
+}
+
+.even_future {
 	background: #005000;
+	height: 32px;
+	border-width: 0px 1px 0px 1px;
+	border-style: none none none solid;
+	border-color: #00002f
 }
-.past {
+.even_past {
 	background: #500000;
+	height: 34px;
+	border-width: 0px 1px 0px 1px;
+	border-style: none none none solid;
+	border-color: #00002f
 }
-#raid_table tr td a, #raid_table tr td a:visited, #raid_table tr td a:link, #raid_table tr td a:active {
+.uneven_future {
+	background: #006000;
+	height: 32px;
+	border-width: 0px 1px 0px 1px;
+	border-style: none none none solid;
+	border-color: #00003f
+}
+.uneven_past {
+	background: #600000;
+	height: 34px;
+	border-width: 0px 1px 0px 1px;
+	border-style: none none none solid;
+	border-color: #00003f
+}
+a.static:visited, a.static:link, a.static:active, a.nav {
 	text-decoration: none;
 	font-weight: bold;
 	color: #777777;
 }
-#raid_table tr td a.off, #raid_table tr td a:visited.signoff, #raid_table tr td a:link.off, #raid_table tr td a:active.off {
+a.off, a.static:visited.signoff, a.static:link.off, a.static:active.off {
 	color: yellow;
 	background: none;
 }
 #raid_table tr td a:hover {
 	text-decoration: underline;
 	font-weight: bold;
-	color: #777777;
+	color: #770000;
 }
-
+#raid_table tr td:first-child {
+	padding-left: 5px;
+}
+td.legend {
+	vertical-align: middle;
+}
 /**
  * Status Boxes
  **/
@@ -96,52 +145,52 @@
  * Class Colors as taken from http://www.wowwiki.com/Class_colors
  **/
 /* Warrior */
-.class_1 {
+.class_1, a.class_1:link, a.class_1:active, a.class_1:visited {
 	color: #C79C6E;
 	font-weight: bold;
 }
 /* Paladin */
-.class_2 {
+.class_2, a.class_2:link, a.class_2:active, a.class_2:visited {
 	color: #F58CBA;
 	font-weight: bold;
 }
 /* Hunter */
-.class_3 {
+.class_3, a.class_3:link, a.class_3:active, a.class_3:visited {
 	color: #ABD473;
 	font-weight: bold;
 }
 /* Rogue */
-.class_4 {
+.class_4, a.class_4:link, a.class_4:active, a.class_4:visited {
 	color: #FFF569;
 	font-weight: bold;
 }
 /* Priest */
-.class_5 {
+.class_5, a.class_5:link, a.class_5:active, a.class_5:visited {
 	color: #FFFFFF;
 	font-weight: bold;
 }
 /* Death Knight */
-.class_6 {
+.class_6, a.class_6:link, a.class_6:active, a.class_6:visited {
 	color: #C41F3B;
 	font-weight: bold;
 }
 /* Shaman */
-.class_7 {
+.class_7, a.class_7:link, a.class_7:active, a.class_7:visited {
 	color: #2459FF;
 	font-weight: bold;
 }
 /* Mage */
-.class_8 {
+.class_8, a.class_8:link, a.class_8:active, a.class_8:visited {
 	color: #69CCF0;
 	font-weight: bold;
 }
 /* Warlock */
-.class_9 {
+.class_9, a.class_9:link, a.class_9:active, a.class_9:visited {
 	color: #9482C9;
 	font-weight: bold;
 }
 /* Druid */
-.class_11 {
+.class_11, a.class_11:link, a.class_11:active, a.class_11:visited {
 	color: #FF7D0A;
 	font-weight: bold;
 }
