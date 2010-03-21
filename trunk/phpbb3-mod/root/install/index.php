@@ -14,8 +14,9 @@
 */
 define('UMIL_AUTO', true);
 define('IN_PHPBB', true);
+define('IN_INSTALL', true);
 
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : '../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
 include($phpbb_root_path . 'common.' . $phpEx);
@@ -259,8 +260,104 @@ $versions = array(
 			array('raidattendance_wws_guild_id', request_var('wws_guild_id', 15320)),
 		),
 	),// v1.0.3
+	'1.1.0' => array(
+		'table_add' => array(
+			array('phpbb_raidattendance_raids', array(
+				'COLUMNS'		=> array(
+					'id'		=> array('UINT', NULL, 'auto_increment'),
+					'name'		=> array('VCHAR_UNI:255', ''),
+					'days'		=> array('VCHAR:255', 'mon:wed:thu'),
+				),
+				'PRIMARY_KEY'	=> 'id',
+				'KEYS'			=> array(
+					'days'		=> array('INDEX', 'days'),
+				),
+			)),
+			array('phpbb_raidattendance_raidersraid', array(
+				'COLUMNS'		=> array(
+					'raider_id'	=> array('UINT', 0),
+					'raid_id'	=> array('UINT', 0),
+				),
+				'PRIMARY_KEY'	=> array('raider_id','raid_id'),
+			)),
+		),
+		'custom'	=> 'v103_110',
+	),// v1.1.0
 );
  
+function v103_110($action, $version)
+{
+	global $db, $table_prefix, $umil, $config, $version_config_name, $user;
+	$return_value = array('command' => 'V103_110_UPDATE', 'result' => 'FAIL');
+	$current_version = $umil->config_exists($version_config_name, true);
+
+	if (($action == 'update' || $action == 'install') && $current_version == '1.0.3')
+	{
+		// Find days - from config
+		$days = array();
+		$k = 'raidattendance_raid_night_';
+		$day_map = array('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
+		foreach ($day_map as $day)
+		{
+			if ($umil->config_exists($k . $day, true))
+			{
+				$days[] = $day;
+			}
+		}
+
+		// Initialize raids
+		$data = array(array(
+			'name'			=> $user->lang('DEFAULT_RAID_NAME'),
+			'days'			=> implode(':', $days),
+		));
+		$umil->table_row_insert('phpbb_raidattendance_raids', $data);
+		$raid_id = $db->sql_nextid();
+
+		// Initialize all raiders
+		$raider_ids = array();
+		$sql = 'SELECT id FROM ' . $table_prefix . 'raidattendance_raiders';
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result)) 
+		{
+			$raider_ids[] = $row['id'];
+		}
+		$db->sql_freeresult($result);
+		$ary = array();
+		foreach ($raider_ids as $raider_id)
+		{
+			$ary[] = array('raider_id' => $raider_id, 'raid_id' => $raid_id);
+		}
+		$umil->table_row_insert('phpbb_raidattendance_raidersraid', $ary);
+
+		// Find forum_id
+		$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . " WHERE forum_name='{$config['raidattendance_forum_name']}'";
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		if ($row) 
+		{
+			$forum_id = $row['forum_id'];
+			$umil->config_add('raidattendance_forum_id', $forum_id);
+		}
+		$db->sql_freeresult($result);
+		// Cleanup config
+		foreach ($day_map as $day)
+		{
+			$umil->config_remove($k . $day);
+		}
+		$umil->config_remove('raidattendance_forum_name');
+
+		$return_value['result'] = 'SUCCESS';
+	}
+	else if ($action == 'uninstall')
+	{
+		$return_value['result'] = 'SUCCESS';
+	}
+	else 
+	{
+		$return_value['command'] = array('NOT_CORRECT_VERSION', "$current_version/$action", '1.0.3/install');
+	}
+	return $return_value;
+}
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 ?> 

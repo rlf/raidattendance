@@ -6,13 +6,14 @@ if (!defined('IN_PHPBB'))
 {
 	exit;
 }  
-class acp_raidattendance_info {
+class acp_raidattendance_info 
+{
 	function module()
 	{
 		return array(
 			'filename'	=> 'acp_raidattendance',
 			'title'		=> 'ACP_RAIDATTENDANCE',
-			'version'	=> '0.0.2',
+			'version'	=> '1.1.0',
 			'cat'		=> 'ACP_BOARD_CONFIGURATION',
 			'modes'		=> array(
 			    'settings' => array(

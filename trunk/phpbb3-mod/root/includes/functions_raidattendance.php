@@ -22,12 +22,9 @@ define('RAIDER_HISTORY_TABLE', $table_prefix . 'raidattendance_history');
 define('RAIDATTENDANCE_TABLE', $table_prefix . 'raidattendance');
 define('RAIDER_CONFIG', $table_prefix . 'raidattendance_config');
 define('TABLE_WWS_RAID', $table_prefix . 'raidattendance_wws');
-
-// UMIL is used for database updates
-if (!class_exists('umil'))
-{
-	include($phpbb_root_path . 'umil/umil.' . $phpEx);
-}
+define('RAIDS_TABLE', $table_prefix . 'raidattendance_raids');
+define('RAIDERRAIDS_TABLE', $table_prefix . 'raidattendance_raidersraid');
+define('RAIDATTENDANCE_VERSION', '1.1.0');
 
 $error = array();
 $success = array();
@@ -48,9 +45,9 @@ function url_error_handler($errno, $errstr, $errfile, $errline)
 // ---------------------------------------------------------------------------
 // Functions
 // ---------------------------------------------------------------------------
-/**
- * Returns an array of the ranks expected to raid.
- **/
+//
+// Returns an array of the ranks expected to raid.
+//
 function get_raider_ranks()
 {	
 	global $config;
@@ -68,25 +65,33 @@ function get_raider_ranks()
 
 function is_raidattendance_forum($forum_id)
 {
-	global $config, $db;
-	$forum_name = $config['raidattendance_forum_name'];
-	$sql = 'SELECT COUNT(*) cnt FROM ' . FORUMS_TABLE . " f WHERE f.forum_name = '$forum_name' AND f.forum_id = $forum_id";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$found_it = $row['cnt'] > 0;
-	$db->sql_freeresult($result);
-	return $found_it;
+	global $config;
+	return $forum_id == $config['raidattendance_forum_id'];
 }
 
-function get_raiding_days($current_week)
+function get_default_raid_id()
+{
+	global $db;
+	$sql = 'SELECT id FROM ' . RAIDS_TABLE . ' ORDER BY id ASC';
+	$result = $db->sql_query($sql);
+	$raid_id = 0;
+	$row = $db->sql_fetchrow($result);
+	if ($row)
+	{
+		$raid_id = $row['id'];
+	}
+	$db->sql_freeresult($result);
+	return $raid_id;
+}
+
+function get_raiding_days($current_week, $raid_id)
 {
 	$date_array = getdate($current_week);
 	$this_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-$date_array['wday'], $date_array['year']);
 	$date_array = getdate($this_week);
 	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
 	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
-	$day_numbers = get_raiding_day_numbers();
-	$days = get_raiding_day_numbers();
+	$days = get_raiding_day_numbers($raid_id);
 	$raiding_days = array();
 	$weeks = array($last_week, $this_week, $next_week);
 	foreach ($weeks as $week)
@@ -99,6 +104,7 @@ function get_raiding_days($current_week)
 	}
 	return $raiding_days;
 }
+
 function get_raiding_day_name($raid)
 {
 	$tm = strptime($raid, '%Y%m%d');
@@ -106,9 +112,10 @@ function get_raiding_day_name($raid)
 	$day_name = date('D', $time);
 	return $day_name;
 }
-/**
- * Converts an array of 'YYYYMMDD' timestamps to an array of day-names 'MON', 'TUE' .. 'SUN'
- **/
+
+//
+// Converts an array of 'YYYYMMDD' timestamps to an array of day-names 'MON', 'TUE' .. 'SUN'
+// 
 function get_raiding_day_names($raiding_days)
 {
 	// On purpose we use date()
@@ -128,26 +135,29 @@ function get_raiding_day_names($raiding_days)
 	}
 	return $day_names;
 }
-function get_raiding_day_numbers()
+function get_raiding_day_numbers($raid_id)
 {
-	global $config;
+	global $db;
 	$days = array();
-	$k = 'raidattendance_raid_night_';
-	$day_map = array('mon' => 1, 'tue' => 2, 'wed' => 3, 'thu' => 4, 'fri' => 5, 'sat' => 6, 'sun' => 0);
-	foreach ($day_map as $day => $number)
+	$sql = 'SELECT days FROM ' . RAIDS_TABLE . " WHERE id=$raid_id";
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	$days_str = '';
+	if ($row) 
 	{
-		if ($config[$k . $day])
-		{
-			$days[] = $number;
-		}
+		$days_str = $row['days'];
 	}
-	return $days;
+	$days = explode(':', $days_str);
+	$db->sql_freeresult($sql);
+	$day_map = array('mon' => 1, 'tue' => 2, 'wed' => 3, 'thu' => 4, 'fri' => 5, 'sat' => 6, 'sun' => 0);
+	$day_numbers = array();
+	foreach ($days as $day)
+	{
+		$day_numbers[] = $day_map[$day];
+	}
+	return $day_numbers;
 }
-function get_raiding_day_key($day_of_week_number)
-{
-	$num2name = array(0=>'SUN', 1=>'MON', 2=>'TUE', 3=>'WED', 4=>'THU', 5=>'FRI', 6=>'SAT');
-	return $num2name[$day_of_week_number];
-}
+
 function tm2time($tm) 
 {
 	extract($tm);
@@ -180,6 +190,7 @@ function post_num($num)
 	}
 	return sprintf($user->lang['DAY_NUMBER_OTHER'], $num);
 }
+
 function get_raider_with_id($raiders, $id)
 {
 	foreach ($raiders as $name => $raider)
@@ -191,16 +202,13 @@ function get_raider_with_id($raiders, $id)
 	}
 	return null;
 }
-function is_umil_error($res)
+
+function is_dbal_error()
 {
-	global $user;
-	$success = $user->lang['SUCCESS'] ? $user->lang['SUCCESS'] : 'SUCCESS';
-	if (strpos($res, '<br />' . $success) === FALSE) 
-	{
-		return TRUE;
-	}
-	return FALSE;
+	global $db;
+	return $db->sql_affectedrows() <= 0;
 }
+
 // ---------------------------------------------------------------------------
 // Raiders from the wowarmory
 // ---------------------------------------------------------------------------
@@ -282,20 +290,27 @@ class raider_armory
 			}
 		}
 	}
+
 	function end_elem($parser, $name)
 	{
 		// don't care
 	}
 }
+
 // ---------------------------------------------------------------------------
 // Raiders from the DB
 // ---------------------------------------------------------------------------
 class raider_db
 {
-	function get_raider_list(&$raiders)
+	function get_raider_list(&$raiders, $raid_id = false)
 	{
 		global $db, $error;
-		$sql = 'SELECT * FROM ' . RAIDER_TABLE . ' ORDER BY rank, name, level DESC';
+		$sql = 'SELECT r.* FROM ' . RAIDER_TABLE . ' r';
+		if ($raid_id != false) 
+		{
+			$sql = $sql . ' JOIN ' . RAIDERRAIDS_TABLE . ' rr ON rr.raider_id=r.id WHERE rr.raid_id=' . $raid_id;
+		}
+		$sql = $sql . ' ORDER BY rank, name, level DESC';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -319,10 +334,10 @@ class raider_db
 		}
 		$db->sql_freeresult($result);
 	}
+
 	function save_raider_list(&$rows)
 	{
-		global $error, $debug, $user, $success;
-		$umil = new umil(true);
+		global $error, $debug, $user, $success, $db;
 		$added = array();
 		$updated = array();
 		foreach ($rows as $raider) 
@@ -332,8 +347,9 @@ class raider_db
 			{
 				// we have a row, update it
 				$old = array('id' => $raider->id);
-				$res = $umil->table_row_update(RAIDER_TABLE, $old, $raider->as_row());
-				if (is_umil_error($res))
+				$sql = 'UPDATE ' . RAIDER_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $raider->as_row()) . ' WHERE id=' . $raider->id;
+				$db->sql_query($sql);
+				if (is_dbal_error())
 				{
 					$error[] = sprintf($user->lang['ERROR_UPDATING_RAIDER'], $raider->name, $res);
 				}
@@ -345,8 +361,9 @@ class raider_db
 			else 
 			{
 				// we need to create a row
-				$res = $umil->table_row_insert(RAIDER_TABLE, array($raider->as_row()));
-				if (is_umil_error($res))
+				$ary = array($raider->as_row());
+				$res = $db->sql_multi_insert(RAIDER_TABLE, $ary);
+				if (is_dbal_error())
 				{
 					$error[] = sprintf($user->lang['ERROR_ADDING_RAIDER'], $raider->name, $res);
 				}
@@ -364,15 +381,15 @@ class raider_db
 	}
 	function delete_checked_raiders(&$rows)
 	{
-		global $error, $success, $user;
-		$umil = new umil(true);
+		global $error, $success, $user, $db;
 		// TODO: Optimize this so we use the checked array directly
 		foreach ($rows as $k => $raider)
 		{
 			if ($raider->is_checked()) 
 			{
-				$res = $umil->table_row_remove(RAIDER_TABLE, array('id' => $raider->id));
-				if (is_umil_error($res))
+				$sql = 'DELETE FROM ' . RAIDER_TABLE . " WHERE id={$raider->id}";
+				$res = $db->sql_query($sql);
+				if (is_dbal_error())
 				{
 					$error[] = sprintf($user->lang['ERROR_DELETING_RAIDER'], $raider->name, $res);
 				}
@@ -385,17 +402,14 @@ class raider_db
 		}
 	}
 }
-function checked2list($checked)
-{
-	return '(' . implode(',', array_keys($checked)) . ')';
-}
+
 // ---------------------------------------------------------------------------
 // WWS from the DB
 // ---------------------------------------------------------------------------
 function wws_delete($checked)
 {
 	global $db, $success, $error, $user;
-	$sql = 'DELETE FROM ' . TABLE_WWS_RAID . ' WHERE id IN ' . checked2list($checked);
+	$sql = 'DELETE FROM ' . TABLE_WWS_RAID . ' WHERE ' . $db->sql_in_set('id', $checked);
 	$res = $db->sql_query($sql);
 	if ($res === FALSE) 
 	{
@@ -406,6 +420,7 @@ function wws_delete($checked)
 		$success[] = sprintf($user->lang['SUCCESS_DELETING_WWS'], sizeof($checked));
 	}
 }
+
 class wws_db
 {
 	// TODO: Add a time-filter... for when many raids are in the database
@@ -422,6 +437,7 @@ class wws_db
 		$db->sql_freeresult($result);
 		return $list;
 	}
+
 	function refetch(&$list)
 	{
 		global $db, $error, $success, $config;
@@ -450,6 +466,7 @@ class wws_db
 		
 		return $this->raids;
 	}
+
 	function start_elem($parser, $name, array $attrs)
 	{
 		if ($name == 'Raid') 
@@ -464,6 +481,7 @@ class wws_db
 			$this->raiders[] = $attrs['name'];
 		}
 	}
+
 	function end_elem($parser, $name)
 	{
 		global $success, $error;
@@ -482,6 +500,7 @@ class wws_db
 		}
 	}
 }
+
 // ---------------------------------------------------------------------------
 // Class WWS Raid Entry
 //---------------------------------------------------------------------------
@@ -502,14 +521,14 @@ class wws_entry
 			$this->raiders = explode(',', $this->raiders); 
 		}
 	}
+
 	function save()
 	{
-		global $error, $success;
-		$umil = new umil(true);
+		global $error, $success, $db;
 		if ($this->id) 
 		{
-			$res = $umil->table_row_update(TABLE_WWS_RAID, array('id'=>$this->id), $this->as_row());
-			if (is_umil_error($res)) 
+			$sql = 'UPDATE ' . TABLE_WWS_RAID . ' SET ' . $db->sql_build_array('UPDATE', $this->as_row()) . " WHERE id={$this->id}";
+			if (is_dbal_error()) 
 			{
 				$error[] = 'Error updating WWS entry with id ' . $this->id . '<br/>' . $res;
 			}
@@ -520,8 +539,9 @@ class wws_entry
 		}
 		else
 		{
-			$res = $umil->table_row_insert(TABLE_WWS_RAID, $this->as_row());
-			if (is_umil_error($res)) 
+			$ary = array($this->as_row());
+			$res = $db->sql_multi_insert(TABLE_WWS_RAID, $ary);
+			if (is_dbal_error()) 
 			{
 				$error[] = 'Error inserting WWS entry with wws_id ' . $this->wws_id . '<br/>' . $res;
 			}
@@ -531,6 +551,7 @@ class wws_entry
 			}
 		}
 	}
+
 	function as_row()
 	{
 		$ary = array(
@@ -545,6 +566,7 @@ class wws_entry
 		}
 		return $ary;
 	}
+
 	function get_raiders()
 	{
 		return is_array($this->raiders) ? implode(', ', $this->raiders) : '';
@@ -555,16 +577,16 @@ class wws_entry
 // ---------------------------------------------------------------------------
 function add_history($raider, $action)
 {
-	global $user;
-	$umil = new umil(true);
-	$data = array(
+	global $user, $db;
+	$data = array(array(
 		'user_id' 		=> $user->data['user_id'],
 		'raider_id'		=> $raider->id,
 		'time'			=> time(),
 		'action'		=> is_array($action) ? implode(',', $action) : $action,
-		);
-	$umil->table_row_insert(RAIDER_HISTORY_TABLE, $data);
+		));
+	$db->sql_multi_insert(RAIDER_HISTORY_TABLE, $data);
 }
+
 function get_history($starttime, $endtime = 0)
 {
 	if ($endtime = 0) 
@@ -582,6 +604,7 @@ function get_history($starttime, $endtime = 0)
 	$db->sql_freeresult($result);
 	return $history;
 }
+
 class history
 {
 	function __construct($row)
@@ -593,13 +616,13 @@ class history
 		$this->action		= $row['action'];
 	}
 }
+
 // ---------------------------------------------------------------------------
 // Attendance Access
 // ---------------------------------------------------------------------------
 function set_attendance($raider, $night, $status)
 {
-	global $error, $success;
-	$umil = new umil(true);
+	global $error, $success, $db;
 	$status_map = array('signon' => 1, 'signoff' => 2, 'noshow' => 3);
 	$ident = array(
 		'raider_id'			=> $raider->id,
@@ -613,32 +636,30 @@ function set_attendance($raider, $night, $status)
 		);
 	if ($status === false) 
 	{
-		$res = $umil->table_row_remove(RAIDATTENDANCE_TABLE, $ident);
-		if (is_umil_error($res))
+		$sql = 'DELETE FROM ' . RAIDATTENDANCE_TABLE . " WHERE raider_id={$raider->id} AND night='{$night}'"; 
+		$res = $db->sql_query($sql);
+		if (is_dbal_error())
 		{
 			$error[] = $res;
 		}
 		return;
 	}
-	$res = $umil->table_row_insert(RAIDATTENDANCE_TABLE, $data);
-	if (is_umil_error($res))
+	$ary = array($data);
+	$res = $db->sql_multi_insert(RAIDATTENDANCE_TABLE, $ary);
+	if (is_dbal_error())
 	{
-		$res = $umil->table_row_update(RAIDATTENDANCE_TABLE, $ident, $data);
-		if (is_umil_error($res)) 
-		{
-			$error[] = $res;
-		}
+		$error[] = $res;
 	}
 }
+
 /**
  * Returns an associative array with _raidername_ => array(_raidnight_ => _status)
  **/
 function get_attendance($nights)
 {
 	global $db;
-	$in_night = "'" . implode("','", $nights) . "'";
 	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
-		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND n.night IN (' . $in_night . ')';
+		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $nights);
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	while ($row = $db->sql_fetchrow($result))
@@ -655,16 +676,17 @@ function get_attendance($nights)
 	$db->sql_freeresult($result);
 	return $attendance;
 }
+
 function get_static_attendance($raids)
 {
 	$day_names = get_raiding_day_names($raids);
 	return get_static_attendance_days($day_names);
 }
+
 function get_static_attendance_days($day_names)
 {
 	global $db, $success;
-	$in_night = "'" . implode("','", $day_names) . "'";
-	$sql = 'SELECT n.status status, r.name name, n.night, n.time time FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND n.night IN (' . $in_night . ')';
+	$sql = 'SELECT n.status status, r.name name, n.night, n.time time FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $day_names);
 	$result = $db->sql_query($sql);
 	$raider_day_attendance = array();
 	while ($row = $db->sql_fetchrow($result))
@@ -681,6 +703,7 @@ function get_static_attendance_days($day_names)
 	$db->sql_freeresult($result);
 	return $raider_day_attendance;
 }
+
 /**
  * Merges the two attendance arrays.
  **/
@@ -702,6 +725,7 @@ function add_static_attendance($raids, &$attendance, $raider_day_attendance)
 		}
 	}
 }
+
 // ---------------------------------------------------------------------------
 // Raider Class
 // ---------------------------------------------------------------------------
@@ -711,10 +735,12 @@ class raider
 	{
 		$this->update($row);
 	}
+
 	function is_saved_in_db()
 	{
 		return $this->id;
 	}
+
 	function as_row()
 	{
 		$data = array(
@@ -730,6 +756,7 @@ class raider
 		);
 		return $data;
 	}
+
 	function compare($raider)
 	{
 		$cmp = strcmp($a->name, $b->name);
@@ -739,10 +766,12 @@ class raider
 		}
 		return $cmp;
 	}
+
 	function is_checked()
 	{
 		return $this->__checked;
 	}
+
 	function get_status()
 	{
 		global $user;
@@ -750,14 +779,17 @@ class raider
 			? '<b class="STATUS_' . $this->__status . '">*' . $user->lang['STATUS_' . $this->__status] . '*</b>&nbsp;'
 			: '';
 	}
+
 	function set_user_id($id)
 	{
 		$this->user_id = $id;
 	}
+
 	function set_checked($b)
 	{
 		$this->__checked = $b;
 	}
+
 	function get_rank_name()
 	{
 		global $config, $user;
@@ -768,6 +800,7 @@ class raider
 		}
 		return $rank_name;
 	}
+
 	function update($row)
 	{
 		if ($this->id and $this->name == $row['name'] 
@@ -801,21 +834,25 @@ class raider
 			$this->user_id = $row['user_id'];
 		}
 	}
+
 	function signon($raid)
 	{
 		add_history($this, 'SIGNON');
 		set_attendance($this, $raid, 'signon');
 	}
+
 	function signoff($raid)
 	{
 		add_history($this, 'SIGNOFF');
 		set_attendance($this, $raid, 'signoff');
 	}
+
 	function clear_attendance($raid)
 	{
 		add_history($this, 'CLEAR');
 		set_attendance($this, $raid, false);
 	}
+
 	function noshow($raid)
 	{
 		add_history($this, 'NOSHOW');

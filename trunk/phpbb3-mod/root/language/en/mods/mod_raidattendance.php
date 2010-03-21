@@ -40,6 +40,7 @@ $lang = array_merge($lang, array(
 		'RAIDERS'					=> 'Raiders',
 		'LEVEL'						=> 'Level',
 		'RANK'						=> 'Rank',
+		'NAME'						=> 'Name',
 		'CLASS'						=> 'Class',
 
 		'CLASS_1'					=> 'Warrior',
@@ -93,10 +94,17 @@ $lang = array_merge($lang, array(
 		'DAY_LONG_Sat'				=> 'Saturdays',
 		'DAY_LONG_Sun'				=> 'Sundays',
 
-		'LEGEND_ON'					=> 'Raider attended the raid',
-		'LEGEND_OFF'				=> 'Raider signed off',
-		'LEGEND_NOSHOW'				=> 'Raider didn\'t show for raid',
-		'LEGEND_CLEAR'				=> 'Undo previous sign-off',
+		'STATUS'					=> 'Status',
+		'LEGEND_STATUS_ON'			=> 'Raider was available for raiding',
+		'LEGEND_STATUS_OFF'			=> 'Raider signed off',
+		'LEGEND_STATUS_NOSHOW'		=> 'Raider didn\'t show for raid',
+		'ACTIONS'					=> 'Actions',
+		'LEGEND_ACTION_ON'			=> 'Indicate raider was available for raid',
+		'LEGEND_ACTION_OFF'			=> 'Sign-off from raid',
+		'LEGEND_ACTION_NOSHOW'		=> 'Mark raider as being AWOL',
+		'LEGEND_ACTION_CLEAR'		=> 'Undo previous sign-off',
+		'ADMIN'						=> '[ Admin ]',
+		'NORMAL'					=> '[ Normal ]',
 
 	)
 );

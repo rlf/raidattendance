@@ -11,9 +11,11 @@ global $phpbb_root_path, $phpEx;
 include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
 
 global $error, $success;
-class acp_raidattendance {
+class acp_raidattendance 
+{
 	var $u_action;
 	var $new_config;
+
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template;
@@ -36,6 +38,7 @@ class acp_raidattendance {
 				break;
 		}
 	}
+
 	// ------------------------------------------------------------------------
 	// Mode: settings
 	// ------------------------------------------------------------------------
@@ -56,18 +59,12 @@ class acp_raidattendance {
 				'raidattendance_wws_guild_id'=> array('lang' => 'WWS_GUILD_ID',	'validate' => 'int',	'type' => 'text:5:5', 'explain' => true),
 
 				'legend2'					=> 'FORUM_SETTINGS',
-				'raidattendance_forum_name'	=> array('lang' => 'FORUM_NAME',	'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
+				'raidattendance_forum_id'	=> array('lang' => 'FORUM_NAME',	'validate' => 'string',	'type' => 'custom', 'explain' => true, 'function' => 'forum_id'),
 
-				'legend3'					=> 'RAID_SETTINGS',
-				'raidattendance_raid_night_mon'		=> array('lang' => 'RAID_NIGHT_MON','validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raid_night_tue'		=> array('lang' => 'RAID_NIGHT_TUE','validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raid_night_wed'		=> array('lang' => 'RAID_NIGHT_WED','validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raid_night_thu'		=> array('lang' => 'RAID_NIGHT_THU','validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raid_night_fri'		=> array('lang' => 'RAID_NIGHT_FRI','validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raid_night_sat'		=> array('lang' => 'RAID_NIGHT_SAT','validate' => 'bool', 'type' => 'radio', 'explain' => false),
-				'raidattendance_raid_night_sun'		=> array('lang' => 'RAID_NIGHT_SUN','validate' => 'bool', 'type' => 'radio', 'explain' => false),
+				'legend3'					=> 'RAIDS',
+				'raidattendance_raidsetup'	=> array('lang' => 'RAID_SETUP',	'type' => 'custom', 'explain' => true, 'function' => 'raid_setup'),
 
-				'legend4'		=> 'RAIDER_RANKS',
+				'legend4'						=> 'RAIDER_RANKS',
 				'raidattendance_min_level'		=> array('lang' => 'MIN_LEVEL',	'validate' => 'int', 'type' => 'text:2:2', 'explain' => true),
 				'raidattendance_raider_rank0'	=> array('lang' => 'RANK_0',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
 				'raidattendance_raider_rank1'	=> array('lang' => 'RANK_1',	'type' => 'custom', 'explain' => false, 'function' => 'raider_rank'),
@@ -83,6 +80,7 @@ class acp_raidattendance {
 		);
 		$this->saveConfig($display_vars);
 	}
+
 	// 
 	// Validate and Save Config Data
 	// 
@@ -155,7 +153,7 @@ class acp_raidattendance {
 
 		if ($submit)
 		{
-			add_log('admin', 'LOG_CONFIG_' . strtoupper($mode));
+			add_log('admin', 'LOG_CONFIG_RAIDATTENDANCE_SETTINGS');
 
 			trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 		}
@@ -222,6 +220,7 @@ class acp_raidattendance {
 		}
 		
 	}
+
 	// ------------------------------------------------------------------------
 	// Mode: sync
 	// ------------------------------------------------------------------------
@@ -300,6 +299,7 @@ class acp_raidattendance {
 		)
 		);
 	}
+
 	function resync(&$old_rows)
 	{
 		global $config;
@@ -311,36 +311,39 @@ class acp_raidattendance {
 		$extractor = new raider_armory();
 		$extractor->get_raider_list($armory, $realm, $guild, get_raider_ranks(), $min_level, $old_rows);
 	}
+
 	function get_class_options()
 	{
 		global $user;
-		$s = '';
+		$result_html = '';
 		for ($i = 0; $i <= 11; ++$i)
 		{
 			$class_name = $user->lang['CLASS_' . $i];
 			if ($class_name)
 			{
-				$s .= '<option value="' . $i . '">' . $class_name . '</option>';
+				$result_html .= '<option value="' . $i . '">' . $class_name . '</option>';
 			}
 		}
-		return $s;
+		return $result_html;
 	}
+
 	function get_rank_options()
 	{
 		global $user, $config;
-		$s = '';
+		$result_html = '';
 		$basekey = 'raidattendance_raider_rank';
 		for ($i = 0; $i < 10; ++$i)
 		{
 			$rank_name = $config[$basekey . $i . '_name'];
 			$rank_name = $rank_name ? $rank_name : $user->lang['RANK_' . $i];
-			$s .= '<option value="' . $i . '">' . $rank_name . '</option>';
+			$result_html .= '<option value="' . $i . '">' . $rank_name . '</option>';
 		}
-		return $s;
+		return $result_html;
 	}
+
 	function get_user_options($users, $raider_name, $user_id = 0)
 	{
-		$s = '';
+		$result_html = '';
 		foreach ($users as $usr)
 		{
 			$id = $usr['id'];
@@ -354,14 +357,15 @@ class acp_raidattendance {
 			{
 				$selected = ' selected';
 			}
-			$s .= '<option value="' . $usr['id'] . '"' . $selected . '>' . $name . '</option>';
+			$result_html .= '<option value="' . $id . '"' . $selected . '>' . $name . '</option>';
 		}
-		return $s;
+		return $result_html;
 	}
+
 	function get_user_list()
 	{
 		global $db, $user;
-		$sql = 'SELECT user_id, username FROM ' . USERS_TABLE . " WHERE user_email <> ''";
+		$sql = 'SELECT user_id, username FROM ' . USERS_TABLE . ' WHERE user_type <> ' . USER_IGNORE;
 		$result = $db->sql_query($sql);
 		$users = array(array('id' => 0, 'name' => $user->lang['UNKNOWN_USER']));
 		while ($row = $db->sql_fetchrow($result)) 
@@ -371,6 +375,7 @@ class acp_raidattendance {
 		$db->sql_freeresult($result);
 		return $users;
 	}
+
 	/** 
 	 * Merges the rows with whatever was supplied in the POST.
 	 **/
@@ -419,6 +424,7 @@ class acp_raidattendance {
 			$rows[$new_raider->name] = $new_raider;
 		}
 	}
+
 	// ------------------------------------------------------------------------
 	// Mode: wws
 	// ------------------------------------------------------------------------
@@ -445,12 +451,12 @@ class acp_raidattendance {
 			$checked = request_var('checked', array(0=>''));
 			wws_delete($checked);
 		}
+		$wws_db = new wws_db();
 		if ($resync)
 		{
 			$wws_db->refetch($list);
 			// TODO: Update the attendance based on $list[]->raiders
 		}
-		$wws_db = new wws_db();
 		$list = $wws_db->get_raid_list();
 
 		$rowno = 0;
@@ -481,6 +487,7 @@ class acp_raidattendance {
 		);		
 	}
 }
+
 function raider_rank($default, $key)
 {
 	global $user, $config;
@@ -497,6 +504,41 @@ function raider_rank($default, $key)
 	return '<input id="config[' . $key . '_name]" name="config[' . $key . '_name]" type="text" value="' . $rank_name . '"/>' .
 		'&nbsp;' . $user->lang['IS_RAIDER'] . '&nbsp;' .
 		$tpl_yes . $tpl_no;
+}
+
+function forum_id($default, $key)
+{
+	global $user, $config, $db;
+	$current_id = $config[$key];
+
+	$name = "config[$key]";
+
+	$html = '<select id="' . $key . '" name="' . $name . '" size="1">';
+	$html = $html . "<!-- current_id = $current_id, key=$key -->";
+
+	$sql = 'SELECT forum_name, forum_id, parent_id FROM ' . FORUMS_TABLE . ' ORDER BY forum_name ASC';
+	$result = $db->sql_query($sql);
+	// NOTE: No structure... perhaps we need it?
+	while ($row = $db->sql_fetchrow($result)) 
+	{
+		$html = $html . '<option value="' . $row['forum_id'] . '"';
+		if ($current_id == $row['forum_id']) 
+		{
+			$html = $html . ' selected';
+		}
+		$html = $html . '>' . htmlentities($row['forum_name']) . '</option>';
+	}
+	$db->sql_freeresult($result);
+	$html = $html . '</select>';
+	return $html;
+}
+
+// raid_setup
+// Configures the HTML to be used to configure the raid-setup
+function raid_setup($default, $key)
+{
+	$html = '';
+	return $html;
 }
 
 ?>
