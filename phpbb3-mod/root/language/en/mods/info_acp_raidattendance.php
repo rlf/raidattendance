@@ -35,6 +35,9 @@ $lang = array_merge($lang, array(
 		'UNINSTALL_RAIDATTENDANCE' => 'Uninstall Raid Attendance',
 		'UNINSTALL_RAIDATTENDANCE_CONFIRM' => 'Uninstall Raid Attendance?',
 		'ACP_CAT_RAIDATTENDANCE'	=> 'Raid Attendance',
+
+		'NOT_CORRECT_VERSION'		=> 'Incorrect version %1$s, expected %2$s',
+		'V103_110_UPDATE'			=> 'Auto-update from v1.0.3 - v1.1.0',
 	//
 	// ACP - Configuration
 	//
@@ -108,6 +111,8 @@ $lang = array_merge($lang, array(
 		'ERROR_DELETING_WWS'		=> 'Error deleting %d raids',
 		'SUCCESS_DELETING_WWS'		=> 'Successfully deleted %d raids',
 		'SAVED'						=> 'Changes have been saved',
+		'BETA_TITLE'				=> 'This functionality is still in beta!',
+		'BETA_BODY'					=> "Please use at your own risk (or don't use it at all)",
 	)
 );
 ?>

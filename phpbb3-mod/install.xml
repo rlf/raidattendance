@@ -7,9 +7,15 @@ Please check: http://code.google.com/p/raidattendance
 <header>
 	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 	<title lang="en">RaidAttendance - Addon</title>
-	<description lang="en"></description>
+	<description lang="en">
+		MOD for the phpBB that enables administrators to manage a list of raiders associated with
+		forum-users and allow these to sign off/on to raids on a per-day basis.
+	</description>
 
-	<author-notes lang="en"></author-notes>
+	<author-notes lang="en">
+		The MOD integrates to the http://eu.wowarmory.com service for synchronization of raiders and
+		have experimental integration with the http://www.worldoflogs.com for checking raid-attendancy.
+	</author-notes>
 
 	<author-group>
 		<author>
@@ -19,8 +25,12 @@ Please check: http://code.google.com/p/raidattendance
 			<email>rasmus.lock.larsen@gmail.com</email>
 		</author>
 	</author-group>
+	<link-group>
+		<link type="template" href="prosilver.xml" lang="en">prosilver</link>
+		<link type="template" href="WoWMaevahEmpire.xml" lang="en">WoWMaevahEmpire</link>
+	</link-group>
 
-	<mod-version>1.0.3</mod-version>
+	<mod-version>1.1.0</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -29,6 +39,13 @@ Please check: http://code.google.com/p/raidattendance
 	</installation>
 
 	<history>
+		<entry>
+			<date>2010-03-20</date>
+			<rev-version>1.1.0</rev-version>
+			<changelog lang="en">
+				<change>Support for multiple raid-setups + various minor bug-fixes</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2009-12-15</date>
 			<rev-version>1.0.3</rev-version>
@@ -77,9 +94,6 @@ Please check: http://code.google.com/p/raidattendance
 	<copy>
 		<file from="root/*.*" to="*.*" />
 	</copy>
-	<copy>
-		<file from="contrib/umil" to="umil" />
-	</copy>
 	<open src="viewforum.php">
 		<edit>
 			<find><![CDATA[// Build navigation links]]></find>
@@ -89,17 +103,7 @@ include($phpbb_root_path . 'view_raidattendance.' . $phpEx);
 			</action>
 		</edit>
 	</open>
-	<open src="styles/WoWMaevahEmpire/template/viewforum_body.html">
-		<edit>
-			<find><![CDATA[<div id="pagecontent">]]></find>
-			<action type="before-add"><![CDATA[
-<!-- IF S_RAIDATTENDANCE -->
-<!-- INCLUDE viewforum_raidattendance.html --> 
-<!-- ENDIF -->			
-]]>
-			</action>
-		</edit>
-	</open>
-	<diy-instructions lang="en-gb">Go to the following page install_raidattendance.php, and once completed configure the MOD under FORUMS &gt; RAIDATTENDANCE &gt; CONFIGURATION</diy-instructions>
+	<diy-instructions lang="en-gb">Go to the page /install and complete the auto-installation (or upgrade) instructions.
+		Once completed configure the MOD under FORUMS &gt; RAIDATTENDANCE &gt; CONFIGURATION</diy-instructions>
 </action-group>
 </mod>

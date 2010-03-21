@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<!-- RaidAttendance by the Hippie Eradicators. Copyright 2008.
+Please check: http://code.google.com/p/raidattendance
+ $Id: install.xml 190 2009-11-08 17:10:54Z exreaction $ -->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
+
+<action-group>
+	<copy>
+		<file from="root/styles/prosilver/*.*" to="styles/prosilver/*.*" />
+	</copy>
+	<open src="styles/prosilver/template/viewforum_body.html">
+		<edit>
+			<find><![CDATA[{FORUM_NAME}</a></h2>]]></find>
+			<action type="after-add"><![CDATA[
+<!-- IF S_RAIDATTENDANCE -->
+<!-- INCLUDE viewforum_raidattendance.html --> 
+<!-- ENDIF -->			
+]]>
+			</action>
+		</edit>
+	</open>
+</action-group>
+</mod>

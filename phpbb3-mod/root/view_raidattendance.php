@@ -22,17 +22,22 @@ include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
 
 if (is_raidattendance_forum($forum_id)) 
 {
-	global $user, $auth;
+	global $user, $auth, $config;
+	$raid_id = request_var('raid_id', 0);
+	if ($raid_id == 0) 
+	{
+		$raid_id = get_default_raid_id();
+	}
 	$user->add_lang(array('mods/mod_raidattendance', 'mods/info_acp_raidattendance'));
 	$success = array();
 	$error = array();
 	$tstamp = request_var('tstamp', 0);
 	$tstamp = $tstamp > 0 ? $tstamp : time();
 	$today = strftime('%Y%m%d', time());
-	$raids = get_raiding_days($tstamp);
+	$raids = get_raiding_days($tstamp, $raid_id);
 	$raider_db = new raider_db();
 	$raiders = array();
-	$raider_db->get_raider_list($raiders);
+	$raider_db->get_raider_list($raiders, $raid_id);
 	$action = request_var('u_action', '');
 	if ($action)
 	{
@@ -45,16 +50,11 @@ if (is_raidattendance_forum($forum_id))
 
 	$rowno = 0;
 	$names = array_keys($raiders);
-	foreach ($raids as $raid)
-	{
-		$tm = strptime($raid, '%Y%m%d');
-		$time = tm2time($tm);
-		$template->assign_block_vars('raid_days', array(
-			'DATE'			=> sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%B', $time)),
-			'DAY'			=> strftime('%A', $time),
-		));
-	}
 	$statusses = array(1=>'on', 2=>'off', 3=>'noshow', 0=>'future', -1=>'past', -2=>'unset');
+	$sums = array();
+	$armory_link = $config['raidattendance_armory_link'];
+	$realm = $config['raidattendance_realm_name'];
+	$url_base = $armory_link . '/character-sheet.xml?r=' . urlencode($realm) . '&cn=';
 	foreach ($raiders as $name => $raider) 
 	{
 		$template->assign_block_vars('raiders', array(
@@ -70,6 +70,7 @@ if (is_raidattendance_forum($forum_id))
 			'CHECKED'			=> $raider->is_checked() ? ' checked' : '',
 			'CSS_CLASS'			=> 'class_' . $raider->class,
 			'S_EDITABLE'		=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)),
+			'ARMORY_LINK'		=> $url_base . urlencode($raider->name),
 		));
 		foreach ($day_names as $day)
 		{
@@ -86,18 +87,37 @@ if (is_raidattendance_forum($forum_id))
 		foreach ($raids as $raid)
 		{
 			$future = $raid >= $today;
-			$status = $attendance[$raider->name][$raid];
+			$status = $attendance[$raider->name][$raid] or ($future ? 0 : -1);
+			if (!is_array($sums[$raid])) 
+			{
+				$sums[$raid] = array('off'=>0, 'noshow'=>0);
+			}
+			$sums[$raid][$statusses[$status]] = $sums[$raid][$statusses[$status]] + 1;
 			$day_name = get_raiding_day_name($raid);
 			$is_static = $static_attendance[$raider->name][$day_name] == 2;
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
-				'STATUS'		=> $statusses[$status ? $status : ($future ? 0 : -1)],
+				'STATUS'		=> $statusses[$status],
 				'S_FUTURE'		=> $future ? '1' : '0',
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_STATIC'		=> $is_static ? 1 : 0,
 				));
 		}
 		$rowno++;
+	}
+	$num_raiders = sizeof($raiders);
+	foreach ($raids as $raid)
+	{
+		$tm = strptime($raid, '%Y%m%d');
+		$time = tm2time($tm);
+		$date = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%B', $time));
+		$template->assign_block_vars('raid_days', array(
+			'DATE'			=> $date,
+			'DAY'			=> strftime('%A', $time),
+			'SUM_NOSHOW'	=> $sums[$raid]['noshow'],
+			'SUM_OFF'		=> $sums[$raid]['off'],
+			'SUM_ON'		=> $num_raiders - $sums[$raid]['noshow'] - $sums[$raid]['off'],
+		));
 	}
 	$date_array = getdate($tstamp);
 	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
@@ -111,7 +131,6 @@ if (is_raidattendance_forum($forum_id))
 		'NUM_COLS'				=> $num_cols,
 		'NUM_COLS_LEGEND'		=> $num_cols - 2,
 		'NUM_COLS_ACTION'		=> 2,
-		'RAIDATTENDANCE_TITLE' 	=> 'Correct forum',
 		'S_RAIDATTENDANCE'		=> true,
 		'S_SUCCESS'				=> sizeof($success) ? true : false,
 		'SUCCESS_MSG'			=> implode('<br/>', $success),
@@ -122,6 +141,7 @@ if (is_raidattendance_forum($forum_id))
 		'TSTAMP_PREV'			=> $last_week,
 		'MODE'					=> $mode,
 		'S_ADMIN'				=> $is_admin,
+		'MOD_VERSION'			=> $config['raidattendance_version'],
 		));
 }
 function handle_action($action, $raiders)
