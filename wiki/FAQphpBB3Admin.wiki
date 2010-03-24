@@ -1,5 +1,15 @@
 #summary Frequently Asked Questions for Admins
+#sidebar ToC
 
+<wiki:toc max_depth="3" />
+
+= Installation =
+See the {{{install.xml}}} and {{{install/index.php}}} files in the root folder for details.
+
+  # Use AutoMOD to install the MOD into the ACP.
+  # Go to the {{{phpBB3/install}}} and follow the instructions.
+
+= Configuration =
 == Where do I find the raidattendance MOD on the ACP?==
 _I've logged in as administrator in the ACP, but can't find the freaking Raid attendance, where is it?_
 
