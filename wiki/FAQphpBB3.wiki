@@ -1,15 +1,4 @@
 #summary Frequently Asked Questions about the phpBB3 MOD
-#sidebar ToC
-
-<wiki:toc max_depth="3" />
-
-= Installation =
-See the {{{install.xml}}} and {{{install_raidattendance.php}}} files in the root folder for details.
-
-  # Use AutoMOD to install the MOD into the ACP.
-  # Go to the {{{phpBB3/install_raidattendance.php}}} and follow the instructions.
-
-= Configuration =
 = Usage =
 == Forum Users ==
 === How do I sign off from a raid? ===
