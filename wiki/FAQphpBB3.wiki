@@ -2,7 +2,7 @@
 #sidebar ToC
 
 <wiki:toc max_depth="3" />
-= Basic Usage =
+= Sign On/Off =
 == How do I sign off from a raid? ==
 Simply click the signoff icon (X) of the future raid you wish to signoff from.
 
