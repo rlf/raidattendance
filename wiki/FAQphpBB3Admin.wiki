@@ -11,19 +11,19 @@ See the {{{install.xml}}} and {{{install/index.php}}} files in the root folder f
 
 = Configuration =
 == Where do I find the raidattendance MOD on the ACP?==
-`FORUMS > CONFIGURATION`
+`ACP > FORUMS > CONFIGURATION`
 
 _I've logged in as administrator in the ACP, but can't find the freaking Raid attendance, where is it?_
 
 It is located under the FORUMS tab (per default the second tab):
 
 == How do I add raiders to the raider-list?==
-`FORUMS > RAIDERS`
+`ACP > FORUMS > RAIDERS`
 
 As an administrator you can add raiders from the armory using the _Resync with armory_ button on the _Raiders_ pane, or manually add raiders using the very last row on the list and the _Save_ button.
 
 == How do I add or delete raids? ==
-`FORUMS > CONFIGURAION`
+`ACP > FORUMS > CONFIGURAION`
 
 As an admin you can remove already configured raid-setups simply by editing their name to an empty name and saving the changes.
 
