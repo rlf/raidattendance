@@ -1,4 +1,6 @@
 #summary Frequently Asked Questions about the phpBB3 MOD
+#sidebar ToC
+
 = Usage =
 == Forum Users ==
 === How do I sign off from a raid? ===
