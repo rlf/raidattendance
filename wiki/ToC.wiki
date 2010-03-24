@@ -12,4 +12,4 @@
     * [WoWAddonBacklog Backlog]
   * FAQ
     * [FAQphpBB3 phpBB3 MOD]
-    * [FAQphpBB3 phpBB3 MOD Admin]
+    * [FAQphpBB3Admin phpBB3 MOD Admin]
