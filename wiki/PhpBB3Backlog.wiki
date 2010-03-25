@@ -25,6 +25,10 @@
 
 = Completed =
 
+== v1.1.0c - 25th of March 2010 - Multiple raids ==
+  * 
+  * 
+
 == v1.0.3 - 16th of December 2009 - Save/Delete raider bugfix ==
   * bugfix#3 - Save and deletion of raiders from ACP
   * improvement - initial draft version of World of Logs integration
