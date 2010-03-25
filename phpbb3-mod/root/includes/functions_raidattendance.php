@@ -352,7 +352,6 @@ class raider_db
 
 				// Update Raids
 				$raids = $raider->get_raids();
-				$error[] = 'Sizeof raids : ' . sizeof($raids);
 				$sql = 'DELETE FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $raider->id;
 				$db->sql_query($sql);
 
