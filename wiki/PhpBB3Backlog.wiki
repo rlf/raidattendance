@@ -26,8 +26,11 @@
 = Completed =
 
 == v1.1.0c - 25th of March 2010 - Multiple raids ==
-  * 
-  * 
+  * Defects/Issues:
+    * #5 style should be limited to prosilver	 
+    * #8 Link to the FAQ on the Raid Availability page
+    * #9 Version of the MOD should be shown   Usability
+    * #11 Multiple raid-setups
 
 == v1.0.3 - 16th of December 2009 - Save/Delete raider bugfix ==
   * bugfix#3 - Save and deletion of raiders from ACP
