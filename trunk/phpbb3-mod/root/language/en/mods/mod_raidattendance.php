@@ -73,7 +73,7 @@ $lang = array_merge($lang, array(
 		'EMPTY'						=> 'Clear selection',
 		'IS_RAIDER'					=> 'Expected to raid?',
 
-		'DAY_MONTH'					=> '%1$s of %2$s', // 1st of November
+		'DAY_MONTH'					=> '%1$s %2$s', // 1st Nov
 		'DAY_NUMBER1'				=> '%dst', // 1st, 21st, 31st ...
 		'DAY_NUMBER2'				=> '%dnd', // 2nd, 22nd, 32nd ...
 		'DAY_NUMBER3'				=> '%drd', // 3rd, 23rd, 33rd ... 
@@ -105,6 +105,7 @@ $lang = array_merge($lang, array(
 		'LEGEND_ACTION_CLEAR'		=> 'Undo previous sign-off',
 		'ADMIN'						=> '[ Admin ]',
 		'NORMAL'					=> '[ Normal ]',
+		'FAQ'						=> '[ FAQ ]',
 
 	)
 );

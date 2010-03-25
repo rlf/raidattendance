@@ -94,6 +94,19 @@ $lang = array_merge($lang, array(
 		'STATUS_NEW'				=> 'new',
 		'RAIDER_ALREADY_EXISTS'		=> 'A raider named %s already exists!',
 		'ADD_RAIDER'				=> 'Add raider',
+		'RAIDS'						=> 'Raids',
+		'RAID_SETUP'				=> 'Raid Setup',
+		'RAID_SETUP_EXPLAIN'		=> 'Enables configuration of multiple raids for different days.',
+		'DEFAULT_RAID_NAME'			=> '25 Man',
+		'mon'						=> 'Mon',
+		'tue'						=> 'Tue',
+		'wed'						=> 'Wed',
+		'thu'						=> 'Thu',
+		'fri'						=> 'Fri',
+		'sat'						=> 'Sat',
+		'sun'						=> 'Sun',
+		'RAID_SAVED'				=> 'Saved %s',
+		'RAID_SAVED_ERROR'			=> 'Error saving %s',
 	//
 	// ACP - WWS
 	//

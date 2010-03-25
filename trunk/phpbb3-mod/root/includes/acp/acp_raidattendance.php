@@ -6,6 +6,8 @@ if (!defined('IN_PHPBB'))
 {
 	exit;
 }  
+define('DAYS', 'mon:tue:wed:thu:fri:sat:sun');
+define('NL', "\n");
 
 global $phpbb_root_path, $phpEx;
 include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
@@ -140,7 +142,7 @@ class acp_raidattendance
 				set_config($config_name, $config_value);
 			}
 		}
-		// Set the names
+		// Save non-"normal" configs
 		if ($submit) 
 		{		
 			for ($ix = 0; $ix < 10; ++$ix) 
@@ -149,10 +151,8 @@ class acp_raidattendance
 				$config_value = $cfg_array[$config_name];
 				set_config($config_name, $config_value);
 			}
-		}
-
-		if ($submit)
-		{
+			// save the raids
+			$this->saveRaidSetup();
 			add_log('admin', 'LOG_CONFIG_RAIDATTENDANCE_SETTINGS');
 
 			trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
@@ -218,7 +218,58 @@ class acp_raidattendance
 
 			unset($display_vars['vars'][$config_key]);
 		}
-		
+	}
+
+	function saveRaidSetup()
+	{
+		global $db, $error, $success, $user;
+		$raids = request_var('raid', array(0=>array(''=>'')));
+		foreach ($raids as $id => $raid)
+		{
+			//$raid = $raids[$i];
+			$days = array();
+			foreach (explode(':', DAYS) as $day)
+			{
+				if ($raid[$day]) 
+				{
+					$days[] = $day;
+				}
+			}
+			$data = array(
+				'name'	=> $db->sql_escape($raid['name']),
+				'days'	=> implode(':', $days),
+			);
+			$sql = false;
+			if ($id > 0 && $data['name'] != '')
+			{
+				// Update
+				$sql = 'UPDATE ' . RAIDS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . ' WHERE id=' . $id;
+			}	
+			else if ($id > 0 && $data['name'] == '')
+			{
+				// Delete
+				$sql = 'DELETE FROM ' . RAIDERRAIDS_TABLE . ' WHERE raid_id=' . $id;
+				$db->sql_query($sql);
+				$sql = 'DELETE FROM ' . RAIDS_TABLE . ' WHERE id=' . $id;
+			}
+			else if ($data['name'] != '')
+			{
+				// Add
+				$sql = 'INSERT INTO ' . RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $data);
+			}
+			if ($sql)
+			{
+				$db->sql_query($sql);
+				if ($db->sql_affectedrows() > 0) 
+				{
+					$success[] = sprintf($user->lang['RAID_SAVED'], $data['name']);
+				}
+				else
+				{
+					$error[] = sprintf($user->lang['RAID_SAVED_ERROR'], $data['name']);
+				}
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------------
@@ -255,7 +306,9 @@ class acp_raidattendance
 		}
 		$rowno = 0;
 		$users = $this->get_user_list();
+		$raids = get_raids();
 		foreach ($rows as $name => $raider) {
+			$raider_raids = $raider->get_raids();
 			$template->assign_block_vars('raiders', array(
 				'ROWNO'				=> $rowno+1,
 				'ID'				=> $raider->id,
@@ -271,7 +324,29 @@ class acp_raidattendance
 
 				'CSS_CLASS'			=> 'class_' . $raider->class,
 			));
+			foreach ($raids as $ix => $raid)
+			{
+				$in_raid = in_array($raid['id'], $raider_raids);
+				$template->assign_block_vars('raiders.raids', array(
+					'DEBUG'			=> implode(':',$raider_raids).'['.$in_raid.']',
+					'ID'			=> $raid['id'],
+					'S_IN_RAID'		=> $in_raid,
+					'CHECKED'		=> $in_raid ? ' checked' : '',
+				));
+				if ($in_raid)
+				{
+					$raid['sum'] = (isset($raid['sum']) ? $raid['sum'] : 0) + 1;
+				}
+			}
 			$rowno++;
+		}
+		foreach ($raids as $raid)
+		{
+			$template->assign_block_vars('raids', array(
+				'ID'	=> $raid['id'],
+				'SUM'	=> $raid['sum'],
+				'NAME'	=> $raid['name'],
+				));
 		}
 		if (!is_array($error)) 
 		{
@@ -398,6 +473,8 @@ class acp_raidattendance
 			// TODO verify input!
 			$new_raider = new raider($row);
 		}
+		// Handle Raids
+		$raiderraid = request_var('raiderraid', array(0=>array(0=>'false')));
 		foreach ($rows as $raider)
 		{
 			$name = $raider->name;
@@ -417,6 +494,14 @@ class acp_raidattendance
 			{
 				$error[] = sprintf($user->lang['RAIDER_ALREADY_EXISTS'], $name);
 				$new_raider = null;
+			}
+			if (isset($raiderraid[$raider->id])) 
+			{
+				$raider->raids = array();
+				foreach ($raiderraid[$raider->id] as $raid_id => $check)
+				{
+					$raider->raids[] = $raid_id;
+				}
 			}
 		}
 		if ($new_raider)
@@ -514,7 +599,6 @@ function forum_id($default, $key)
 	$name = "config[$key]";
 
 	$html = '<select id="' . $key . '" name="' . $name . '" size="1">';
-	$html = $html . "<!-- current_id = $current_id, key=$key -->";
 
 	$sql = 'SELECT forum_name, forum_id, parent_id FROM ' . FORUMS_TABLE . ' ORDER BY forum_name ASC';
 	$result = $db->sql_query($sql);
@@ -537,7 +621,49 @@ function forum_id($default, $key)
 // Configures the HTML to be used to configure the raid-setup
 function raid_setup($default, $key)
 {
+	global $db, $user;
+	$sql = 'SELECT * FROM ' . RAIDS_TABLE . ' ORDER BY id ASC';
+	$result = $db->sql_query($sql);
+	$html = '<table class="raids" id="raids" name="raids">';
+	$html = $html . '<tr><th>' . $user->lang['NAME'] . '</th>';
+	foreach (explode(':',DAYS) as $day)
+	{
+		$html = $html . '<th>' . $user->lang[$day] . '</th>';
+	}
+	$html = $html . '</tr>';
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$html = $html . get_raid_html_row($row);
+	}
+	$new_row = array('id' => 0, 'name' => '', 'days' => '');
+	$html = $html . get_raid_html_row($new_row);
+	$html = $html . '</table>';
+	$db->sql_freeresult($result);
+	return $html;
+}
+
+function get_raid_html_row($row)
+{
 	$html = '';
+	// name, mon,tue,wed,thu,fri,sat,sun
+	$id = $row['id'];
+	$name = 'raid[' . $id . ']';
+	$html = $html . '<tr id="raid_' . $id .'"><td>' . NL;
+	$html = $html . '<input type="hidden" name="' . $name . '[id]" id="'. $name . '[id]" value="' . $id . '"/>' . NL;
+	$html = $html . '<input type="text" name="' . $name . '[name]" id="' . $name . '[name]" value="' . $row['name'] . '" size="20"/></td>' . NL;
+	$days = explode(':', $row['days']);
+	$all_days = explode(':', DAYS);
+	foreach ($all_days as $day) 
+	{
+		$key = $name . '[' . $day . ']';
+		$html = $html . '<td><input type="checkbox" id="' . $key . '" name="' . $key . '"';
+		if (array_search($day, $days) !== FALSE) 
+		{
+			$html = $html . ' checked';
+		}
+		$html = $html . '/></td>' . NL;
+	}
+	$html = $html . '</tr>' . NL;
 	return $html;
 }
 

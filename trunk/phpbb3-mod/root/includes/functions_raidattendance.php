@@ -342,18 +342,30 @@ class raider_db
 		$updated = array();
 		foreach ($rows as $raider) 
 		{
-			$res = 'nothing happened';
+			$num_errors_before = sizeof($errors);
 			if ($raider->is_saved_in_db()) 
 			{
 				// we have a row, update it
 				$old = array('id' => $raider->id);
 				$sql = 'UPDATE ' . RAIDER_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $raider->as_row()) . ' WHERE id=' . $raider->id;
 				$db->sql_query($sql);
-				if (is_dbal_error())
+
+				// Update Raids
+				$raids = $raider->get_raids();
+				$error[] = 'Sizeof raids : ' . sizeof($raids);
+				$sql = 'DELETE FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $raider->id;
+				$db->sql_query($sql);
+
+				$ary = array();
+				foreach ($raids as $raid)
 				{
-					$error[] = sprintf($user->lang['ERROR_UPDATING_RAIDER'], $raider->name, $res);
+					$ary[] = array(
+						'raid_id' 	=> $raid,
+						'raider_id' => $raider->id,
+					);
 				}
-				else 
+				$db->sql_multi_insert(RAIDERRAIDS_TABLE, $ary);
+				if (sizeof($errors) == $num_errors_before) 
 				{
 					$updated[] = $raider->name;
 				}
@@ -367,9 +379,8 @@ class raider_db
 				{
 					$error[] = sprintf($user->lang['ERROR_ADDING_RAIDER'], $raider->name, $res);
 				}
-				else 
+				if (sizeof($errors) == $num_errors_before) 
 				{
-					//$success[] = sprintf($user->lang['SUCCESS_ADDING_RAIDER'], $raider->name);
 					$added[] = $raider->name;
 				}
 			}
@@ -818,9 +829,9 @@ class raider
 		$this->level 	= $row['level'];
 		$this->rank		= $row['rank'];
 		$this->class	= $row['class'];
-		$this->synced 	= $row['synced'] or $this->synced;
-		$this->edited	= $row['edited'] or $this->edited;
-		$this->created	= $row['created'] or $this->created;
+		$this->synced 	= isset($row['synced']) ? $row['synced'] : $this->synced;
+		$this->edited	= isset($row['edited']) ? $row['edited'] : $this->edited;
+		$this->created	= isset($row['created']) ? $row['created'] : $this->created;
 		if (isset($row['id'])) 
 		{
 			$this->id	= $row['id'];
@@ -834,6 +845,27 @@ class raider
 			$this->user_id = $row['user_id'];
 		}
 	}
+
+	// RAIDS
+	function get_raids()
+	{
+		if (!$this->raids)
+		{
+			global $db;
+			$sql = 'SELECT raid_id FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $this->id;
+			$result = $db->sql_query($sql);
+			$raids = array();
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$raids[] = $row['raid_id'];
+			}
+			$db->sql_freeresult($result);
+			$this->raids = $raids;
+		}
+		return $this->raids;
+	}
+
+	// HISTORY
 
 	function signon($raid)
 	{
@@ -858,5 +890,22 @@ class raider
 		add_history($this, 'NOSHOW');
 		set_attendance($this, $raid, 'noshow');
 	}
+}
+
+// ----------------------------------------------------------------------------
+// Raids
+// ----------------------------------------------------------------------------
+function get_raids()
+{
+	global $db;
+	$sql = 'SELECT * FROM ' . RAIDS_TABLE . ' ORDER BY id ASC';
+	$result = $db->sql_query($sql);
+	$raids = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$raids[] = $row;
+	}
+	$db->sql_freeresult($result);
+	return $raids;
 }
 ?>
