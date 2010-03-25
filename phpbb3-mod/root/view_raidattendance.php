@@ -87,7 +87,8 @@ if (is_raidattendance_forum($forum_id))
 		foreach ($raids as $raid)
 		{
 			$future = $raid >= $today;
-			$status = $attendance[$raider->name][$raid] or ($future ? 0 : -1);
+			$status = $attendance[$raider->name][$raid];
+			$status = isset($status) ? $status : ($future ? 0 : -1);
 			if (!is_array($sums[$raid])) 
 			{
 				$sums[$raid] = array('off'=>0, 'noshow'=>0);
@@ -98,7 +99,7 @@ if (is_raidattendance_forum($forum_id))
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
 				'STATUS'		=> $statusses[$status],
-				'S_FUTURE'		=> $future ? '1' : '0',
+				'S_FUTURE'		=> $future,
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_STATIC'		=> $is_static ? 1 : 0,
 				));
@@ -110,13 +111,15 @@ if (is_raidattendance_forum($forum_id))
 	{
 		$tm = strptime($raid, '%Y%m%d');
 		$time = tm2time($tm);
-		$date = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%B', $time));
+		$future = $raid >= $today;
+		$date = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%b', $time));
 		$template->assign_block_vars('raid_days', array(
 			'DATE'			=> $date,
-			'DAY'			=> strftime('%A', $time),
+			'DAY'			=> strftime('%a', $time),
 			'SUM_NOSHOW'	=> $sums[$raid]['noshow'],
 			'SUM_OFF'		=> $sums[$raid]['off'],
 			'SUM_ON'		=> $num_raiders - $sums[$raid]['noshow'] - $sums[$raid]['off'],
+			'S_FUTURE'		=> $future,
 		));
 	}
 	$date_array = getdate($tstamp);
@@ -142,7 +145,18 @@ if (is_raidattendance_forum($forum_id))
 		'MODE'					=> $mode,
 		'S_ADMIN'				=> $is_admin,
 		'MOD_VERSION'			=> $config['raidattendance_version'],
+		'RAID_ID'				=> $raid_id,
+	));
+
+	$raids = get_raids();
+	foreach ($raids as $raid)
+	{
+		$template->assign_block_vars('raids', array(
+			'ID'				=> $raid['id'],
+			'SELECTED'			=> $raid['id'] == $raid_id,
+			'NAME'				=> $raid['name'],
 		));
+	}
 }
 function handle_action($action, $raiders)
 {

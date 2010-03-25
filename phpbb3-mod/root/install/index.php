@@ -290,6 +290,10 @@ function v103_110($action, $version)
 	global $db, $table_prefix, $umil, $config, $version_config_name, $user;
 	$return_value = array('command' => 'V103_110_UPDATE', 'result' => 'FAIL');
 	$current_version = $umil->config_exists($version_config_name, true);
+	if (is_array($current_version)) 
+	{
+		$current_version = $current_version['config_value'];
+	}
 
 	if (($action == 'update' || $action == 'install') && $current_version == '1.0.3')
 	{

@@ -29,6 +29,9 @@
 			<th>{L_RANK}</th>
 			<th>{L_CLASS}</th>
 			<th>{L_FORUM_USER}</th>
+			<!-- BEGIN raids -->
+			<th>{raids.NAME}</th>
+			<!-- END -->
 		</tr>
 	</thead>
 	<tbody>
@@ -41,6 +44,10 @@
 	<td>{raiders.RANK}</td>
 	<td>{raiders.CLASS}</td>
 	<td><select name="user_id[{raiders.ID}]" width="100%">{raiders.USER_OPTIONS}</select></td>
+	<!-- BEGIN raids -->
+	<!-- {raids.DEBUG} -->
+	<td><input type="checkbox" name="raiderraid[{raiders.ID}][{raids.ID}]"<!-- IF raids.S_IN_RAID --> checked<!-- ENDIF -->/></td>
+	<!-- END -->
 </tr>
 <!-- END raiders -->
 <tr class="new_raider">
