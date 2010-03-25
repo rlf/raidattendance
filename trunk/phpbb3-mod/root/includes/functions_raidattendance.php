@@ -850,15 +850,18 @@ class raider
 	{
 		if (!$this->raids)
 		{
-			global $db;
-			$sql = 'SELECT raid_id FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $this->id;
-			$result = $db->sql_query($sql);
 			$raids = array();
-			while ($row = $db->sql_fetchrow($result))
+			if ($this->id) 
 			{
-				$raids[] = $row['raid_id'];
+				global $db;
+				$sql = 'SELECT raid_id FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $this->id;
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$raids[] = $row['raid_id'];
+				}
+				$db->sql_freeresult($result);
 			}
-			$db->sql_freeresult($result);
 			$this->raids = $raids;
 		}
 		return $this->raids;
