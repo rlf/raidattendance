@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<!-- RaidAttendance by the Hippie Eradicators. Copyright 2008.
+Please check: http://code.google.com/p/raidattendance
+$Id: install.xml 190 2009-11-08 17:10:54Z exreaction $ -->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+  <header>
+    <license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+    <title lang="en">RaidAttendance - Addon</title>
+    <description lang="en">
+      MOD for the phpBB that enables administrators to manage a list of raiders associated with
+      forum-users and allow these to sign off/on to raids on a per-day basis.
+    </description>
+
+    <author-notes lang="en">
+      The MOD integrates to the http://eu.wowarmory.com service for synchronization of raiders and
+      have experimental integration with the http://www.worldoflogs.com for checking raid-attendancy.
+    </author-notes>
+
+    <author-group>
+      <author>
+        <username>Rapal</username>
+        <realname>Rasmus Lock Fuglsang</realname>
+        <homepage></homepage>
+        <email>rasmus.lock.larsen@gmail.com</email>
+      </author>
+    </author-group>
+    <link-group>
+      <link type="template" href="WoWMaevahEmpire.xml" lang="en">WoWMaevahEmpire</link>
+    </link-group>
+
+    <mod-version>1.1.0c</mod-version>
+
+    <installation>
+      <level>easy</level>
+      <time>60</time>
+      <target-version>3.0.7-PL1</target-version>
+    </installation>
+
+    <history>
+      <entry>
+        <date>2010-03-20</date>
+        <rev-version>1.1.0</rev-version>
+        <changelog lang="en">
+          <change>Support for multiple raid-setups + various minor bug-fixes</change>
+        </changelog>
+      </entry>
+      <entry>
+        <date>2009-12-15</date>
+        <rev-version>1.0.3</rev-version>
+        <changelog lang="en">
+          <change>Bugfixes to save and delete functionality + experimental integration with World of Logs</change>
+        </changelog>
+      </entry>
+      <entry>
+        <date>2009-12-07</date>
+        <rev-version>1.0.2</rev-version>
+        <changelog lang="en">
+          <change>Update to install.xml to be MODX compliant.</change>
+        </changelog>
+      </entry>
+      <entry>
+        <date>2009-12-06</date>
+        <rev-version>1.0.1</rev-version>
+        <changelog lang="en">
+          <change>Minor authentication bugfix and new icons from Yorrick.</change>
+        </changelog>
+      </entry>
+      <entry>
+        <date>2009-12-06</date>
+        <rev-version>1.0.0</rev-version>
+        <changelog lang="en">
+          <change>First Official Release.
+            Supports:
+            ADMIN:
+            * UMIL + AutoMOD for installing the MOD.
+            * Configuration of rank-names, rank-status, raider-level etc.
+            * Automatical sync with armory.
+            * Manually adding raider
+            * Deleting raiders
+            USERS:
+            * Signing off from raids in the future.
+            * Permanently signing off from specific raiding days.
+            MODERATORS:
+            * Signing off on behalf of raiders.
+            * Recording raiders attendance on raids already completed.</change>
+        </changelog>
+      </entry>
+    </history>
+  </header>
+
+  <action-group>
+    <copy>
+      <file from="root/*.*" to="*.*" />
+    </copy>
+    <open src="viewforum.php">
+      <edit>
+        <find><![CDATA[// Build navigation links]]></find>
+        <action type="before-add"><![CDATA[// Raidattendance
+          include($phpbb_root_path . 'view_raidattendance.' . $phpEx);
+          ]]>
+        </action>
+      </edit>
+    </open>
+    <!-- ProSilver -->
+    <copy>
+      <file from="root/styles/prosilver/*.*" to="styles/prosilver/*.*" />
+    </copy>
+    <open src="styles/prosilver/template/viewforum_body.html">
+      <edit>
+        <find><![CDATA[{FORUM_NAME}</a></h2>]]></find>
+    <action type="after-add"><![CDATA[
+      <!-- IF S_RAIDATTENDANCE -->
+      <!-- INCLUDE viewforum_raidattendance.html --> 
+      <!-- ENDIF -->			
+      ]]>
+    </action>
+  </edit>
+</open>
+<diy-instructions lang="en-gb">Go to the page /install and complete the auto-installation (or upgrade) instructions.
+  Once completed configure the MOD under FORUMS &gt; RAIDATTENDANCE &gt; CONFIGURATION</diy-instructions>  
+</action-group>
+</mod>
