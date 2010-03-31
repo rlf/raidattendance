@@ -48,11 +48,18 @@ function gotoRaid(raid_id)
 	<input type="hidden" name="u_action" id="u_action" value="0"/>
 	<input type="hidden" name="mode" id="mode" value="{MODE}"/>
 	<input type="hidden" name="raid_id" id="raid_id" value="{RAID_ID}"/>
-<table id="raids" name="raids" cellspacing="0" cellpadding="0">
+<table id="raid_table" name="raid_table" cellspacing="0" cellpadding="0">
+	<tr>
+		<td colspan="{NUM_COLS}">
+	<table id="raids" name="raids" cellspacing="0" cellpadding="0">
+		<tr><td class="left">
 <!-- BEGIN raids -->
 <a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="javascript:gotoRaid('{raids.ID}')" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a>&nbsp;
-<!-- END -->
-<table id="raid_table" name="raid_table" cellspacing="0" cellpadding="0">
+<!-- END --></td><td class="right">&nbsp;</td>
+</tr>
+</table>
+		</td>
+	</tr>
 	<tr>
 		<th>{L_NAME}</th>
 		<th>{L_RANK}</th>

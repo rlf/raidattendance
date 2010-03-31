@@ -61,6 +61,8 @@ $lang = array_merge($lang, array(
 		'RAID_NIGHT_FRI'			=> 'Friday',
 		'RAID_NIGHT_SAT'			=> 'Saturday',
 		'RAID_NIGHT_SUN'			=> 'Sunday',
+		'RAID_TIME'					=> 'Raiding time',
+		'RAID_TIME_EXPLAIN'			=> 'The time when raids commense. I.e. when raiders can no more signoff and admins can mark raiders as being AWOL.',
 
 		'RAIDER_RANKS'				=> 'Rank of Raiders',
 		'MIN_LEVEL'					=> 'Raider Level',
