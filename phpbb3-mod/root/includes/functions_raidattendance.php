@@ -24,7 +24,7 @@ define('RAIDER_CONFIG', $table_prefix . 'raidattendance_config');
 define('TABLE_WWS_RAID', $table_prefix . 'raidattendance_wws');
 define('RAIDS_TABLE', $table_prefix . 'raidattendance_raids');
 define('RAIDERRAIDS_TABLE', $table_prefix . 'raidattendance_raidersraid');
-define('RAIDATTENDANCE_VERSION', '1.1.0');
+define('RAIDATTENDANCE_VERSION', '1.1.1');
 
 $error = array();
 $success = array();
@@ -102,6 +102,7 @@ function get_raiding_days($current_week, $raid_id)
 			$raiding_days[] = strftime('%Y%m%d', mktime(0,0,0, $date_array['mon'], $date_array['mday'] + $day, $date_array['year']));
 		}
 	}
+	asort($raiding_days);
 	return $raiding_days;
 }
 

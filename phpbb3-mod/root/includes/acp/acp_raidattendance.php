@@ -65,6 +65,7 @@ class acp_raidattendance
 
 				'legend3'					=> 'RAIDS',
 				'raidattendance_raidsetup'	=> array('lang' => 'RAID_SETUP',	'type' => 'custom', 'explain' => true, 'function' => 'raid_setup'),
+				'raidattendance_raid_time'	=> array('lang' => 'RAID_TIME', 	'validate' => 'time', 'type' => 'text:5:5', 'explain' => true),
 
 				'legend4'						=> 'RAIDER_RANKS',
 				'raidattendance_min_level'		=> array('lang' => 'MIN_LEVEL',	'validate' => 'int', 'type' => 'text:2:2', 'explain' => true),

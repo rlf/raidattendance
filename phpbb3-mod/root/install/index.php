@@ -69,6 +69,9 @@ $options = array(
 
 	'legend2'		=> 'FORUM_SETTINGS',
 	'forum_name'	=> array('lang' => 'FORUM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'Raid Availability'),
+
+	'legend3'		=> 'RAID_SETTINGS',
+	'raid_time'		=> array('lang' => 'RAID_TIME', 'validate' => 'time', 'type' => 'text:5:5', 'explain' => true, 'default' => '19:45'),
 );
 
  
@@ -283,6 +286,11 @@ $versions = array(
 		),
 		'custom'	=> 'v103_110',
 	),// v1.1.0
+	'1.1.1' => array(
+		'config_add' => array(
+			array('raidattendance_raid_time', request_var('raid_time', '19:45')),
+		),
+	), // v1.1.1
 );
  
 function v103_110($action, $version)

@@ -33,7 +33,11 @@ if (is_raidattendance_forum($forum_id))
 	$error = array();
 	$tstamp = request_var('tstamp', 0);
 	$tstamp = $tstamp > 0 ? $tstamp : time();
+	$now = strftime('%H:%M', time());
+	//$error[] = 'time: ' . $now . ', timezone : ' . $user->data['user_timezone'];
 	$today = strftime('%Y%m%d', time());
+	$raid_time =  $config['raidattendance_raid_time'];
+	
 	$raids = get_raiding_days($tstamp, $raid_id);
 	$raider_db = new raider_db();
 	$raiders = array();
@@ -86,19 +90,20 @@ if (is_raidattendance_forum($forum_id))
 		}
 		foreach ($raids as $raid)
 		{
-			$future = $raid >= $today;
+			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
 			$status = $attendance[$raider->name][$raid];
 			$status = isset($status) ? $status : ($future ? 0 : -1);
+			$status = $statusses[$status];
 			if (!is_array($sums[$raid])) 
 			{
 				$sums[$raid] = array('off'=>0, 'noshow'=>0);
 			}
-			$sums[$raid][$statusses[$status]] = $sums[$raid][$statusses[$status]] + 1;
+			$sums[$raid][$status] = $sums[$raid][$status] + 1;
 			$day_name = get_raiding_day_name($raid);
 			$is_static = $static_attendance[$raider->name][$day_name] == 2;
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
-				'STATUS'		=> $statusses[$status],
+				'STATUS'		=> $status,
 				'S_FUTURE'		=> $future,
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_STATIC'		=> $is_static ? 1 : 0,
@@ -111,7 +116,7 @@ if (is_raidattendance_forum($forum_id))
 	{
 		$tm = strptime($raid, '%Y%m%d');
 		$time = tm2time($tm);
-		$future = $raid >= $today;
+		$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
 		$date = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%b', $time));
 		$template->assign_block_vars('raid_days', array(
 			'DATE'			=> $date,
