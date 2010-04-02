@@ -296,6 +296,8 @@ $versions = array(
 			array('phpbb_raidattendance_raiders', 'role', array('UINT', 9)),
 		),
 	), // V1.1.2
+	'1.1.3' => array(
+	), // v1.1.3
 );
  
 function v103_110($action, $version)

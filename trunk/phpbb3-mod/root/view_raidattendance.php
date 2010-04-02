@@ -54,7 +54,7 @@ if (is_raidattendance_forum($forum_id))
 
 	$rowno = 0;
 	$names = array_keys($raiders);
-	$statusses = array(1=>'on', 2=>'off', 3=>'noshow', 0=>'future', -1=>'past', -2=>'unset');
+	$statusses = array(STATUS_ON=>'on', STATUS_OFF=>'off', STATUS_NOSHOW=>'noshow', STATUS_LATE=>'late', 0=>'future', -1=>'past', -2=>'unset');
 	$sums = array();
 	$armory_link = $config['raidattendance_armory_link'];
 	$realm = $config['raidattendance_realm_name'];
@@ -94,12 +94,12 @@ if (is_raidattendance_forum($forum_id))
 			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
 			$status = $attendance[$raider->name][$raid];
 			$status = isset($status) ? $status : ($future ? 0 : -1);
-			$status = $statusses[$status];
 			if (!is_array($sums[$raid])) 
 			{
-				$sums[$raid] = array('off'=>0, 'noshow'=>0);
+				$sums[$raid] = array(STATUS_OFF=>0, STATUS_NOSHOW=>0);
 			}
 			$sums[$raid][$status] = $sums[$raid][$status] + 1;
+			$status = $statusses[$status];
 			$day_name = get_raiding_day_name($raid);
 			$is_static = $static_attendance[$raider->name][$day_name] == 2;
 			$template->assign_block_vars('raiders.raids', array(
@@ -122,9 +122,9 @@ if (is_raidattendance_forum($forum_id))
 		$template->assign_block_vars('raid_days', array(
 			'DATE'			=> $date,
 			'DAY'			=> strftime('%a', $time),
-			'SUM_NOSHOW'	=> $sums[$raid]['noshow'],
-			'SUM_OFF'		=> $sums[$raid]['off'],
-			'SUM_ON'		=> $num_raiders - $sums[$raid]['noshow'] - $sums[$raid]['off'],
+			'SUM_NOSHOW'	=> $sums[$raid][STATUS_NOSHOW],
+			'SUM_OFF'		=> $sums[$raid][STATUS_OFF],
+			'SUM_ON'		=> $num_raiders - $sums[$raid][STATUS_NOSHOW] - $sums[$raid][STATUS_OFF],
 			'S_FUTURE'		=> $future,
 		));
 	}
@@ -204,12 +204,17 @@ function handle_action($action, $raiders)
 	{
 		$raider->noshow($raid);
 	}
+	else if ($action == '%')
+	{
+		$raider->late($raid);
+	}
 
 	$lang_array = array(
 		'+' => 'STATUS_CHANGE_ON', 
 		'-' => 'STATUS_CHANGE_OFF', 
 		'x' => 'STATUS_CHANGE_CLEAR', 
 		'!' => 'STATUS_CHANGE_NOSHOW', 
+		'%'	=> 'STATUS_CHANGE_LATE',
 	);
 	$lang_key = $lang_array[$action];
 	if ($username && $raider->name && $day && $user->lang[$lang_key]) 
