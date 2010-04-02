@@ -97,6 +97,9 @@ function gotoRaid(raid_id)
 			<!-- IF raids.STATUS != 'on' and not raids.S_FUTURE -->
 			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on_inactive.png" alt="{L_SIGNON}" title="{L_SIGNON}"/></a>
 			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'late' and not raids.S_FUTURE -->
+			<a href="javascript:go('%',{raiders.ID},'{raids.RAID}')" alt="{L_LATE}"><img src="images/late_inactive.png" alt="{L_LATE}" title="{L_LATE}"/></a>
+			<!-- ENDIF -->
 			<!-- IF raids.STATUS != 'off' -->
 			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
 			<!-- ENDIF -->
@@ -121,7 +124,7 @@ function gotoRaid(raid_id)
 	</tr>
 	<!-- END raiders -->
 	<tr>
-		<td colspan="3">&nbsp;</td>
+		<td colspan="4">&nbsp;</td>
 		<!-- BEGIN raid_days -->
 		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF -->">
 			<b class="on">{raid_days.SUM_ON}</b>/<b class="off">{raid_days.SUM_OFF}</b>/<b class="noshow">{raid_days.SUM_NOSHOW}</b>
@@ -131,13 +134,21 @@ function gotoRaid(raid_id)
 	<tr><td colspan="{NUM_COLS_LEGEND}">
 <table class="legend" cellspacing="0" cellpadding="0">
 <tr>
-	<td valign="top" align="left">{L_LEGEND}</td>
+	<td valign="top" align="left"><b>{L_LEGEND}</b><br/>
+		<table>
+			<tr><td class="on_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNON}</td></tr>
+			<tr><td class="off_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNOFF}</td></tr>
+			<tr><td class="noshow_even">&nbsp;&nbsp;&nbsp;</td><td>{L_NOSHOW}</td></tr>
+			<tr><td class="late_even">&nbsp;&nbsp;&nbsp;</td><td>{L_LATE}</td></tr>
+		</table>
+	</td>
 <td valign="top" align="left">
 						<b>{L_ACTIONS}</b><br/>
 			<img src="images/off_inactive.png"> {L_LEGEND_ACTION_OFF}<br/>
 			<img src="images/clear_inactive.png"> {L_LEGEND_ACTION_CLEAR}<br/>
 			<!-- IF S_MODERATOR -->
 			<img src="images/on_inactive.png"> {L_LEGEND_ACTION_ON}<br/>
+			<img src="images/late_inactive.png"> {L_LEGEND_ACTION_LATE}<br/>
 			<img src="images/noshow_inactive.png"> {L_LEGEND_ACTION_NOSHOW}
 			<!-- ENDIF -->
 			</td></tr></table>

@@ -24,7 +24,6 @@ define('RAIDER_CONFIG', $table_prefix . 'raidattendance_config');
 define('TABLE_WWS_RAID', $table_prefix . 'raidattendance_wws');
 define('RAIDS_TABLE', $table_prefix . 'raidattendance_raids');
 define('RAIDERRAIDS_TABLE', $table_prefix . 'raidattendance_raidersraid');
-define('RAIDATTENDANCE_VERSION', '1.1.1');
 
 // Roles
 define('ROLE_UNASSIGNED', 9);
@@ -43,6 +42,12 @@ define('CLASS_SHAMAN', 7);
 define('CLASS_MAGE', 8);
 define('CLASS_WARLOCK', 9);
 define('CLASS_DRUID', 11);
+// STATUS
+define('STATUS_CLEAR', 0);
+define('STATUS_ON', 1);
+define('STATUS_OFF', 2);
+define('STATUS_NOSHOW', 3);
+define('STATUS_LATE', 4);
 
 $error = array();
 $success = array();
@@ -653,7 +658,6 @@ class history
 function set_attendance($raider, $night, $status)
 {
 	global $error, $success, $db;
-	$status_map = array('signon' => 1, 'signoff' => 2, 'noshow' => 3);
 	$ident = array(
 		'raider_id'			=> $raider->id,
 		'night'				=> $night,
@@ -661,17 +665,14 @@ function set_attendance($raider, $night, $status)
 	$data = array(
 		'raider_id'			=> $raider->id,
 		'night'				=> $night,
-		'status'			=> $status_map[$status],
+		'status'			=> $status,
 		'time'				=> time(),
 		);
-	if ($status === false) 
+	$sql = 'DELETE FROM ' . RAIDATTENDANCE_TABLE . " WHERE raider_id={$raider->id} AND night='{$night}'"; 
+	$res = $db->sql_query($sql);
+	// Bail out (don't add) - perhaps we should add... if it's a static signoff??
+	if ($status === STATUS_CLEAR)
 	{
-		$sql = 'DELETE FROM ' . RAIDATTENDANCE_TABLE . " WHERE raider_id={$raider->id} AND night='{$night}'"; 
-		$res = $db->sql_query($sql);
-		if (is_dbal_error())
-		{
-			$error[] = $res;
-		}
 		return;
 	}
 	$ary = array($data);
@@ -903,25 +904,31 @@ class raider
 	function signon($raid)
 	{
 		add_history($this, array('SIGNON', $raid));
-		set_attendance($this, $raid, 'signon');
+		set_attendance($this, $raid, STATUS_ON);
 	}
 
 	function signoff($raid)
 	{
 		add_history($this, array('SIGNOFF', $raid));
-		set_attendance($this, $raid, 'signoff');
+		set_attendance($this, $raid, STATUS_OFF);
 	}
 
 	function clear_attendance($raid)
 	{
 		add_history($this, array('CLEAR', $raid));
-		set_attendance($this, $raid, false);
+		set_attendance($this, $raid, STATUS_CLEAR);
 	}
 
 	function noshow($raid)
 	{
 		add_history($this, array('NOSHOW', $raid));
-		set_attendance($this, $raid, 'noshow');
+		set_attendance($this, $raid, STATUS_NOSHOW);
+	}
+
+	function late($raid)
+	{
+		add_history($this, array('LATE', $raid));
+		set_attendance($this, $raid, STATUS_LATE);
 	}
 }
 

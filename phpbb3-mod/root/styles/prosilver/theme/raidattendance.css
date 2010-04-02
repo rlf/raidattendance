@@ -20,6 +20,12 @@
 .off_uneven {
 	background: #003aff;
 }
+.late_uneven {
+	background: #f4d737;
+}
+.late_even {
+	background: #e6c301;
+}
 .noshow_even {
 	background: #9b0f03;
 }
