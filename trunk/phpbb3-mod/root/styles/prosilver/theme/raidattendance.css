@@ -46,16 +46,36 @@
 .mini {
 	width: 10px;
 }
-a.raid {
+table.logs {
+	width: 100%;
+}	
+td.right {
+	vertical-align: right;
+	text-align: right;
+}
+table#raids tr td table {
+	border-spacing: 10px 0px;
+	border-collapse: separate;
+}
+table#raids tr td table tr td {
 	border-width: 1px 1px 1px 1px;
 	border-style: solid solid solid solid;
 	color: #005abf;
+	border-color: #005abf;
 	text-decoration: none;
 }
-a.selected {
+table#raids {
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+table#raids tr td table tr td.selected {
+	border-bottom: 1px none;
+}
+table#raids a.selected {
 	font-weight: bold;
 	color: #404aaf;
-	border-bottom: 0px none;
+	font-size: 120%;
 }
 td.sum_past, td.sum_future {
 	text-align: center;
@@ -106,7 +126,7 @@ a.off, a.static:visited.signoff, a.static:link.off, a.static:active.off {
 }
 #raid_table tr td a:hover {
 	text-decoration: underline;
-	font-weight: bold;
+	/*font-weight: bold;*/
 	color: #770000;
 }
 #raid_table tr td:first-child {

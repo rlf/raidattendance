@@ -42,6 +42,12 @@ $lang = array_merge($lang, array(
 		'RANK'						=> 'Rank',
 		'NAME'						=> 'Name',
 		'CLASS'						=> 'Class',
+		'ROLE'						=> 'Role',
+		'ROLE_9'					=> 'Unassigned',
+		'ROLE_1'					=> 'Tank',
+		'ROLE_2'					=> 'Healer',
+		'ROLE_3'					=> 'Ranged DPS',
+		'ROLE_4'					=> 'Melee DPS',
 
 		'CLASS_1'					=> 'Warrior',
 		'CLASS_2'					=> 'Paladin',

@@ -28,7 +28,7 @@ if (is_raidattendance_forum($forum_id))
 	{
 		$raid_id = get_default_raid_id();
 	}
-	$user->add_lang(array('mods/mod_raidattendance', 'mods/info_acp_raidattendance'));
+	$user->add_lang(array('mods/mod_raidattendance', 'mods/info_acp_raidattendance', 'mods/logs_raidattendance'));
 	$success = array();
 	$error = array();
 	$tstamp = request_var('tstamp', 0);
@@ -66,6 +66,7 @@ if (is_raidattendance_forum($forum_id))
 			'ID'				=> $raider->id,
 			'NAME'				=> $raider->name,
 			'RANK'				=> $raider->get_rank_name(),
+			'ROLE'				=> $raider->get_role_name(),
 			'LEVEL'				=> $raider->level,
 			'CLASS'				=> $user->lang['CLASS_' . $raider->class],
 			'USER'				=> $raider->user_id,
@@ -134,7 +135,7 @@ if (is_raidattendance_forum($forum_id))
 	$mode = request_var('mode', 'normal');
 	$is_admin = $auth->acl_get('m_') or $auth->acl_get('a_');
 	$is_moderator = $is_admin && $mode == 'admin';
-	$num_cols = 4 + sizeof($raids);
+	$num_cols = 5 + sizeof($raids);
 	$template->assign_vars(array(
 		'NUM_COLS'				=> $num_cols,
 		'NUM_COLS_LEGEND'		=> $num_cols - 2,
