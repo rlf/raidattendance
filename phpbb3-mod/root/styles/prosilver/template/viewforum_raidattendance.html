@@ -52,16 +52,19 @@ function gotoRaid(raid_id)
 	<tr>
 		<td colspan="{NUM_COLS}">
 	<table id="raids" name="raids" cellspacing="0" cellpadding="0">
-		<tr><td class="left">
-<!-- BEGIN raids -->
-<a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="javascript:gotoRaid('{raids.ID}')" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a>&nbsp;
-<!-- END --></td><td class="right">&nbsp;</td>
+		<tr>
+			<td class="left"><table id="innerraids"><tr>
+						<!-- BEGIN raids --><td class="left <!-- IF raids.SELECTED --> selected<!-- ENDIF -->"><a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="javascript:gotoRaid('{raids.ID}')" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a></td><!-- END --></tr></table></td>
+<!-- IF S_ADMIN -->
+<td class="right"><table><tr><td><a class="raid" href="view_raid_logs.php">&nbsp;{L_VIEW_RAID_LOGS}&nbsp;</a></td></tr></table></td>
+<!-- ENDIF -->
 </tr>
 </table>
 		</td>
 	</tr>
 	<tr>
 		<th>{L_NAME}</th>
+		<th>{L_ROLE}</th>
 		<th>{L_RANK}</th>
 		<th><a class="nav" href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
 		<!-- BEGIN raid_days -->
@@ -83,6 +86,7 @@ function gotoRaid(raid_id)
 		<!-- END -->
 		<!-- ENDIF -->
 		</td>
+		<td>{raiders.ROLE}</td>
 		<td colspan="2">{raiders.RANK}</td>
 		<!-- BEGIN raids -->
 		<td class="{raids.STATUS}_{raiders.ROW_CLASS} raid" align="center">

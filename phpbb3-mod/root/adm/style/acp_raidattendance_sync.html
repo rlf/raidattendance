@@ -27,6 +27,7 @@
 			<th>{L_RAIDERS}</th>
 			<th>{L_LEVEL}</th>
 			<th>{L_RANK}</th>
+			<th>{L_ROLE}</th>
 			<th>{L_CLASS}</th>
 			<th>{L_FORUM_USER}</th>
 			<!-- BEGIN raids -->
@@ -42,6 +43,7 @@
 	<td class="{raiders.CSS_CLASS}">{raiders.STATUS}{raiders.NAME}</td>
 	<td>{raiders.LEVEL}</td>
 	<td>{raiders.RANK}</td>
+	<td><select name="raider_role[{raiders.ID}]" width="100%">{raiders.ROLE_OPTIONS}</select></td>
 	<td>{raiders.CLASS}</td>
 	<td><select name="user_id[{raiders.ID}]" width="100%">{raiders.USER_OPTIONS}</select></td>
 	<!-- BEGIN raids -->

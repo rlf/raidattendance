@@ -291,6 +291,11 @@ $versions = array(
 			array('raidattendance_raid_time', request_var('raid_time', '19:45')),
 		),
 	), // v1.1.1
+	'1.1.2' => array(
+		'table_column_add' 		=> array(
+			array('phpbb_raidattendance_raiders', 'role', array('UINT', 9)),
+		),
+	), // V1.1.2
 );
  
 function v103_110($action, $version)

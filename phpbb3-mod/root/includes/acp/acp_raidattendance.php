@@ -307,6 +307,7 @@ class acp_raidattendance
 		}
 		$rowno = 0;
 		$users = $this->get_user_list();
+		$roles = $this->get_raider_role_list();
 		$raids = get_raids();
 		foreach ($rows as $name => $raider) {
 			$raider_raids = $raider->get_raids();
@@ -321,6 +322,7 @@ class acp_raidattendance
 				'STATUS'			=> $raider->get_status(),
 				'ROW_CLASS'			=> $rowno % 2 == 0 ? 'even' : 'uneven',
 				'USER_OPTIONS'		=> $this->get_user_options($users, $raider->name, $raider->user_id),
+				'ROLE_OPTIONS'		=> $this->get_raider_role_options($roles, $raider),
 				'CHECKED'			=> $raider->is_checked() ? ' checked' : '',
 
 				'CSS_CLASS'			=> 'class_' . $raider->class,
@@ -452,6 +454,53 @@ class acp_raidattendance
 		return $users;
 	}
 
+	function get_raider_role_list()
+	{
+		global $user;
+		$roles = array();
+		for ($i = 0; $i < 5; $i++)
+		{
+			$roles[] = array('id' => $i, 'name' => $user->lang['ROLE_' . $i]);
+		}
+		return $roles;
+	}
+	function get_raider_role_options($roles, $raider)
+	{
+		$result_html = '';
+		$current_role = $raider->role;
+		if ($current_role == 0) 
+		{
+			$current_role = ROLE_UNASSIGNED;
+		}
+		if ($current_role == ROLE_UNASSIGNED)
+		{
+			// Try to guess the role
+			switch ($raider->class)
+			{
+			case CLASS_WARLOCK:
+			case CLASS_MAGE:
+			case CLASS_HUNTER: 
+				$current_role = ROLE_RANGED_DPS; 
+				break;
+			case CLASS_ROGUE:
+				$current_role = ROLE_MELEE_DPS;
+				break;
+			}
+		}
+		foreach ($roles as $role)
+		{
+			$id = $role['id'];
+			$name = $role['name'];
+			$selected = '';
+			if ($id == $current_role) 
+			{
+				$selected = ' selected';
+			}
+			$result_html = $result_html . '<option value="' . $id . '"' . $selected . '>' . $name . '</option>';
+		}
+		return $result_html;
+	}
+
 	/** 
 	 * Merges the rows with whatever was supplied in the POST.
 	 **/
@@ -460,6 +509,7 @@ class acp_raidattendance
 		global $error;
 		$user_ids = request_var('user_id', array(0=>0));
 		$checked = request_var('checked', array(0=>'false'));
+		$raider_role = request_var('raider_role', array(0=>0));
 		$new_raider = null;
 		$new_name = request_var('new_name', '');
 		if (strlen($new_name) > 0)
@@ -503,6 +553,10 @@ class acp_raidattendance
 				{
 					$raider->raids[] = $raid_id;
 				}
+			}
+			if (isset($raider_role[$raider->id])) 
+			{
+				$raider->role = $raider_role[$raider->id];
 			}
 		}
 		if ($new_raider)

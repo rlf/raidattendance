@@ -26,6 +26,24 @@ define('RAIDS_TABLE', $table_prefix . 'raidattendance_raids');
 define('RAIDERRAIDS_TABLE', $table_prefix . 'raidattendance_raidersraid');
 define('RAIDATTENDANCE_VERSION', '1.1.1');
 
+// Roles
+define('ROLE_UNASSIGNED', 9);
+define('ROLE_TANK', 1);
+define('ROLE_HEALER', 2);
+define('ROLE_RANGED_DPS', 3);
+define('ROLE_MELEE_DPS', 4);
+// Classes
+define('CLASS_WARRIOR', 1);
+define('CLASS_PALADIN', 2);
+define('CLASS_HUNTER', 3);
+define('CLASS_ROGUE', 4);
+define('CLASS_PRIEST', 5);
+define('CLASS_DEATH KNIGHT', 6);
+define('CLASS_SHAMAN', 7);
+define('CLASS_MAGE', 8);
+define('CLASS_WARLOCK', 9);
+define('CLASS_DRUID', 11);
+
 $error = array();
 $success = array();
 
@@ -311,7 +329,7 @@ class raider_db
 		{
 			$sql = $sql . ' JOIN ' . RAIDERRAIDS_TABLE . ' rr ON rr.raider_id=r.id WHERE rr.raid_id=' . $raid_id;
 		}
-		$sql = $sql . ' ORDER BY rank, name, level DESC';
+		$sql = $sql . ' ORDER BY role, name, level DESC';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -323,6 +341,7 @@ class raider_db
 				'class'		=> $row['class'],
 				'id'		=> $row['id'],
 				'user_id'	=> $row['user_id'],
+				'role'		=> $row['role'],
 			);
 			if (array_key_exists($name, $raiders))
 			{
@@ -764,6 +783,7 @@ class raider
 			'edited'	=> time(),
 			'synced'	=> $this->synced or 0,
 			'created'	=> $this->created or time(),
+			'role'		=> isset($this->role) ? $this->role : 0,
 		);
 		return $data;
 	}
@@ -812,6 +832,12 @@ class raider
 		return $rank_name;
 	}
 
+	function get_role_name()
+	{
+		global $user;
+		return $user->lang['ROLE_' . $this->role];
+	}
+
 	function update($row)
 	{
 		if ($this->id and $this->name == $row['name'] 
@@ -844,6 +870,10 @@ class raider
 		{
 			$this->user_id = $row['user_id'];
 		}
+		if (isset($row['role'])) 
+		{
+			$this->role = $row['role'];
+		}
 	}
 
 	// RAIDS
@@ -872,25 +902,25 @@ class raider
 
 	function signon($raid)
 	{
-		add_history($this, 'SIGNON');
+		add_history($this, array('SIGNON', $raid));
 		set_attendance($this, $raid, 'signon');
 	}
 
 	function signoff($raid)
 	{
-		add_history($this, 'SIGNOFF');
+		add_history($this, array('SIGNOFF', $raid));
 		set_attendance($this, $raid, 'signoff');
 	}
 
 	function clear_attendance($raid)
 	{
-		add_history($this, 'CLEAR');
+		add_history($this, array('CLEAR', $raid));
 		set_attendance($this, $raid, false);
 	}
 
 	function noshow($raid)
 	{
-		add_history($this, 'NOSHOW');
+		add_history($this, array('NOSHOW', $raid));
 		set_attendance($this, $raid, 'noshow');
 	}
 }
