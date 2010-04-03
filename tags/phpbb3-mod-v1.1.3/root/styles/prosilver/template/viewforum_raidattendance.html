@@ -1,0 +1,169 @@
+<link rel="stylesheet" href="{T_THEME_PATH}/raidattendance.css" type="text/css"/>
+<script language="JavaScript">
+<!--
+function go(action, rid, raid)
+{
+	var form = document.getElementById('attendance');
+	form.rid.value = rid;
+	form.raid.value = raid;
+	form.u_action.value = action;
+	form.submit();
+}
+function nav(tstamp)
+{
+	var form = document.getElementById('attendance');
+	form.tstamp.value = tstamp;
+	form.submit();
+}
+function mode(mode)
+{
+	var form = document.getElementById('attendance');
+	form.mode.value = mode;
+	form.submit();
+}
+function gotoRaid(raid_id)
+{
+	var form = document.getElementById('attendance');
+	form.raid_id.value = raid_id;
+	form.submit();
+}
+//-->
+</script>
+<!-- IF S_ERROR -->
+<div class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF S_SUCCESS -->
+<div class="successbox">
+	<h3>{L_SUCCESS}</h3>
+	<p>{SUCCESS_MSG}</p>
+</div>
+<!-- ENDIF -->
+<form method="POST" action="{S_FORUM_ACTION}" name="attendance" id="attendance">
+	<input type="hidden" name="rid" id="rid" value="0"/>
+	<input type="hidden" name="raid" id="raid" value="0"/>
+	<input type="hidden" name="tstamp" id="tstamp" value="-1"/>
+	<input type="hidden" name="u_action" id="u_action" value="0"/>
+	<input type="hidden" name="mode" id="mode" value="{MODE}"/>
+	<input type="hidden" name="raid_id" id="raid_id" value="{RAID_ID}"/>
+<table id="raid_table" name="raid_table" cellspacing="0" cellpadding="0">
+	<tr>
+		<td colspan="{NUM_COLS}">
+	<table id="raids" name="raids" cellspacing="0" cellpadding="0">
+		<tr>
+			<td class="left"><table id="innerraids"><tr>
+						<!-- BEGIN raids --><td class="left <!-- IF raids.SELECTED --> selected<!-- ENDIF -->"><a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="javascript:gotoRaid('{raids.ID}')" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a></td><!-- END --></tr></table></td>
+<!-- IF S_ADMIN -->
+<td class="right"><table><tr><td><a class="raid" href="view_raid_logs.php">&nbsp;{L_VIEW_RAID_LOGS}&nbsp;</a></td></tr></table></td>
+<!-- ENDIF -->
+</tr>
+</table>
+		</td>
+	</tr>
+	<tr>
+		<th>{L_NAME}</th>
+		<th>{L_ROLE}</th>
+		<th>{L_RANK}</th>
+		<th><a class="nav" href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
+		<!-- BEGIN raid_days -->
+		<th>{raid_days.DAY}<br/>{raid_days.DATE}</th>
+		<!-- END raid_days -->
+		<th><a class="nav" href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
+	</tr>
+	<!-- BEGIN raiders -->
+	<tr class="{raiders.ROW_CLASS}">
+		<td class="{raiders.CSS_CLASS} class_style"><a class="{raiders.CSS_CLASS}" href="{raiders.ARMORY_LINK}">{raiders.NAME}</a>
+		<!-- IF S_MODERATOR or raiders.S_EDITABLE -->
+		<br/>
+		<!-- BEGIN days -->
+			<!-- IF days.STATUS == 'unset' -->
+			<a class="{days.STATUS} static" href="javascript:go('-', {raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
+			<!-- ELSE -->
+			<a class="{days.STATUS} static" href="javascript:go('x', {raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
+			<!-- ENDIF -->
+		<!-- END -->
+		<!-- ENDIF -->
+		</td>
+		<td>{raiders.ROLE}</td>
+		<td colspan="2">{raiders.RANK}</td>
+		<!-- BEGIN raids -->
+		<td class="{raids.STATUS}_{raiders.ROW_CLASS} raid" align="center">
+			<!-- IF raids.STATUS == 'on' or raids.STATUS == 'off' or raids.STATUS == 'noshow' -->
+			<!--img src="images/{raids.STATUS}_active.png"/-->
+			<!-- ENDIF -->
+			<!-- IF S_MODERATOR -->
+			<!-- IF raids.STATUS != 'on' and not raids.S_FUTURE -->
+			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on_inactive.png" alt="{L_SIGNON}" title="{L_SIGNON}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'late' and not raids.S_FUTURE -->
+			<a href="javascript:go('%',{raiders.ID},'{raids.RAID}')" alt="{L_LATE}"><img src="images/late_inactive.png" alt="{L_LATE}" title="{L_LATE}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'off' -->
+			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'noshow' and not raids.S_FUTURE -->
+			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')" alt="{L_NOSHOW}"><img src="images/noshow_inactive.png" alt="{L_NOSHOW}" title="{L_NOSHOW}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'past' and raids.STATUS != 'future' and raids.S_STATIC != 1 -->
+			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+			<!-- ENDIF -->
+			<!-- ELSE S_MODERATOR -->
+				<!-- IF raids.S_EDITABLE and raids.S_STATIC != 1 -->
+				<!-- IF raids.STATUS == 'off' -->
+				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+				<!-- ELSE -->
+				<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+				<!-- ENDIF -->
+				<!-- ENDIF -->
+			<!-- ENDIF -->
+		</td>
+		<!-- END -->
+		<td>&nbsp;</td>
+	</tr>
+	<!-- END raiders -->
+	<tr>
+		<td colspan="4">&nbsp;</td>
+		<!-- BEGIN raid_days -->
+		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF -->">
+			<b class="on">{raid_days.SUM_ON}</b>/<b class="off">{raid_days.SUM_OFF}</b>/<b class="noshow">{raid_days.SUM_NOSHOW}</b>
+		</td>
+		<!-- END -->
+	</tr>
+	<tr><td colspan="{NUM_COLS_LEGEND}">
+<table class="legend" cellspacing="0" cellpadding="0">
+<tr>
+	<td valign="top" align="left"><b>{L_LEGEND}</b><br/>
+		<table>
+			<tr><td class="on_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNON}</td></tr>
+			<tr><td class="off_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNOFF}</td></tr>
+			<tr><td class="noshow_even">&nbsp;&nbsp;&nbsp;</td><td>{L_NOSHOW}</td></tr>
+			<tr><td class="late_even">&nbsp;&nbsp;&nbsp;</td><td>{L_LATE}</td></tr>
+		</table>
+	</td>
+<td valign="top" align="left">
+						<b>{L_ACTIONS}</b><br/>
+			<img src="images/off_inactive.png"> {L_LEGEND_ACTION_OFF}<br/>
+			<img src="images/clear_inactive.png"> {L_LEGEND_ACTION_CLEAR}<br/>
+			<!-- IF S_MODERATOR -->
+			<img src="images/on_inactive.png"> {L_LEGEND_ACTION_ON}<br/>
+			<img src="images/late_inactive.png"> {L_LEGEND_ACTION_LATE}<br/>
+			<img src="images/noshow_inactive.png"> {L_LEGEND_ACTION_NOSHOW}
+			<!-- ENDIF -->
+			</td></tr></table>
+			</td><td colspan="2" valign="top" align="right">
+		<!-- IF S_ADMIN -->
+		<!-- IF MODE == 'admin' -->
+		<a href="javascript:mode('normal')"/>{L_NORMAL}</a><br/>
+		<!-- ELSE -->
+		<a href="javascript:mode('admin')"/>{L_ADMIN}</a><br/>
+		<!-- ENDIF -->
+		<!-- ENDIF -->
+		<a target="_new" href="http://code.google.com/p/raidattendance/wiki/FAQphpBB3">{L_FAQ}</a><br/>
+		{MOD_VERSION}
+		</td>
+	</tr>
+</table>
+</td></tr></table>
+</form>
