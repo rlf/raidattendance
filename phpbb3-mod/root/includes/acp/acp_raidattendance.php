@@ -287,7 +287,7 @@ class acp_raidattendance
 
 		$raider_db = new raider_db();
 		$rows = array();
-		$raider_db->get_raider_list($rows);
+		$raider_db->get_raider_list($rows, false, 3);
 		$this->merge_data($rows);
 		if ($resync) 
 		{
