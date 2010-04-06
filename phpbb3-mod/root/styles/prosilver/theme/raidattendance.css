@@ -91,12 +91,18 @@ td.sum_past, td.sum_future {
 }
 b.on {
 	color: #00ff00;
+	font-weight: bold;
+	font-size: 140%;
 }
 b.off {
 	color: #005abf;
+	font-weight: bold;
+	font-size: 140%;
 }
 b.noshow {
 	color: #ab1f03;
+	font-weight: bold;
+	font-size: 140%;
 }
 
 td.raid {
