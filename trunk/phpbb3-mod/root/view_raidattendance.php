@@ -24,6 +24,7 @@ if (is_raidattendance_forum($forum_id))
 {
 	global $user, $auth, $config;
 	$raid_id = request_var('raid_id', 0);
+	$sort_order = request_var('sort_order', 0);
 	if ($raid_id == 0) 
 	{
 		$raid_id = get_default_raid_id();
@@ -41,7 +42,7 @@ if (is_raidattendance_forum($forum_id))
 	$raids = get_raiding_days($tstamp, $raid_id);
 	$raider_db = new raider_db();
 	$raiders = array();
-	$raider_db->get_raider_list($raiders, $raid_id);
+	$raider_db->get_raider_list($raiders, $raid_id, $sort_order);
 	$action = request_var('u_action', '');
 	if ($action)
 	{
@@ -152,6 +153,10 @@ if (is_raidattendance_forum($forum_id))
 		'S_ADMIN'				=> $is_admin,
 		'MOD_VERSION'			=> $config['raidattendance_version'],
 		'RAID_ID'				=> $raid_id,
+		'SORT_ORDER'			=> $sort_order,
+		'SORT_ROLE'				=> 0x08 ^ ($sort_order & 0x08),
+		'SORT_RANK'				=> 0x12 ^ ($sort_order & 0x10),
+		'SORT_NAME'				=> 0x24 ^ ($sort_order & 0x20),
 	));
 
 	$raids = get_raids();

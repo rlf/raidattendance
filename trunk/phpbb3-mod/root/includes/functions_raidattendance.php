@@ -326,7 +326,7 @@ class raider_armory
 // ---------------------------------------------------------------------------
 class raider_db
 {
-	function get_raider_list(&$raiders, $raid_id = false)
+	function get_raider_list(&$raiders, $raid_id = false, $sort_order = 0)
 	{
 		global $db, $error;
 		$sql = 'SELECT r.* FROM ' . RAIDER_TABLE . ' r';
@@ -334,7 +334,33 @@ class raider_db
 		{
 			$sql = $sql . ' JOIN ' . RAIDERRAIDS_TABLE . ' rr ON rr.raider_id=r.id WHERE rr.raid_id=' . $raid_id;
 		}
-		$sql = $sql . ' ORDER BY role, name, level DESC';
+		// sort_order bit-mask
+		// bit 0-2: 0 -> role, rank, name         (0x07)
+		//          1 -> role, name, rank
+		//          2 -> rank, role, name
+		//          3 -> rank, name, role
+		//          4 -> name, role, rank
+		//          5 -> name, rank, role
+		// bit   3: 0 -> role ASC, 1 -> role DESC (0x08)
+		// bit   4: 0 -> rank ASC, 1 -> rank DESC (0x10)
+		// bit   5: 0 -> name ASC, 1 -> name DESC (0x20)
+		$sort_role = 'role' . ((($sort_order & 0x08) == 0x08) ? ' DESC' : '');
+		$sort_rank = 'rank' . ((($sort_order & 0x10) == 0x10) ? ' DESC' : '');
+		$sort_name = 'name' . ((($sort_order & 0x20) == 0x20) ? ' DESC' : '');
+		$sort = array();
+		$sorting = ($sort_order & 0x07);
+		switch ($sorting)
+		{
+		case 0: $sort = array($sort_role, $sort_rank, $sort_name); break;
+		case 1: $sort = array($sort_role, $sort_name, $sort_rank); break;
+		case 2: $sort = array($sort_rank, $sort_role, $sort_name); break;
+		case 3: $sort = array($sort_rank, $sort_name, $sort_role); break;
+		case 4: $sort = array($sort_name, $sort_role, $sort_rank); break;
+		case 5: $sort = array($sort_name, $sort_rank, $sort_role); break;
+		default: // also the same as 0
+			$sort = array($sort_role, $sort_rank, $sort_name);
+		}
+		$sql = $sql . ' ORDER BY ' . implode(', ', $sort);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -376,7 +402,11 @@ class raider_db
 				$db->sql_query($sql);
 
 				// Update Raids
-				$raids = $raider->get_raids();
+				$raids = $raider->raids;
+				if (!is_array($raids)) 
+				{
+					$raids = array();
+				}
 				$sql = 'DELETE FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $raider->id;
 				$db->sql_query($sql);
 
@@ -880,22 +910,19 @@ class raider
 	// RAIDS
 	function get_raids()
 	{
-		if (!$this->raids)
+		$raids = array();
+		if ($this->id) 
 		{
-			$raids = array();
-			if ($this->id) 
+			global $db;
+			$sql = 'SELECT raid_id FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $this->id;
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
 			{
-				global $db;
-				$sql = 'SELECT raid_id FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $this->id;
-				$result = $db->sql_query($sql);
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$raids[] = $row['raid_id'];
-				}
-				$db->sql_freeresult($result);
+				$raids[] = $row['raid_id'];
 			}
-			$this->raids = $raids;
+			$db->sql_freeresult($result);
 		}
+		$this->raids = $raids;
 		return $this->raids;
 	}
 
