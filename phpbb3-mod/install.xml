@@ -27,6 +27,7 @@ $Id: install.xml 190 2009-11-08 17:10:54Z exreaction $ -->
     </author-group>
     <link-group>
       <link type="template" href="WoWMaevahEmpire.xml" lang="en">WoWMaevahEmpire</link>
+      <link type="template" href="WoWMoonclaw.xml" lang="en">WoWMoonclaw</link>
     </link-group>
 
     <mod-version>1.1.0c</mod-version>
