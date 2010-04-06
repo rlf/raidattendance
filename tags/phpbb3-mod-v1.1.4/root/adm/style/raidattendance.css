@@ -1,0 +1,85 @@
+/*  RaidAttendance Stylesheet
+    --------------------------------------------------------------
+*/
+
+.even {
+	background: #c0c0ff;
+}
+.uneven {
+	background: #d0d0ff;
+}
+.small {
+	width: 20px;
+}
+.mini {
+	width: 10px;
+}
+.STATUS_NEW {
+	color: green;
+}
+.STATUS_UPDATED {
+	color: #404040;
+}
+.STATUS_NOT_IN_ARMORY {
+	color: red;
+}
+.new_raider {
+	background: #ffd0d0;
+}
+
+/**
+ * Class Colors as taken from http://www.wowwiki.com/Class_colors
+ **/
+/* Warrior */
+.class_1 {
+	color: #C79C6E;
+	font-weight: bold;
+}
+/* Paladin */
+.class_2 {
+	color: #F58CBA;
+	font-weight: bold;
+}
+/* Hunter */
+.class_3 {
+	color: #ABD473;
+	font-weight: bold;
+}
+/* Rogue */
+.class_4 {
+	color: #FFF569;
+	font-weight: bold;
+}
+/* Priest */
+.class_5 {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+/* Death Knight */
+.class_6 {
+	color: #C41F3B;
+	font-weight: bold;
+}
+/* Shaman */
+.class_7 {
+	color: #2459FF;
+	font-weight: bold;
+}
+/* Mage */
+.class_8 {
+	color: #69CCF0;
+	font-weight: bold;
+}
+/* Warlock */
+.class_9 {
+	color: #9482C9;
+	font-weight: bold;
+}
+/* Druid */
+.class_11 {
+	color: #FF7D0A;
+	font-weight: bold;
+}
+#acp_form select {
+	width: 400px;
+}
