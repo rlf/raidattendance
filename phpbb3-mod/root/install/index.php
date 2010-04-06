@@ -298,6 +298,8 @@ $versions = array(
 	), // V1.1.2
 	'1.1.3' => array(
 	), // v1.1.3
+	'1.1.4' => array(
+	), // v1.1.3
 );
  
 function v103_110($action, $version)
