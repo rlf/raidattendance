@@ -3,25 +3,23 @@
 */
 
 .even {
-	background: #00002f;
 }
 .uneven {
-	background: #00003f;
 }
 .on_even {
 	background: #0da300;
 }
 .on_uneven {
-	background: #0db300;
+	background: #0da300;
 }
 .off_even {
 	background: #004aaf;
 }
 .off_uneven {
-	background: #003aff;
+	background: #004aaf;
 }
 .late_uneven {
-	background: #f4d737;
+	background: #e6c301;
 }
 .late_even {
 	background: #e6c301;
@@ -30,21 +28,21 @@
 	background: #9b0f03;
 }
 .noshow_uneven {
-	background: #ab1f03;
+	background: #9b0f03;
 }
 .future_even, .sum_future {
 	text-align: center;
 	background: #004000;
 }
 .future_uneven {
-	background: #005000;
+	background: #004000;
 }
 .past_even, .sum_past {
 	text-align: center;
 	background: #400000;
 }
 .past_uneven {
-	background: #500000;
+	background: #400000;
 }
 .small {
 	width: 20px;
@@ -70,6 +68,7 @@ table#raids tr td table tr td {
 	border-color: #005abf;
 	text-decoration: none;
 }
+
 table#raids {
 	width: 100%;
 	padding: 0px;
@@ -85,9 +84,9 @@ table#raids a.selected {
 }
 td.sum_past, td.sum_future {
 	text-align: center;
-	border-width: 0px 1px 0px 1px;
-	border-style: none none none solid;
-	border-color: #00003f;
+	border-width: 1px 1px 0px 0px;
+	border-style: solid;
+	border-color: black;
 }
 b.on {
 	color: #00ff00;
@@ -105,11 +104,11 @@ b.noshow {
 	font-size: 140%;
 }
 
-td.raid {
+table#raid_table tr td.raid {
 	height: 24px;
-	border-width: 0px 1px 0px 1px;
-	border-style: none none none solid;
-	border-color: #00003f;
+	border-width: 1px 1px 0px 0px;
+	border-style: solid;
+	border-color: black;
 }
 .even_future {
 	background: #005000;
