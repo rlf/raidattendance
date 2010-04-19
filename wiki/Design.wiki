@@ -3,9 +3,8 @@
 #sidebar ToC
 
 This project is divided into 3 smaller projects:
-  # The Addon - This will be a WoW Lua Addon (Bulrogg)
-  # A Client - This will access the folder of the addon and sync. the addon database with a web-based-database.
   # A phpBB3 MOD - This will show the data from the database, and allow users to sign off.
+  # The Addon - This will be a WoW Lua Addon
 
 
 
