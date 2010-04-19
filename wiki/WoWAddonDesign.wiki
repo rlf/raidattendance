@@ -17,13 +17,17 @@ Design details
 
 == Main Layout ==
 {{{
-+---------------------[ RaidAttendance ]--------------------------+
-|                                                   [ Check Now ] |
-| +- Name ----------------+- 21/10 -+- 22/10 -+-----------------+ |
-| | Rapal                 |    G    |    Y    |                 | |
-| | Scathsolas            |    R    |    G    |                 | |
-| | Zee                   |    Y    |    Y    |                 | |
-| +-----------------------+---------+---------+-----------------+ |
++---------------------[ RaidAttendance ]------------------ 20:05 -+
+|                             [ Check Now ] [ Import ] [ Export ] |
+| Current Raid: 21/10    Timestamp: 19:45       Raid start: 20:00 |
+| +- Name ---------+- Role -----+- Class --+- Status --+- Att --+ |
+| | Potlach        |  Tank      | Paladin  | Online    |   G    | |
+| | Rhine          |  Tank      | DK       | Offline   |   R    | |
+| | Heltvilddyr    |  Healer    | Druid    | Online    |   G    | |
+| | Rapal          |  Melee     | Paladin  | Online    |   B    | |
+| | Adaephon       |  Ranged    | Mage     | Offline   |   R    | |
+| | Scathsolas     |  Ranged    | Hunter   | Online    |   Y    | |
+| +----------------+------------+----------+-----------+--------+ |
 +-----------------------------------------------------------------+
 }}}
 
