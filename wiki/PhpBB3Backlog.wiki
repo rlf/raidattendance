@@ -26,6 +26,20 @@
 
 = Completed =
 
+== v1.1.4 - 6th of April 2010 - Sorting + coloring
+  * Sorting now possible on Name, Role, Rank.
+  * Coloring made more simple (since we have so many colors in play).
+
+== v1.1.3 - 3rd of April 2010 - Raider status LATE
+  * Possible to mark raiders as being LATE - not just AWOL / ON.
+
+== v1.1.2 - 2nd of April 2010 - Raider roles added ==
+  * Possible to assign roles to raiders.
+
+== v1.1.1 - 31st of March 2010 - Raid time setting ==
+  * Possible to set a raid-time, at which admins can start marking raiders as AWOL etc.
+  * Fixed a bug in the sorting of raids (i.e. some weeks were not shown chronologically).
+
 == v1.1.0c - 25th of March 2010 - Multiple raids ==
   * Defects/Issues:
     * #5 style should be limited to prosilver	 
