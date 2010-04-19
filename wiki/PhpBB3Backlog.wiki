@@ -11,6 +11,8 @@
 
 = Backlog =
 <font color="red">
+  * forum_raidattendance - allow export functionality to addon.
+  * forum_raidattendance - allow import functionality from addon.
   * forum_raidattendance - allow admins to signon/off multiple raiders in one go
     * I.e. something about checkboxes and actions in a different manner.
   * forum_raidattendance - add comment to signon/signoff
