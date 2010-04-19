@@ -24,6 +24,3 @@ The user/player should
     * If the user has manually set a status, the auto-update should NOT overrule it.
   * Export raid to phpBB MOD
     * Some security hash - login-name + content.
-
-=== Client ===
-  * Will most likely not be neccesary, if we manage to integrate the addon and the php-mod correctly, it will become a simple upload/download task
