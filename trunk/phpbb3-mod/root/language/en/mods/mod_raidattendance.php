@@ -73,10 +73,11 @@ $lang = array_merge($lang, array(
 
 		'SAVE'						=> 'Save',
 
-		'SIGNON'					=> 'Sign on',
+		'SIGNON'					=> 'Raider participated in raid',
 		'SIGNOFF'					=> 'Sign off',
 		'NOSHOW'					=> "Raider didn't show",
 		'LATE'						=> 'Raider showed, but late',
+		'SUBSTITUTE'				=> 'Raider showed, but was asked to sit out',
 		'EMPTY'						=> 'Clear selection',
 		'IS_RAIDER'					=> 'Expected to raid?',
 
@@ -91,6 +92,7 @@ $lang = array_merge($lang, array(
 		'STATUS_CHANGE_CLEAR'		=> '%1$s cleared status for %2$s on raid %3$s',
 		'STATUS_CHANGE_NOSHOW'		=> '%1$s marked %2$s as being AWOL from raid %3$s',
 		'STATUS_CHANGE_LATE'		=> '%1$s marked %2$s as being late for raid %3$s',
+		'STATUS_CHANGE_SUBSTITUTE'	=> '%1$s marked %2$s as being a substitute for raid %3$s',
 		'STATIC_SIGNOFF'			=> "Sorry, but I'm never able to raid on %s",
 		'STATIC_SIGNOFF_CLEAR'		=> 'Forget it, I might be able raid on %s anyway!',
 
@@ -106,15 +108,21 @@ $lang = array_merge($lang, array(
 		'LEGEND_STATUS_ON'			=> 'Raider was available for raiding',
 		'LEGEND_STATUS_OFF'			=> 'Raider signed off',
 		'LEGEND_STATUS_NOSHOW'		=> 'Raider didn\'t show for raid',
+		'LEGEND_STATUS_LATE'		=> 'Raider showed, but was late',
+		'LEGEND_STATUS_SUBSTITUTE'	=> 'Raider was available, but had to sit out',
 		'ACTIONS'					=> 'Actions',
 		'LEGEND_ACTION_ON'			=> 'Indicate raider was available for raid',
 		'LEGEND_ACTION_OFF'			=> 'Sign-off from raid',
 		'LEGEND_ACTION_NOSHOW'		=> 'Mark raider as being AWOL',
 		'LEGEND_ACTION_LATE'		=> 'Mark raider as being late for raid',
+		'LEGEND_ACTION_SUBSTITUTE'	=> 'Mark raider as being a substitute for raid',
 		'LEGEND_ACTION_CLEAR'		=> 'Undo previous sign-off',
 		'ADMIN'						=> '[ Admin ]',
 		'NORMAL'					=> '[ Normal ]',
 		'FAQ'						=> '[ FAQ ]',
+
+		'ADDON'						=> 'WoW Addon',
+		'ADDON_CODE'				=> 'Copy and paste the following code into the WoW Addon Raid Attendancy (/att)',
 
 	)
 );

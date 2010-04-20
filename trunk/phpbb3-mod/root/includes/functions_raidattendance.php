@@ -48,6 +48,7 @@ define('STATUS_ON', 1);
 define('STATUS_OFF', 2);
 define('STATUS_NOSHOW', 3);
 define('STATUS_LATE', 4);
+define('STATUS_SUBSTITUTE', 5);
 
 $error = array();
 $success = array();
@@ -326,7 +327,7 @@ class raider_armory
 // ---------------------------------------------------------------------------
 class raider_db
 {
-	function get_raider_list(&$raiders, $raid_id = false, $sort_order = 0)
+	function get_raider_list(&$raiders, $raid_id = false, $sort_order = '1')
 	{
 		global $db, $error;
 		$sql = 'SELECT r.* FROM ' . RAIDER_TABLE . ' r';
@@ -334,33 +335,24 @@ class raider_db
 		{
 			$sql = $sql . ' JOIN ' . RAIDERRAIDS_TABLE . ' rr ON rr.raider_id=r.id WHERE rr.raid_id=' . $raid_id;
 		}
-		// sort_order bit-mask
-		// bit 0-2: 0 -> role, rank, name         (0x07)
-		//          1 -> role, name, rank
-		//          2 -> rank, role, name
-		//          3 -> rank, name, role
-		//          4 -> name, role, rank
-		//          5 -> name, rank, role
-		// bit   3: 0 -> role ASC, 1 -> role DESC (0x08)
-		// bit   4: 0 -> rank ASC, 1 -> rank DESC (0x10)
-		// bit   5: 0 -> name ASC, 1 -> name DESC (0x20)
-		$sort_role = 'role' . ((($sort_order & 0x08) == 0x08) ? ' DESC' : '');
-		$sort_rank = 'rank' . ((($sort_order & 0x10) == 0x10) ? ' DESC' : '');
-		$sort_name = 'name' . ((($sort_order & 0x20) == 0x20) ? ' DESC' : '');
 		$sort = array();
-		$sorting = ($sort_order & 0x07);
-		switch ($sorting)
+		$sort_array = explode(',', $sort_order);
+		$sort_key_map = array(1=>'name', 2=>'role', 3=>'rank', 4=>'class');
+		foreach ($sort_array as $column) 
 		{
-		case 0: $sort = array($sort_role, $sort_rank, $sort_name); break;
-		case 1: $sort = array($sort_role, $sort_name, $sort_rank); break;
-		case 2: $sort = array($sort_rank, $sort_role, $sort_name); break;
-		case 3: $sort = array($sort_rank, $sort_name, $sort_role); break;
-		case 4: $sort = array($sort_name, $sort_role, $sort_rank); break;
-		case 5: $sort = array($sort_name, $sort_rank, $sort_role); break;
-		default: // also the same as 0
-			$sort = array($sort_role, $sort_rank, $sort_name);
+			$col = intval($column);
+			$sort_exp = $sort_key_map[abs($col)];
+			if ($col < 0) 
+			{
+				$sort_exp = $sort_exp . ' DESC';
+			}
+			$sort[] = $sort_exp;
 		}
-		$sql = $sql . ' ORDER BY ' . implode(', ', $sort);
+		if (sizeof($sort) == 0) 
+		{
+			$sort[] = 'name';
+		}
+		$sql = $sql . ' ORDER BY ' . implode(',', $sort);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -956,6 +948,12 @@ class raider
 	{
 		add_history($this, array('LATE', $raid));
 		set_attendance($this, $raid, STATUS_LATE);
+	}
+
+	function substitute($raid)
+	{
+		add_history($this, array('SUBSTITUTE', $raid));
+		set_attendance($this, $raid, STATUS_SUBSTITUTE);
 	}
 }
 

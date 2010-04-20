@@ -24,7 +24,7 @@ if (is_raidattendance_forum($forum_id))
 {
 	global $user, $auth, $config;
 	$raid_id = request_var('raid_id', 0);
-	$sort_order = request_var('sort_order', 0);
+	$sort_order = request_var('sort_order', '1');
 	if ($raid_id == 0) 
 	{
 		$raid_id = get_default_raid_id();
@@ -55,8 +55,9 @@ if (is_raidattendance_forum($forum_id))
 
 	$rowno = 0;
 	$names = array_keys($raiders);
-	$statusses = array(STATUS_ON=>'on', STATUS_OFF=>'off', STATUS_NOSHOW=>'noshow', STATUS_LATE=>'late', 0=>'future', -1=>'past', -2=>'unset');
+	$statusses = array(STATUS_ON=>'on', STATUS_OFF=>'off', STATUS_NOSHOW=>'noshow', STATUS_LATE=>'late', STATUS_SUBSTITUTE=>'substitute', 0=>'future', -1=>'past', -2=>'unset');
 	$sums = array();
+	$raidData = array(); // data used in the addon...
 	$armory_link = $config['raidattendance_armory_link'];
 	$realm = $config['raidattendance_realm_name'];
 	$url_base = $armory_link . '/character-sheet.xml?r=' . urlencode($realm) . '&cn=';
@@ -100,16 +101,26 @@ if (is_raidattendance_forum($forum_id))
 				$sums[$raid] = array(STATUS_OFF=>0, STATUS_NOSHOW=>0);
 			}
 			$sums[$raid][$status] = $sums[$raid][$status] + 1;
-			$status = $statusses[$status];
 			$day_name = get_raiding_day_name($raid);
 			$is_static = $static_attendance[$raider->name][$day_name] == 2;
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
-				'STATUS'		=> $status,
+				'STATUS'		=> $statusses[$status],
 				'S_FUTURE'		=> $future,
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_STATIC'		=> $is_static ? 1 : 0,
-				));
+			));
+			if (!is_array($raidData[$raid]))
+			{
+				$raidData[$raid] = array('raid'=>$raid,'raiders'=>array());
+			}
+			$raidData[$raid]['raiders'][] = array(
+				'name'=>$raider->name, 
+				'class'=>$raider->class, 
+				'role'=>$raider->role, 
+				'rank'=>$raider->rank, 
+				'status'=>$status
+			);
 		}
 		$rowno++;
 	}
@@ -127,6 +138,7 @@ if (is_raidattendance_forum($forum_id))
 			'SUM_OFF'		=> $sums[$raid][STATUS_OFF],
 			'SUM_ON'		=> $num_raiders - $sums[$raid][STATUS_NOSHOW] - $sums[$raid][STATUS_OFF],
 			'S_FUTURE'		=> $future,
+			'RAID_DATA'		=> get_raid_data_as_string($raidData[$raid]),
 		));
 	}
 	$date_array = getdate($tstamp);
@@ -137,6 +149,14 @@ if (is_raidattendance_forum($forum_id))
 	$is_admin = $auth->acl_get('m_') or $auth->acl_get('a_');
 	$is_moderator = $is_admin && $mode == 'admin';
 	$num_cols = 5 + sizeof($raids);
+	$col_sort = explode(',', $sort_order);
+
+	$dir_sort = array(
+		1 => ($col_sort[0] == 1 ? ' v' : ($col_sort[0] == -1 ? ' ^' : '')),
+		2 => ($col_sort[0] == 2 ? ' v' : ($col_sort[0] == -2 ? ' ^' : '')),
+		3 => ($col_sort[0] == 3 ? ' v' : ($col_sort[0] == -3 ? ' ^' : '')),
+		4 => ($col_sort[0] == 4 ? ' v' : ($col_sort[0] == -4 ? ' ^' : '')),
+		);
 	$template->assign_vars(array(
 		'NUM_COLS'				=> $num_cols,
 		'NUM_COLS_LEGEND'		=> $num_cols - 2,
@@ -154,9 +174,14 @@ if (is_raidattendance_forum($forum_id))
 		'MOD_VERSION'			=> $config['raidattendance_version'],
 		'RAID_ID'				=> $raid_id,
 		'SORT_ORDER'			=> $sort_order,
-		'SORT_ROLE'				=> 0x08 ^ ($sort_order & 0x08),
-		'SORT_RANK'				=> 0x12 ^ ($sort_order & 0x10),
-		'SORT_NAME'				=> 0x24 ^ ($sort_order & 0x20),
+		'DIR_NAME'				=> $dir_sort[1],
+		'SORT_NAME'				=> ($dir_sort[1] == ' v' ? '-1,2,3' : '1,2,3'),
+		'DIR_ROLE'				=> $dir_sort[2],
+		'SORT_ROLE'				=> ($dir_sort[2] == ' v' ? '-2,4,3,1' : '2,4,3,1'),
+		'DIR_RANK'				=> $dir_sort[3],
+		'SORT_RANK'				=> ($dir_sort[3] == ' v' ? '-3,2,4,1' : '3,2,4,1'),
+		'DIR_CLASS'				=> $dir_sort[4],
+		'SORT_CLASS'			=> ($dir_sort[4] == ' v' ? '-4,2,1' : '4,2,1'),
 	));
 
 	$raids = get_raids();
@@ -168,6 +193,38 @@ if (is_raidattendance_forum($forum_id))
 			'NAME'				=> $raid['name'],
 		));
 	}
+}
+function get_array_as_string($ary)
+{
+	if (!is_array($ary)) {
+		return '{}';
+	}
+	$buffer = '{';
+	foreach ($ary as $key => $value)
+	{
+		if (!is_numeric($key)) 
+		{
+			$buffer = $buffer . $key . '=';
+		}
+		if (is_array($value)) 
+		{
+			$buffer = $buffer . get_array_as_string($value);
+		} 
+		else
+		{
+			$buffer = $buffer . $value;
+		}
+		$buffer = $buffer . ',';
+	}
+	$buffer = $buffer . '}';
+	return $buffer;
+}
+function get_raid_data_as_string($raidData)
+{
+	global $user;
+	$buffer = get_array_as_string($raidData);
+	$crc = crc32($user->data['username'] . $raidData['raid'] . $buffer);
+	return dechex($crc) . ';' . $buffer;
 }
 function handle_action($action, $raiders)
 {
@@ -213,6 +270,10 @@ function handle_action($action, $raiders)
 	{
 		$raider->late($raid);
 	}
+	else if ($action == 'z')
+	{
+		$raider->substitute($raid);
+	}
 
 	$lang_array = array(
 		'+' => 'STATUS_CHANGE_ON', 
@@ -220,6 +281,7 @@ function handle_action($action, $raiders)
 		'x' => 'STATUS_CHANGE_CLEAR', 
 		'!' => 'STATUS_CHANGE_NOSHOW', 
 		'%'	=> 'STATUS_CHANGE_LATE',
+		'z' => 'STATUS_CHANGE_SUBSTITUTE',
 	);
 	$lang_key = $lang_array[$action];
 	if ($username && $raider->name && $day && $user->lang[$lang_key]) 
