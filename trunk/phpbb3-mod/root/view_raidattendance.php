@@ -112,7 +112,7 @@ if (is_raidattendance_forum($forum_id))
 			));
 			if (!is_array($raidData[$raid]))
 			{
-				$raidData[$raid] = array('raid'=>$raid,'raiders'=>array());
+				$raidData[$raid] = array('raid'=>$raid,'raid_time'=>$raid_time,'raiders'=>array());
 			}
 			$raidData[$raid]['raiders'][] = array(
 				'name'=>$raider->name, 
