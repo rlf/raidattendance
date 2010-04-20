@@ -70,9 +70,10 @@ function sortOrder(order)
 		</td>
 	</tr>
 	<tr>
-		<th><a class="sort" href="javascript:sortOrder({SORT_NAME})">{L_NAME}</a></th>
-		<th><a class="sort" href="javascript:sortOrder({SORT_ROLE})">{L_ROLE}</a></th>
-		<th><a class="sort" href="javascript:sortOrder({SORT_RANK})">{L_RANK}</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_NAME}')">{L_NAME}{DIR_NAME}</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_CLASS}')">{L_CLASS}{DIR_CLASS}</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_ROLE}')">{L_ROLE}{DIR_ROLE}</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_RANK}')">{L_RANK}{DIR_RANK}</a></th>
 		<th><a class="nav" href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
 		<!-- BEGIN raid_days -->
 		<th>{raid_days.DAY}<br/>{raid_days.DATE}</th>
@@ -93,6 +94,7 @@ function sortOrder(order)
 		<!-- END -->
 		<!-- ENDIF -->
 		</td>
+		<td><img src="images/{raiders.CSS_CLASS}.gif"/></td>
 		<td>{raiders.ROLE}</td>
 		<td colspan="2">{raiders.RANK}</td>
 		<!-- BEGIN raids -->
@@ -102,26 +104,29 @@ function sortOrder(order)
 			<!-- ENDIF -->
 			<!-- IF S_MODERATOR -->
 			<!-- IF raids.STATUS != 'on' and not raids.S_FUTURE -->
-			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on_inactive.png" alt="{L_SIGNON}" title="{L_SIGNON}"/></a>
+			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on.png" alt="{L_SIGNON}" title="{L_SIGNON}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'substitute' and not raids.S_FUTURE -->
+			<a href="javascript:go('z',{raiders.ID},'{raids.RAID}')" alt="{L_SUBSTITUTE}"><img src="images/substitute.png" alt="{L_SUBSTITUTE}" title="{L_SUBSTITUTE}"/></a>
 			<!-- ENDIF -->
 			<!-- IF raids.STATUS != 'late' and not raids.S_FUTURE -->
-			<a href="javascript:go('%',{raiders.ID},'{raids.RAID}')" alt="{L_LATE}"><img src="images/late_inactive.png" alt="{L_LATE}" title="{L_LATE}"/></a>
+			<a href="javascript:go('%',{raiders.ID},'{raids.RAID}')" alt="{L_LATE}"><img src="images/late.png" alt="{L_LATE}" title="{L_LATE}"/></a>
 			<!-- ENDIF -->
 			<!-- IF raids.STATUS != 'off' -->
-			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
 			<!-- ENDIF -->
 			<!-- IF raids.STATUS != 'noshow' and not raids.S_FUTURE -->
-			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')" alt="{L_NOSHOW}"><img src="images/noshow_inactive.png" alt="{L_NOSHOW}" title="{L_NOSHOW}"/></a>
+			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')" alt="{L_NOSHOW}"><img src="images/noshow.png" alt="{L_NOSHOW}" title="{L_NOSHOW}"/></a>
 			<!-- ENDIF -->
 			<!-- IF raids.STATUS != 'past' and raids.STATUS != 'future' and raids.S_STATIC != 1 -->
-			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
 			<!-- ENDIF -->
 			<!-- ELSE S_MODERATOR -->
 				<!-- IF raids.S_EDITABLE and raids.S_STATIC != 1 -->
 				<!-- IF raids.STATUS == 'off' -->
-				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear_inactive.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
 				<!-- ELSE -->
-				<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off_inactive.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+				<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
 				<!-- ENDIF -->
 				<!-- ENDIF -->
 			<!-- ENDIF -->
@@ -131,10 +136,11 @@ function sortOrder(order)
 	</tr>
 	<!-- END raiders -->
 	<tr>
-		<td colspan="4">&nbsp;</td>
+		<td colspan="5">&nbsp;</td>
 		<!-- BEGIN raid_days -->
 		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF -->">
 			<b class="on">{raid_days.SUM_ON}</b>/<b class="off">{raid_days.SUM_OFF}</b>/<b class="noshow">{raid_days.SUM_NOSHOW}</b>
+			<!-- IF S_MODERATOR --><br/><a href="javascript:prompt('{L_ADDON_CODE}', '{raid_days.RAID_DATA}');return false">{L_ADDON}</a><!-- ENDIF -->
 		</td>
 		<!-- END -->
 	</tr>
@@ -151,12 +157,13 @@ function sortOrder(order)
 	</td>
 <td valign="top" align="left">
 						<b>{L_ACTIONS}</b><br/>
-			<img src="images/off_inactive.png"> {L_LEGEND_ACTION_OFF}<br/>
-			<img src="images/clear_inactive.png"> {L_LEGEND_ACTION_CLEAR}<br/>
+			<img src="images/off.png"> {L_LEGEND_ACTION_OFF}<br/>
+			<img src="images/clear.png"> {L_LEGEND_ACTION_CLEAR}<br/>
 			<!-- IF S_MODERATOR -->
-			<img src="images/on_inactive.png"> {L_LEGEND_ACTION_ON}<br/>
-			<img src="images/late_inactive.png"> {L_LEGEND_ACTION_LATE}<br/>
-			<img src="images/noshow_inactive.png"> {L_LEGEND_ACTION_NOSHOW}
+			<img src="images/on.png"> {L_LEGEND_ACTION_ON}<br/>
+			<img src="images/substitute.png"> {L_LEGEND_ACTION_SUBSTITUTE}<br/>
+			<img src="images/late.png"> {L_LEGEND_ACTION_LATE}<br/>
+			<img src="images/noshow.png"> {L_LEGEND_ACTION_NOSHOW}
 			<!-- ENDIF -->
 			</td></tr></table>
 			</td><td colspan="2" valign="top" align="right">

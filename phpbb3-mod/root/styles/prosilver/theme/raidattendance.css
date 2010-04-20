@@ -30,6 +30,9 @@
 .noshow_uneven {
 	background: #9b0f03;
 }
+.substitute_even, .substitute_uneven {
+	background: #00a39e
+}
 .future_even, .sum_future {
 	text-align: center;
 	background: #004000;
