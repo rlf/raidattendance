@@ -28,6 +28,11 @@
 
 = Completed =
 
+== v1.1.5 - 20th of April 2010 - Substitute status + experimental WoW Addon ==
+  * Sorting now possible on Class as well + changed sorting of Role to have Class as sub-sorting.
+  * Added a new status for raiders called SUBSTITUTE for raiders sitting out on a raid (but being on-time etc.).
+  * Added experimental support for integeration with the RaidAttendancy WoW Addon.
+
 == v1.1.4 - 6th of April 2010 - Sorting + coloring ==
   * Sorting now possible on Name, Role, Rank.
   * Coloring made more simple (since we have so many colors in play).
