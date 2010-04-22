@@ -24,7 +24,7 @@ if (is_raidattendance_forum($forum_id))
 {
 	global $user, $auth, $config;
 	$raid_id = request_var('raid_id', 0);
-	$sort_order = request_var('sort_order', '1');
+	$sort_order = request_var('sort_order', '2,4,3,1');
 	if ($raid_id == 0) 
 	{
 		$raid_id = get_default_raid_id();
@@ -109,6 +109,7 @@ if (is_raidattendance_forum($forum_id))
 				'S_FUTURE'		=> $future,
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_STATIC'		=> $is_static ? 1 : 0,
+				'S_CANCELLED'	=> $attendance['__RAID__'][$raid] == STATUS_CANCELLED ? 1 : 0,
 			));
 			if (!is_array($raidData[$raid]))
 			{
@@ -132,6 +133,7 @@ if (is_raidattendance_forum($forum_id))
 		$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
 		$date = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%b', $time));
 		$template->assign_block_vars('raid_days', array(
+			'RAID'			=> $raid,
 			'DATE'			=> $date,
 			'DAY'			=> strftime('%a', $time),
 			'SUM_NOSHOW'	=> $sums[$raid][STATUS_NOSHOW],
@@ -139,6 +141,7 @@ if (is_raidattendance_forum($forum_id))
 			'SUM_ON'		=> $num_raiders - $sums[$raid][STATUS_NOSHOW] - $sums[$raid][STATUS_OFF],
 			'S_FUTURE'		=> $future,
 			'RAID_DATA'		=> get_raid_data_as_string($raidData[$raid]),
+			'S_CANCELLED'	=> $attendance['__RAID__'][$raid] == STATUS_CANCELLED ? 1 : 0,
 		));
 	}
 	$date_array = getdate($tstamp);
@@ -202,6 +205,10 @@ function get_array_as_string($ary)
 	$buffer = '{';
 	foreach ($ary as $key => $value)
 	{
+		if (strlen($buffer) > 1) 
+		{
+			$buffer = $buffer . ',';
+		}
 		if (!is_numeric($key)) 
 		{
 			$buffer = $buffer . $key . '=';
@@ -214,7 +221,6 @@ function get_array_as_string($ary)
 		{
 			$buffer = $buffer . $value;
 		}
-		$buffer = $buffer . ',';
 	}
 	$buffer = $buffer . '}';
 	return $buffer;
@@ -231,15 +237,19 @@ function handle_action($action, $raiders)
 	global $success, $user, $error;
 	$rid = request_var('rid', 0);
 	$raid = request_var('raid', '');
-	if (!$action or !$rid or !$raid)
+	if (!$action or !$raid)
 	{	
 		return;
 	}
 	// TODO: Additional checking
 	$raider = get_raider_with_id($raiders, $rid);
-	if (!$raider) 
+	if (!$raider && !($rid == 0 && ($action == 'c' || $action == 'x')))
 	{
 		return;
+	}
+	else if ($rid == 0 && ($action == 'c' || $action == 'x'))
+	{
+		$raider = new raider(array('id'=>0, 'name'=>'__RAID__'));
 	}
 	$day = $raid;
 	if (strlen($raid) == 8)
@@ -274,6 +284,10 @@ function handle_action($action, $raiders)
 	{
 		$raider->substitute($raid);
 	}
+	else if ($action == 'c')
+	{
+		$raider->cancel($raid);
+	}
 
 	$lang_array = array(
 		'+' => 'STATUS_CHANGE_ON', 
@@ -282,6 +296,7 @@ function handle_action($action, $raiders)
 		'!' => 'STATUS_CHANGE_NOSHOW', 
 		'%'	=> 'STATUS_CHANGE_LATE',
 		'z' => 'STATUS_CHANGE_SUBSTITUTE',
+		'c' => 'STATUS_CHANGE_CANCELLED',
 	);
 	$lang_key = $lang_array[$action];
 	if ($username && $raider->name && $day && $user->lang[$lang_key]) 
