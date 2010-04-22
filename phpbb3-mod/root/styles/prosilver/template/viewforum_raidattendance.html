@@ -76,7 +76,7 @@ function sortOrder(order)
 		<th><a class="sort" href="javascript:sortOrder('{SORT_RANK}')">{L_RANK}{DIR_RANK}</a></th>
 		<th><a class="nav" href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
 		<!-- BEGIN raid_days -->
-		<th>{raid_days.DAY}<br/>{raid_days.DATE}</th>
+		<th>{raid_days.DAY}<!-- IF S_MODERATOR -->&nbsp;<!-- IF raid_days.S_CANCELLED --><a href="javascript:go('x', 0, '{raid_days.RAID}')"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a><!-- ELSE --><a href="javascript:go('c', 0, '{raid_days.RAID}')"><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/></a><!-- ENDIF --><!-- ENDIF --><br/>{raid_days.DATE}</th>
 		<!-- END raid_days -->
 		<th><a class="nav" href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
 	</tr>
@@ -112,6 +112,7 @@ function sortOrder(order)
 			<!-- IF raids.STATUS != 'late' and not raids.S_FUTURE -->
 			<a href="javascript:go('%',{raiders.ID},'{raids.RAID}')" alt="{L_LATE}"><img src="images/late.png" alt="{L_LATE}" title="{L_LATE}"/></a>
 			<!-- ENDIF -->
+			<br/>
 			<!-- IF raids.STATUS != 'off' -->
 			<a href="javascript:go('-',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
 			<!-- ENDIF -->
@@ -121,7 +122,7 @@ function sortOrder(order)
 			<!-- IF raids.STATUS != 'past' and raids.STATUS != 'future' and raids.S_STATIC != 1 -->
 			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
 			<!-- ENDIF -->
-			<!-- ELSE S_MODERATOR -->
+			<!-- ELSE  -->
 				<!-- IF raids.S_EDITABLE and raids.S_STATIC != 1 -->
 				<!-- IF raids.STATUS == 'off' -->
 				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
@@ -130,6 +131,7 @@ function sortOrder(order)
 				<!-- ENDIF -->
 				<!-- ENDIF -->
 			<!-- ENDIF -->
+			<!-- IF raids.S_CANCELLED --><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/><!-- ENDIF -->
 		</td>
 		<!-- END -->
 		<td>&nbsp;</td>
@@ -140,7 +142,7 @@ function sortOrder(order)
 		<!-- BEGIN raid_days -->
 		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF -->">
 			<b class="on">{raid_days.SUM_ON}</b>/<b class="off">{raid_days.SUM_OFF}</b>/<b class="noshow">{raid_days.SUM_NOSHOW}</b>
-			<!-- IF S_MODERATOR --><br/><a href="javascript:prompt('{L_ADDON_CODE}', '{raid_days.RAID_DATA}');return false">{L_ADDON}</a><!-- ENDIF -->
+			<br/><a href="javascript:prompt('{L_ADDON_CODE}', '{raid_days.RAID_DATA}');return false">{L_ADDON}</a>
 		</td>
 		<!-- END -->
 	</tr>
@@ -149,11 +151,9 @@ function sortOrder(order)
 <tr>
 	<td valign="top" align="left"><b>{L_LEGEND}</b><br/>
 		<table>
-			<tr><td class="on_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNON}</td></tr>
-			<tr><td class="off_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNOFF}</td></tr>
-			<tr><td class="noshow_even">&nbsp;&nbsp;&nbsp;</td><td>{L_NOSHOW}</td></tr>
-			<tr><td class="late_even">&nbsp;&nbsp;&nbsp;</td><td>{L_LATE}</td></tr>
-			<tr><td class="substitute_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SUBSTITUTE}</td></tr>
+			<tr><td class="on_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNON}</td><td class="late_even">&nbsp;&nbsp;&nbsp;</td><td>{L_LATE}</td></tr>
+			<tr><td class="off_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNOFF}</td><td class="substitute_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SUBSTITUTE}</td></tr>
+			<tr><td class="noshow_even">&nbsp;&nbsp;&nbsp;</td><td>{L_NOSHOW}</td><td class="past_even"><img src="images/skull.png"/></td><td>{L_CANCELLED}</td></tr>
 		</table>
 	</td>
 <td valign="top" align="left">
@@ -164,7 +164,8 @@ function sortOrder(order)
 			<img src="images/on.png"> {L_LEGEND_ACTION_ON}<br/>
 			<img src="images/substitute.png"> {L_LEGEND_ACTION_SUBSTITUTE}<br/>
 			<img src="images/late.png"> {L_LEGEND_ACTION_LATE}<br/>
-			<img src="images/noshow.png"> {L_LEGEND_ACTION_NOSHOW}
+			<img src="images/noshow.png"> {L_LEGEND_ACTION_NOSHOW}<br/>
+			<img src="images/skull.png"> {L_LEGEND_ACTION_CANCELLED}
 			<!-- ENDIF -->
 			</td></tr></table>
 			</td><td colspan="2" valign="top" align="right">

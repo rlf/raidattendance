@@ -49,6 +49,7 @@ define('STATUS_OFF', 2);
 define('STATUS_NOSHOW', 3);
 define('STATUS_LATE', 4);
 define('STATUS_SUBSTITUTE', 5);
+define('STATUS_CANCELLED', 6);
 
 $error = array();
 $success = array();
@@ -707,12 +708,14 @@ function set_attendance($raider, $night, $status)
 
 /**
  * Returns an associative array with _raidername_ => array(_raidnight_ => _status)
+ * Note: raider_id = 0, name = '__RAID__' denotes the actual raid, and is used to mark cancellations of the whole raid.
  **/
 function get_attendance($nights)
 {
 	global $db;
 	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
 		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $nights);
+	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raider_id=0 AND ' . $db->sql_in_set('n.night', $nights);
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	while ($row = $db->sql_fetchrow($result))
@@ -954,6 +957,13 @@ class raider
 	{
 		add_history($this, array('SUBSTITUTE', $raid));
 		set_attendance($this, $raid, STATUS_SUBSTITUTE);
+	}
+
+	function cancel($raid)
+	{
+		// NOTE: Should only be called on __RAID__ with id=0!!
+		add_history($this, array('CANCELLED', $raid));
+		set_attendance($this, $raid, STATUS_CANCELLED);
 	}
 }
 
