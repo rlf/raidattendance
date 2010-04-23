@@ -645,6 +645,19 @@ function add_history($raider, $action)
 	$db->sql_multi_insert(RAIDER_HISTORY_TABLE, $data);
 }
 
+function add_raid_history($raid_id, $action)
+{
+	global $user, $db;
+	$data = array(array(
+		'user_id' 		=> $user->data['user_id'],
+		'raider_id'		=> 0xfff000 ^ $raid_id,
+		'time'			=> time(),
+		'action'		=> is_array($action) ? implode(',', $action) : $action,
+		'raid_id'		=> $raid_id,
+		));
+	$db->sql_multi_insert(RAIDER_HISTORY_TABLE, $data);
+}
+
 function get_history($starttime, $endtime = 0)
 {
 	if ($endtime = 0) 
@@ -672,19 +685,40 @@ class history
 		$this->raider_id	= $row['raider_id'];
 		$this->time			= $row['time'];
 		$this->action		= $row['action'];
+		$this->raid_id		= $row['raid_id'];
 	}
 }
 
 // ---------------------------------------------------------------------------
 // Attendance Access
 // ---------------------------------------------------------------------------
+function set_raid_status($raid_id, $night, $status)
+{
+	global $error, $success, $db;
+	$data = array(
+		'raider_id'			=> 0xfff000 ^ $raid_id,
+		'raid_id'			=> $raid_id,
+		'night'				=> $night,
+		'status'			=> $status,
+		'time'				=> time(),
+		);
+	$sql = 'DELETE FROM ' . RAIDATTENDANCE_TABLE . " WHERE raid_id={$raid_id} AND night='{$night}'"; 
+	$res = $db->sql_query($sql);
+	// Bail out (don't add) - perhaps we should add... if it's a static signoff??
+	if ($status === STATUS_CLEAR)
+	{
+		return;
+	}
+	$ary = array($data);
+	$res = $db->sql_multi_insert(RAIDATTENDANCE_TABLE, $ary);
+	if (is_dbal_error())
+	{
+		$error[] = $res;
+	}
+}
 function set_attendance($raider, $night, $status)
 {
 	global $error, $success, $db;
-	$ident = array(
-		'raider_id'			=> $raider->id,
-		'night'				=> $night,
-		);
 	$data = array(
 		'raider_id'			=> $raider->id,
 		'night'				=> $night,
@@ -710,12 +744,12 @@ function set_attendance($raider, $night, $status)
  * Returns an associative array with _raidername_ => array(_raidnight_ => _status)
  * Note: raider_id = 0, name = '__RAID__' denotes the actual raid, and is used to mark cancellations of the whole raid.
  **/
-function get_attendance($nights)
+function get_attendance($nights, $raid_id = 0)
 {
 	global $db;
 	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
 		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $nights);
-	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raider_id=0 AND ' . $db->sql_in_set('n.night', $nights);
+	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . ' AND ' . $db->sql_in_set('n.night', $nights);
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	while ($row = $db->sql_fetchrow($result))
@@ -957,13 +991,6 @@ class raider
 	{
 		add_history($this, array('SUBSTITUTE', $raid));
 		set_attendance($this, $raid, STATUS_SUBSTITUTE);
-	}
-
-	function cancel($raid)
-	{
-		// NOTE: Should only be called on __RAID__ with id=0!!
-		add_history($this, array('CANCELLED', $raid));
-		set_attendance($this, $raid, STATUS_CANCELLED);
 	}
 }
 

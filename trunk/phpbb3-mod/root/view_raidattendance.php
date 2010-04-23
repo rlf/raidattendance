@@ -49,7 +49,7 @@ if (is_raidattendance_forum($forum_id))
 		handle_action($action, $raiders);
 	}
 	$day_names = get_raiding_day_names($raids);
-	$attendance = get_attendance($raids);
+	$attendance = get_attendance($raids, $raid_id);
 	$static_attendance = get_static_attendance($raids);
 	add_static_attendance($raids, $attendance, $static_attendance);
 
@@ -237,19 +237,24 @@ function handle_action($action, $raiders)
 	global $success, $user, $error;
 	$rid = request_var('rid', 0);
 	$raid = request_var('raid', '');
+	$raid_id = request_var('raid_id', 0);
+
 	if (!$action or !$raid)
 	{	
 		return;
 	}
-	// TODO: Additional checking
-	$raider = get_raider_with_id($raiders, $rid);
-	if (!$raider && !($rid == 0 && ($action == 'c' || $action == 'x')))
+	$raider = false;
+	if ($rid != 0 && $raid && $action) 
+	{
+		$raider = get_raider_with_id($raiders, $rid);
+		if (!$raider && !($rid == 0 && ($action == 'c' || $action == 'x')))
+		{
+			return;
+		}
+	}
+	else if (!$raid_id || !$action || !$raid) 
 	{
 		return;
-	}
-	else if ($rid == 0 && ($action == 'c' || $action == 'x'))
-	{
-		$raider = new raider(array('id'=>0, 'name'=>'__RAID__'));
 	}
 	$day = $raid;
 	if (strlen($raid) == 8)
@@ -284,9 +289,15 @@ function handle_action($action, $raiders)
 	{
 		$raider->substitute($raid);
 	}
-	else if ($action == 'c')
+	else if ($action == 'cr')
 	{
-		$raider->cancel($raid);
+		add_raid_history($raid_id, array('CANCELLED', $raid));
+		set_raid_status($raid_id, $raid, STATUS_CANCELLED);
+	}
+	else if ($action == 'xr')
+	{
+		add_raid_history($raid_id, array('CLEAR_RAID', $raid));		
+		set_raid_status($raid_id, $raid, STATUS_CLEAR);
 	}
 
 	$lang_array = array(
@@ -296,12 +307,17 @@ function handle_action($action, $raiders)
 		'!' => 'STATUS_CHANGE_NOSHOW', 
 		'%'	=> 'STATUS_CHANGE_LATE',
 		'z' => 'STATUS_CHANGE_SUBSTITUTE',
-		'c' => 'STATUS_CHANGE_CANCELLED',
+		'cr' => 'STATUS_CHANGE_CANCELLED',
+		'xr' => 'STATUS_CHANGE_RAID_CLEAR',
 	);
 	$lang_key = $lang_array[$action];
 	if ($username && $raider->name && $day && $user->lang[$lang_key]) 
 	{
 		$success[] = sprintf($user->lang[$lang_key], $username, $raider->name, $day);
+	}
+	else if ($username && $day && $user->lang[$lang_key])
+	{
+		$success[] = sprintf($user->lang[$lang_key], $username, $day);
 	}
 	else 
 	{
