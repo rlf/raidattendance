@@ -94,7 +94,8 @@ $lang = array_merge($lang, array(
 		'STATUS_CHANGE_NOSHOW'		=> '%1$s marked %2$s as being AWOL from raid %3$s',
 		'STATUS_CHANGE_LATE'		=> '%1$s marked %2$s as being late for raid %3$s',
 		'STATUS_CHANGE_SUBSTITUTE'	=> '%1$s marked %2$s as being a substitute for raid %3$s',
-		'STATUS_CHANGE_CANCELLED'	=> '%1$s cancelled the raid on %3$s',	
+		'STATUS_CHANGE_CANCELLED'	=> '%1$s cancelled the raid on %2$s',	
+		'STATUS_CHANGE_RAID_CLEAR'	=> '%1$s reactivated the raid on %2$s',	
 		'STATIC_SIGNOFF'			=> "Sorry, but I'm never able to raid on %s",
 		'STATIC_SIGNOFF_CLEAR'		=> 'Forget it, I might be able raid on %s anyway!',
 

@@ -302,6 +302,13 @@ $versions = array(
 	), // v1.1.3
 	'1.1.5' => array(
 	), // v1.1.5
+	'1.1.6' => array(
+		'table_column_add'		=> array(
+			array('phpbb_raidattendance', 'raid_id', array('UINT', 0)),
+			array('phpbb_raidattendance_history', 'raid_id', array('UINT', 0)),
+		),
+		'custom'	=> 'convert_attendance_for_raids',
+	),
 );
  
 function v103_110($action, $version)
@@ -380,6 +387,30 @@ function v103_110($action, $version)
 		$return_value['command'] = array('NOT_CORRECT_VERSION', "$current_version/$action", '1.0.3/install');
 	}
 	return $return_value;
+}
+function convert_attendance_for_raids($action, $version)
+{
+	global $db, $table_prefix, $umil, $config, $version_config_name, $user;
+	$current_version = $umil->config_exists($version_config_name, true);
+	if (is_array($current_version)) 
+	{
+		$current_version = $current_version['config_value'];
+	}
+	if ($current_version >= '1.1.5' && $version <= '1.1.6' && $action == 'update')
+	{
+		// Only do the conversion if there's a chance some data have been registered wrongly
+		// find default raid_id
+		$sql = 'SELECT id FROM ' . $table_prefix . 'raidattendance_raids ORDER BY id';
+		$result = $db->sql_query_limit($sql, 1);
+		$raid_id = 0;
+		if ($row = $db->sql_fetchrow($result))
+		{
+			$raid_id = $row['id'];
+		}
+		$db->sql_freeresult($result);
+		$sql = 'UPDATE ' . $table_prefix . 'raidattendance SET raid_id=' . $raid_id . ' WHERE raider_id=0';
+		$db->sql_query($sql);
+	}	
 }
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);

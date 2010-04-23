@@ -46,12 +46,14 @@ $template->assign_vars(array(
 	'PAGINATION'			=> generate_pagination(append_sid("{$phpbb_root_path}view_raid_logs.$phpEx", "f=$forum_id"), $total_lines, $lines_pr_page, $start),
 	));
 $sql = 'SELECT raider.name raider_name, user.username username, r.id id, r.time time, r.action action FROM ' . RAIDER_HISTORY_TABLE . ' r JOIN ' . RAIDER_TABLE . ' raider ON r.raider_id = raider.id JOIN ' . USERS_TABLE . ' user ON user.user_id = r.user_id';
+$sql2 = "SELECT raid.name raider_name, user.username username, r.id id, r.time time, r.action action FROM " . RAIDER_HISTORY_TABLE . ' r JOIN ' . RAIDS_TABLE . ' raid ON r.raid_id = raid.id JOIN ' . USERS_TABLE . ' user ON user.user_id = r.user_id';
 $raider_id = request_var('raider_id', 0);
 if ($raider_id > 0)
 {
 	$sql = $sql . ' WHERE raider.id=' . $raider_id;
 }
-$sql = $sql . ' ORDER BY r.time DESC';
+$sql = $sql . ' UNION ' . $sql2;
+$sql = $sql . ' ORDER BY time DESC';
 
 $result = $db->sql_query_limit($sql, $lines_pr_page, $start);
 $num = 0;

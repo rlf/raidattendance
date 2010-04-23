@@ -42,6 +42,9 @@ $lang = array_merge($lang, array(
 	'LOG_CLEAR'			=> 'Cleared attendancy for raid %s',
 	'LOG_NOSHOW'		=> 'Was AWOL for raid %s',
 	'LOG_LATE'			=> 'Was late for raid %s',
+	'LOG_SUBSTITUTE'	=> 'Sat out on raid %s',
+	'LOG_CANCELLED'		=> 'Raid %s was cancelled',
+	'LOG_CLEAR_RAID'	=> 'Raid %s was re-activated',
 	'RAID_UNKNOWN'		=> 'Unknown',
 	'FILTER'			=> 'Filter',
 	)
