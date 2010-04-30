@@ -740,6 +740,69 @@ function set_attendance($raider, $night, $status)
 	}
 }
 
+function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
+{
+	global $db;
+	$raiding_days = get_raiding_days($endtime, $raid_id);
+	$raiding_day_names = array();
+	// raiding_days is for 3 weeks
+	for ($i = 0; $i < sizeof($raiding_days)/3; $i++)
+	{
+		$raiding_day_names[] = get_raiding_day_name($raiding_days[$i]); 
+	}
+	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
+		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . " r WHERE r.id = n.raider_id AND ((n.night >='$starttime' AND n.night <= '$endtime') OR ("
+		. $db->sql_in_set('n.night', $raiding_day_names) . '))';
+	$sql = $sql . " UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . " AND n.night >='$starttime' AND n.night <= '$endtime'";
+	$result = $db->sql_query($sql);
+	$attendance = array();
+	$nights = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		if (is_array($attendance[$row['name']]))
+		{
+			$attendance[$row['name']][$row['night']] = $row['status'];
+		}
+		else
+		{
+			$attendance[$row['name']] = array($row['night'] => $row['status']);
+		}
+		if (is_array($nights[$row['night']]))
+		{
+			$nights[$row['night']][$row['name']] = $row['status'];
+		}
+		else
+		{
+			$nights[$row['night']] = array($row['name'] => $row['status']);
+		}
+	}
+	$db->sql_freeresult($result);
+	// Static attendance
+	$raider_active = array();
+	foreach ($nights as $night => $raiders)
+	{
+		$day_name = get_raiding_day_name($night);
+		foreach ($attendance as $raider => $rnights)
+		{
+			// If raider is not active, but have a status for this night - make him active
+			if (!isset($raider_active[$raider]) && isset($rnights[$night]))
+			{
+				$raider_active[$raider] = true;
+			}
+			// If raider is active, but don't have an entry for this night, but one for the name
+			if ($raider_active[$raider] && !isset($rnights[$night]) && isset($rnights[$day_name])
+			{
+				$raiders[$raider] = $rnights[$day_name];
+			}
+			if (!is_array($rnights['summary'])) 
+			{
+				$rnights['summary'] = array();
+			}
+			$rnights['summary'][$raiders[$raider]] = 1 + ($rnights['summary'][$raiders[$raider]] or 0);
+		}
+	}
+	return $attendance;	
+}
 /**
  * Returns an associative array with _raidername_ => array(_raidnight_ => _status)
  * Note: raider_id = 0, name = '__RAID__' denotes the actual raid, and is used to mark cancellations of the whole raid.
