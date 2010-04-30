@@ -17,6 +17,8 @@ if (!defined('IN_PHPBB'))
 }
 global $table_prefix, $phpbb_root_path, $phpEx;
 
+
+
 define('RAIDER_TABLE', $table_prefix . 'raidattendance_raiders');
 define('RAIDER_HISTORY_TABLE', $table_prefix . 'raidattendance_history');
 define('RAIDATTENDANCE_TABLE', $table_prefix . 'raidattendance');
