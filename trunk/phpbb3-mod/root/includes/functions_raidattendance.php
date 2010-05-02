@@ -777,14 +777,19 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 		{
 			$nights[$row['night']] = array($row['name'] => $row['status']);
 		}
+		// Also add "summary columns"
+		if (!isset($nights['summary_' . $row['status']]))
+		{
+			$nights['summary_' . $row['status']] = true;
+		}
 	}
 	$db->sql_freeresult($result);
 	// Static attendance
 	$raider_active = array();
 	foreach ($nights as $night => $raiders)
 	{
-		$day_name = get_raiding_day_name($night);
-		foreach ($attendance as $raider => $rnights)
+		$day_name = is_string($night) && strlen($night) == 8 ? get_raiding_day_name($night) : $night;
+		foreach ($attendance as $raider => &$rnights)
 		{
 			// If raider is not active, but have a status for this night - make him active
 			if (!isset($raider_active[$raider]) && isset($rnights[$night]))
@@ -792,15 +797,20 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 				$raider_active[$raider] = true;
 			}
 			// If raider is active, but don't have an entry for this night, but one for the name
-			if ($raider_active[$raider] && !isset($rnights[$night]) && isset($rnights[$day_name])
+			if ($raider_active[$raider] && !isset($rnights[$night]) && isset($rnights[$day_name]))
 			{
-				$raiders[$raider] = $rnights[$day_name];
+				$rnights[$night] = $rnights[$day_name];
 			}
-			if (!is_array($rnights['summary'])) 
+			if (!isset($rnights[$night]))
 			{
-				$rnights['summary'] = array();
+				// Explicitly set the "NOTHING" status
+				$rnights[$night] = STATUS_CLEAR;
 			}
-			$rnights['summary'][$raiders[$raider]] = 1 + ($rnights['summary'][$raiders[$raider]] or 0);
+			if (!isset($rnights['summary_' . $rnights[$night]])) 
+			{
+				$rnights['summary_' . $rnights[$night]] = 0;
+			}
+			$rnights['summary_' . $rnights[$night]] = 1 + ($rnights['summary_' . $rnights[$night]]);
 		}
 	}
 	return $attendance;	
