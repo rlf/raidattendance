@@ -742,6 +742,11 @@ function set_attendance($raider, $night, $status)
 	}
 }
 
+function convert_to_ratio($value, $sum)
+{
+	return $sum == 0 ? 0 : $val*100/$sum;
+}
+
 function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 {
 	global $db, $error;
@@ -821,6 +826,18 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 				$rnights['summary_' . $rnights[$night]] = 0;
 			}
 			$rnights['summary_' . $rnights[$night]] = 1 + ($rnights['summary_' . $rnights[$night]]);
+		}
+	}
+	foreach ($attendance as $raider => &$nights)
+	{
+		$sum = $nights['summary_1'] + $nights['summary_2'] + $nights['summary_3'] + $nights['summary_4'] + $nights['summary_5'] + $nights['summary_6'];
+		if ($sum == 0) 
+		{
+			$sum = 1;
+		}
+		for ($i = 1; $i <= 6; $i++)
+		{
+			$nights['summary_' . $i] = $nights['summary_' . $i]*100/$sum;
 		}
 	}
 	return $attendance;	
