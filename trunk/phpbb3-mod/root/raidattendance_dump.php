@@ -108,8 +108,7 @@ foreach ($attendance as $raider => $nights)
 	$sum_4 = $nights['summary_4'] or 0;
 	$sum_5 = $nights['summary_5'] or 0;
 	$sum_6 = $nights['summary_6'] or 0;
-	$sum = $sum_1 + $sum_2 + $sum_3 + $sum_4 + $sum_5 + $sum_6;
-	$line = $line . sprintf($output_summary, $sum_1*100/$sum, $sum_2*100/$sum, $sum_3*100/$sum, $sum_4*100/$sum, $sum_5*100/$sum, $sum_6*100/$sum);
+	$line = $line . sprintf($output_summary, $sum_1, $sum_2, $sum_3, $sum_4, $sum_5, $sum_6);
     printf($output_row, $line);
     $is_first = false;
 }

@@ -79,9 +79,7 @@ if (is_raidattendance_forum($forum_id))
 			$summary_attendance[$raider->name]['summary_4'],
 			$summary_attendance[$raider->name]['summary_5'],
 			$summary_attendance[$raider->name]['summary_6'],
-			);
-		$sum = array_sum($sums);
-		$sums = array_map(function($val,$sum) { return $sum == 0 ? 0 : $val*100/$sum; }, $sums, array_fill(0, sizeof($sums), $sum));
+		);
 		$template->assign_block_vars('raiders', array(
 			'ROWNO'				=> $rowno+1,
 			'ID'				=> $raider->id,
