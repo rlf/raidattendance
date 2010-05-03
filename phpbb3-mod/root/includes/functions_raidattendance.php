@@ -744,7 +744,7 @@ function set_attendance($raider, $night, $status)
 
 function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 {
-	global $db;
+	global $db, $error;
 	$raiding_days = get_raiding_days($endtime, $raid_id);
 	$raiding_day_names = array();
 	// raiding_days is for 3 weeks
@@ -759,6 +759,11 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	$nights = array();
+	// Add summary columns
+	for ($i = STATUS_CLEAR; $i <= STATUS_CANCELLED; $i++)
+	{
+		$nights['summary_' . $i] = 0;
+	}
 	while ($row = $db->sql_fetchrow($result))
 	{
 		if (is_array($attendance[$row['name']]))
@@ -777,20 +782,24 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 		{
 			$nights[$row['night']] = array($row['name'] => $row['status']);
 		}
-		// Also add "summary columns"
-		if (!isset($nights['summary_' . $row['status']]))
-		{
-			$nights['summary_' . $row['status']] = true;
-		}
 	}
 	$db->sql_freeresult($result);
 	// Static attendance
 	$raider_active = array();
+	ksort($nights);
 	foreach ($nights as $night => $raiders)
 	{
-		$day_name = is_string($night) && strlen($night) == 8 ? get_raiding_day_name($night) : $night;
+		$day_name = is_numeric($night) ? get_raiding_day_name($night) : $night;
 		foreach ($attendance as $raider => &$rnights)
 		{
+			if (!is_numeric($night))
+			{
+				if (strncmp('summary_', $night, 8) == 0 && !isset($rnights[$night]))
+				{
+					$rnights[$night] = 0; 
+				}
+				continue; // Only handle the "real nights" this way...
+			}
 			// If raider is not active, but have a status for this night - make him active
 			if (!isset($raider_active[$raider]) && isset($rnights[$night]))
 			{
@@ -806,6 +815,7 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 				// Explicitly set the "NOTHING" status
 				$rnights[$night] = STATUS_CLEAR;
 			}
+			// Should not be needed (we have it above) - but just in case...
 			if (!isset($rnights['summary_' . $rnights[$night]])) 
 			{
 				$rnights['summary_' . $rnights[$night]] = 0;

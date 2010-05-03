@@ -35,7 +35,6 @@ if (is_raidattendance_forum($forum_id))
 	$tstamp = request_var('tstamp', 0);
 	$tstamp = $tstamp > 0 ? $tstamp : time();
 	$now = strftime('%H:%M', time());
-	//$error[] = 'time: ' . $now . ', timezone : ' . $user->data['user_timezone'];
 	$today = strftime('%Y%m%d', time());
 	$raid_time =  $config['raidattendance_raid_time'];
 	
@@ -61,8 +60,28 @@ if (is_raidattendance_forum($forum_id))
 	$armory_link = $config['raidattendance_armory_link'];
 	$realm = $config['raidattendance_realm_name'];
 	$url_base = $armory_link . '/character-sheet.xml?r=' . urlencode($realm) . '&cn=';
+
+	$date_array = getdate($tstamp);
+	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
+	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
+	$dump_start = strftime('%Y%m%d', mktime(0, 0, 0, $date_array['mon']-3, $date_array['mday'], $date_array['year']));
+	$dump_end = strftime('%Y%m%d', mktime(0, 0, 0, $date_array['mon']+1, $date_array['mday'], $date_array['year']));
+
+	// For now... just for the summary... should be merged in the future...
+	$summary_attendance = get_attendance_for_time($dump_start, $dump_end, $raid_id);
 	foreach ($raiders as $name => $raider) 
 	{
+		$sums = array(
+			0,
+			$summary_attendance[$raider->name]['summary_1'],
+			$summary_attendance[$raider->name]['summary_2'],
+			$summary_attendance[$raider->name]['summary_3'],
+			$summary_attendance[$raider->name]['summary_4'],
+			$summary_attendance[$raider->name]['summary_5'],
+			$summary_attendance[$raider->name]['summary_6'],
+			);
+		$sum = array_sum($sums);
+		$sums = array_map(function($val,$sum) { return $sum == 0 ? 0 : $val*100/$sum; }, $sums, array_fill(0, sizeof($sums), $sum));
 		$template->assign_block_vars('raiders', array(
 			'ROWNO'				=> $rowno+1,
 			'ID'				=> $raider->id,
@@ -78,6 +97,8 @@ if (is_raidattendance_forum($forum_id))
 			'CSS_CLASS'			=> 'class_' . $raider->class,
 			'S_EDITABLE'		=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)),
 			'ARMORY_LINK'		=> $url_base . urlencode($raider->name),
+			'SUMMARY_LINK'		=> sprintf($user->lang['SUMMARY_LINK'], $sums[1], $sums[2], $sums[3], $sums[4], $sums[5], $sums[6]),
+			'SUMMARY_TOOLTIP'	=> sprintf($user->lang['SUMMARY_TOOLTIP'], $sums[1]+$sums[5]),
 		));
 		foreach ($day_names as $day)
 		{
@@ -144,14 +165,11 @@ if (is_raidattendance_forum($forum_id))
 			'S_CANCELLED'	=> $attendance['__RAID__'][$raid] == STATUS_CANCELLED ? 1 : 0,
 		));
 	}
-	$date_array = getdate($tstamp);
-	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
-	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
 
 	$mode = request_var('mode', 'normal');
 	$is_admin = $auth->acl_get('m_') or $auth->acl_get('a_');
 	$is_moderator = $is_admin && $mode == 'admin';
-	$num_cols = 5 + sizeof($raids);
+	$num_cols = 6 + sizeof($raids);
 	$col_sort = explode(',', $sort_order);
 
 	$dir_sort = array(
@@ -185,6 +203,8 @@ if (is_raidattendance_forum($forum_id))
 		'SORT_RANK'				=> ($dir_sort[3] == ' v' ? '-3,2,4,1' : '3,2,4,1'),
 		'DIR_CLASS'				=> $dir_sort[4],
 		'SORT_CLASS'			=> ($dir_sort[4] == ' v' ? '-4,2,1' : '4,2,1'),
+		'DUMP_START'			=> $dump_start,
+		'DUMP_END'				=> $dump_end,
 	));
 
 	$raids = get_raids();

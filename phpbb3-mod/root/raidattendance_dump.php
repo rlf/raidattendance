@@ -42,6 +42,12 @@ if ($user->lang['OUTPUT_HEADER_' . $output])
 }
 $output_row = '%s';
 $output_cell = '%s';
+$output_summary = '%02$1f/%02$2f/%02$3f/%02$4f/%02$5f';
+$output_colheader_cancelled = '%s [%s]';
+if ($user->lang['OUTPUT_COLHEADER_CANCELLED_' . $output])
+{
+	$output_colheader_cancelled = $user->lang['OUTPUT_COLHEADER_CANCELLED_' . $output];
+}
 if ($user->lang['OUTPUT_ROW_' . $output])
 {
 	$output_row = $user->lang['OUTPUT_ROW_' . $output];
@@ -50,6 +56,10 @@ if ($user->lang['OUTPUT_CELL_' . $output])
 {
 	$output_cell = $user->lang['OUTPUT_CELL_' . $output];
 }
+if ($user->lang['OUTPUT_SUMMARY_' . $output])
+{
+	$output_summary = $user->lang['OUTPUT_SUMMARY_' . $output];
+}
 
 $attendance = get_attendance_for_time($start, $end, $raid_id);
 
@@ -57,10 +67,14 @@ $is_first = true;
 $first_line = '';
 foreach ($attendance as $raider => $nights)
 {
+	if ($raider == '__RAID__')
+	{
+		continue;
+	}
     $line = '';
 	if ($is_first) 
     {
-		$first_line = sprintf($output_cell, 'Name');
+		$first_line = sprintf($output_cell, $user->lang['NAME']);
 	}
     $line = $line . sprintf($output_cell, $raider);
 	ksort(&$nights);
@@ -71,16 +85,31 @@ foreach ($attendance as $raider => $nights)
 			continue; // Skip columns that are not raids...
 		}
         if ($is_first)
-        {
-            $first_line = $first_line . sprintf($output_cell, $night);
+		{
+			$header = $night;
+			if ($attendance['__RAID__'][$night] == STATUS_CANCELLED) 
+			{
+				$header = sprintf($output_colheader_cancelled, $night, $user->lang['CANCELLED_' . $output]);
+			}
+            $first_line = $first_line . sprintf($output_cell, $header);
         }
         $line = $line . sprintf($output_cell, $user->lang('STATUS_' . $status ));
     }
 	// TODO: add the ratios...
 	if ($is_first)
 	{
+		$first_line = $first_line . sprintf($output_cell, $user->lang['SUMMARY']);
 		printf($output_row, $first_line);
 	}
+	$sum_0 = $nights['summary_0'] or 0;
+	$sum_1 = $nights['summary_1'] or 0;
+	$sum_2 = $nights['summary_2'] or 0;
+	$sum_3 = $nights['summary_3'] or 0;
+	$sum_4 = $nights['summary_4'] or 0;
+	$sum_5 = $nights['summary_5'] or 0;
+	$sum_6 = $nights['summary_6'] or 0;
+	$sum = $sum_1 + $sum_2 + $sum_3 + $sum_4 + $sum_5 + $sum_6;
+	$line = $line . sprintf($output_summary, $sum_1*100/$sum, $sum_2*100/$sum, $sum_3*100/$sum, $sum_4*100/$sum, $sum_5*100/$sum, $sum_6*100/$sum);
     printf($output_row, $line);
     $is_first = false;
 }
