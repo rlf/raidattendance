@@ -78,6 +78,7 @@ function sortOrder(order)
 		<!-- BEGIN raid_days -->
 		<th>{raid_days.DAY}<!-- IF S_MODERATOR -->&nbsp;<!-- IF raid_days.S_CANCELLED --><a href="javascript:go('xr', 0, '{raid_days.RAID}')"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a><!-- ELSE --><a href="javascript:go('cr', 0, '{raid_days.RAID}')"><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/></a><!-- ENDIF --><!-- ENDIF --><br/>{raid_days.DATE}</th>
 		<!-- END raid_days -->
+		<th>{L_SUMMARY}</th>
 		<th><a class="nav" href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
 	</tr>
 	<!-- BEGIN raiders -->
@@ -134,6 +135,7 @@ function sortOrder(order)
 			<!-- IF raids.S_CANCELLED --><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/><!-- ENDIF -->
 		</td>
 		<!-- END -->
+		<td><img src="{raiders.SUMMARY_LINK}" alt="{raiders.SUMMARY_TOOLTIP}" title="{raiders.SUMMARY_TOOLTIP}"/></td>
 		<td>&nbsp;</td>
 	</tr>
 	<!-- END raiders -->
@@ -172,10 +174,10 @@ function sortOrder(order)
 		<!-- IF S_ADMIN -->
 		<!-- IF MODE == 'admin' -->
 		<a href="javascript:mode('normal')"/>{L_NORMAL}</a><br/>
-		<a href="raidattendance_dump.php?start=20100101&end=20101001&raid_id=1">Export as CSV</a><br/>
 		<!-- ELSE -->
 		<a href="javascript:mode('admin')"/>{L_ADMIN}</a><br/>
 		<!-- ENDIF -->
+		{L_EXPORT_AS} <a href="raidattendance_dump.php?start={DUMP_START}&end={DUMP_END}&raid_id={RAID_ID}&output=HTML">{L_DUMP_HTML}</a>&nbsp;<a href="raidattendance_dump.php?start={DUMP_START}&end={DUMP_END}&raid_id={RAID_ID}&output=XML">{L_DUMP_XML}</a>&nbsp;<a href="raidattendance_dump.php?start={DUMP_START}&end={DUMP_END}&raid_id={RAID_ID}&output=CSV">{L_DUMP_CSV}</a><br/>
 		<!-- ENDIF -->
 		<a target="_new" href="http://code.google.com/p/raidattendance/wiki/FAQphpBB3">{L_FAQ}</a><br/>
 		{MOD_VERSION}

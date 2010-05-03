@@ -309,6 +309,8 @@ $versions = array(
 		),
 		'custom'	=> 'convert_attendance_for_raids',
 	),
+	'1.1.7' => array(
+	), // v1.1.7
 );
  
 function v103_110($action, $version)

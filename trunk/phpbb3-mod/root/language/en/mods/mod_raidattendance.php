@@ -129,6 +129,15 @@ $lang = array_merge($lang, array(
 		'ADDON'						=> 'WoW Addon',
 		'ADDON_CODE'				=> 'Copy and paste the following code into the WoW Addon Raid Attendancy (/att)',
 
+		'EXPORT_AS'					=> 'Export as ',
+		'DUMP_HTML'					=> '[HTML]',
+		'DUMP_CSV'					=> '[CSV]',
+		'DUMP_XML'					=> '[XML]',
+
+		'SUMMARY'					=> 'Attendancy',
+		'SUMMARY_LINK'				=> 'http://chart.apis.google.com/chart?cht=bhs&chs=75x24&chd=t:%1$01.0f|%2$01.0f|%3$01.0f|%4$01.0f|%5$01.0f|%6$01.0f&chco=0da300,004aaf,9b0f03,e6c301,00a39e&chbh=a&chf=bg,s,00000000',
+		'SUMMARY_TOOLTIP'			=> 'Attendancy: %01.1f%%',
+
 	)
 );
 ?>
