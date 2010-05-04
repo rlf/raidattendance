@@ -22,3 +22,7 @@ Well, the numbers are taken from 3 months back and up till the date currently di
 Static sign-offs (e.g. all Mondays for some) is merged into the calculation, starting from the first non-static-status (i.e. first time raider either attended a raid, was AWOL etc.).
 
 The Attendancy percentage displayed in the tooltip is NOT how many of the raids the raider attended, but rather how often the raider have been available. I.e. sums of Green and Cyan cells.
+
+== What if I have been off the raider-list for a while and re-join the team? ==
+Then your attendancy will be rather low I'm afraid.
+Bug in the design - nothing that can be done about it for the time being.
