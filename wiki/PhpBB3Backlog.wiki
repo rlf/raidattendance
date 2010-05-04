@@ -5,7 +5,7 @@
 <wiki:toc maxdepth="2"/>
 
 = Backlog =
-Maintained under Issues and a thread on The Awakening phpBB forum.
+Maintained under [http://code.google.com/p/raidattendance/issues/list Issues] and a thread on The Awakening phpBB forum.
 
 = Completed =
 
