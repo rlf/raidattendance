@@ -28,8 +28,13 @@
 
 = Completed =
 
-== v1.1.6 - 20th of April 2010 - Cancellation of raids ==
+== v1.1.7 - 3rd of May 2010 - Download as CSV + Attendancy bars ==
+  * Admins can download the last 3 months as either HTML or CSV.
+  * Raiders have a bar-histogram showing the complete attendance for the last 3 months.
+
+== v1.1.6 - 23rd of April 2010 - Cancellation of raids ==
   * It's now possible to cancel a whole raid - it will be indicated by a skull-icon.
+  * Simple export of a single raid-night (pre-Addon implementation).
 
 == v1.1.5 - 20th of April 2010 - Substitute status + experimental WoW Addon ==
   * Sorting now possible on Class as well + changed sorting of Role to have Class as sub-sorting.
