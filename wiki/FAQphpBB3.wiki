@@ -17,7 +17,7 @@ An admin of the forum may be able to help you out there - otherwise change your 
 Because it's in the past... You should've signed off before hand... SLACKER!
 
 = Attendancy =
-== How the freaking f**king god do you come up with those numbers?? ==
+== How the freaking f****king god do you come up with those numbers?? ==
 Well, the numbers are taken from 3 months back and up till the date currently displayed.
 Static sign-offs (e.g. all Mondays for some) is merged into the calculation, starting from the first non-static-status (i.e. first time raider either attended a raid, was AWOL etc.).
 
