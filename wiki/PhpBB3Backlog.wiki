@@ -28,6 +28,9 @@
 
 = Completed =
 
+== v1.1.6 - 20th of April 2010 - Cancellation of raids ==
+  * It's now possible to cancel a whole raid - it will be indicated by a skull-icon.
+
 == v1.1.5 - 20th of April 2010 - Substitute status + experimental WoW Addon ==
   * Sorting now possible on Class as well + changed sorting of Role to have Class as sub-sorting.
   * Added a new status for raiders called SUBSTITUTE for raiders sitting out on a raid (but being on-time etc.).
