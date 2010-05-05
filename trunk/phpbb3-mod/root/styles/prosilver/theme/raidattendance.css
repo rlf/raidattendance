@@ -113,6 +113,16 @@ table#raid_table tr td.raid {
 	border-style: solid;
 	border-color: black;
 }
+table#raid_table tr th a.selected {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+table#raid_table tr td.first_day_in_week, table#raid_table tr th.first_day_in_week {
+	border-left: 6px solid #black;
+	padding-left: 6px;
+}
+
 .even_future {
 	background: #005000;
 	border-color: #00002f
