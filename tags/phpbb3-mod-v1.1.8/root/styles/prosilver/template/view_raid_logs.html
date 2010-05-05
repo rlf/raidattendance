@@ -1,0 +1,54 @@
+<!-- INCLUDE overall_header.html -->
+<link rel="stylesheet" href="{T_THEME_PATH}/raidattendance.css" type="text/css"/>
+
+<h2>{RAID_LOGS_TITLE}</h2>
+
+<!-- INCLUDE pagination.html -->
+
+
+<form name="logs">
+	<table class="log" cellspacing="0" cellpadding="0">
+		<tr><td colspan="5">
+	<table id="raids" name="raids" cellspacing="0" cellpadding="0">
+		<tr>
+			<td class="left"><table id="innerraids"><tr>
+						<!-- BEGIN raids --><td class="left <!-- IF raids.SELECTED --> selected<!-- ENDIF -->"><a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="viewforum.php?f={FORUM_ID}&raid_id={raids.ID}" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a></td><!-- END --></tr></table></td>
+<td class="right"><table><tr><td><a class="raid selected" href="view_raid_logs.php">&nbsp;{L_VIEW_RAID_LOGS}&nbsp;</a></td></tr></table></td>
+</tr>
+</table>				
+		</td></tr>
+	  <tr>
+		  <!-- ID:{L_ID} -->
+		  <th>{L_TIME}</th>
+		  <th>{L_USER}</th>
+		  <th>{L_RAIDER}</th>
+		  <th>{L_ACTION}</th>
+		  <th>&nbsp;</th>
+	  </tr>
+	  <tr>
+		  <td>&nbsp;</td>
+		  <td>&nbsp;</td>
+		  <td><select id="raider_id" name="raider_id">
+		  <!-- BEGIN raiders --><option value="{raiders.ID}"<!-- IF raiders.SELECTED --> selected<!-- ENDIF -->>{raiders.NAME}</option>
+		  <!-- END -->
+		  </select></td>
+		  <td>&nbsp;</td>
+		  <td><input class="button1" type="submit" id="submit" name="submit" value="{L_FILTER}"/></td>
+	  </tr>
+	<!-- BEGIN logs -->
+	<tr class="{logs.ROW_CLASS}">
+		<!-- {logs.ID} -->
+		<td>{logs.TIME}</td>
+		<td>{logs.USER}</td>
+		<td>{logs.RAIDER}</td>
+		<td>{logs.ACTION}</td>
+		<td>&nbsp;</td>
+	</tr>
+	<!-- END -->
+	</table>
+</form>
+
+
+<!-- INCLUDE jumpbox.html -->
+<!-- INCLUDE pagination.html -->
+<!-- INCLUDE overall_footer.html -->
