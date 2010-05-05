@@ -113,7 +113,7 @@ $lang = array_merge($lang, array(
 		'LEGEND_STATUS_NOSHOW'		=> 'Raider didn\'t show for raid',
 		'LEGEND_STATUS_LATE'		=> 'Raider showed, but was late',
 		'LEGEND_STATUS_SUBSTITUTE'	=> 'Raider was available, but had to sit out',
-		'LEGEND_STATUS_SUBSTITUTE'	=> 'Raid was cancelled',
+		'LEGEND_STATUS_CANCELLED'	=> 'Raid was cancelled',
 		'ACTIONS'					=> 'Actions',
 		'LEGEND_ACTION_ON'			=> 'Indicate raider was available for raid',
 		'LEGEND_ACTION_OFF'			=> 'Sign-off from raid',
@@ -135,8 +135,10 @@ $lang = array_merge($lang, array(
 		'DUMP_XML'					=> '[XML]',
 
 		'SUMMARY'					=> 'Attendancy',
-		'SUMMARY_LINK'				=> 'http://chart.apis.google.com/chart?cht=bhs&chs=75x24&chd=t:%1$01.0f|%2$01.0f|%3$01.0f|%4$01.0f|%5$01.0f|%6$01.0f&chco=0da300,004aaf,9b0f03,e6c301,00a39e&chbh=a&chf=bg,s,00000000',
-		'SUMMARY_TOOLTIP'			=> 'Attendancy: %01.1f%%',
+		'SUMMARY_LINK'				=> 'http://chart.apis.google.com/chart?cht=bhs&chs=75x24&chd=t:%1$01.0f|%2$01.0f|%3$01.0f|%4$01.0f|%5$01.0f&chco=0da300,004aaf,9b0f03,e6c301,00a39e&chbh=a&chf=bg,s,00000000',
+		'SUMMARY_DETAIL_LINK'		=> 'http://chart.apis.google.com/chart?cht=p&chs=800x375&chd=t:%1$01.0f,%2$01.0f,%3$01.0f,%4$01.0f,%5$01.0f&chco=0da300|004aaf|9b0f03|e6c301|00a39e&chl=%6$s|%7$s|%8$s|%9$s|%10$s&chma=120,120,0,0|0,0',
+		'SUMMARY_TOOLTIP'			=> 'Availability: %1$01.1f%% &#013;Attendance: %2$01.1f%%',
+		'MONTHS'					=> 'months',
 
 	)
 );

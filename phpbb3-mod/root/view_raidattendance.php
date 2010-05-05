@@ -64,8 +64,9 @@ if (is_raidattendance_forum($forum_id))
 	$date_array = getdate($tstamp);
 	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
 	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
-	$dump_start = strftime('%Y%m%d', mktime(0, 0, 0, $date_array['mon']-3, $date_array['mday'], $date_array['year']));
-	$dump_end = strftime('%Y%m%d', mktime(0, 0, 0, $date_array['mon']+1, $date_array['mday'], $date_array['year']));
+	$dump_months = request_var('dump_months', 3);
+	$dump_start = strftime('%Y%m%d', mktime(0, 0, 0, $date_array['mon']-$dump_months, $date_array['mday'], $date_array['year']));
+	$dump_end = strftime('%Y%m%d', $tstamp);
 
 	// For now... just for the summary... should be merged in the future...
 	$summary_attendance = get_attendance_for_time($dump_start, $dump_end, $raid_id);
@@ -80,6 +81,11 @@ if (is_raidattendance_forum($forum_id))
 			$summary_attendance[$raider->name]['summary_5'],
 			$summary_attendance[$raider->name]['summary_6'],
 		);
+		$sum_attendance = $sums[1]+$sums[5];
+		if ($sum_attendance > 0)
+		{
+			$sum_attendance = 100*$sums[1]/$sum_attendance;
+		}
 		$template->assign_block_vars('raiders', array(
 			'ROWNO'				=> $rowno+1,
 			'ID'				=> $raider->id,
@@ -95,9 +101,14 @@ if (is_raidattendance_forum($forum_id))
 			'CSS_CLASS'			=> 'class_' . $raider->class,
 			'S_EDITABLE'		=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)),
 			'ARMORY_LINK'		=> $url_base . urlencode($raider->name),
-			'SUMMARY_LINK'		=> sprintf($user->lang['SUMMARY_LINK'], $sums[1], $sums[2], $sums[3], $sums[4], $sums[5], $sums[6]),
-			'SUMMARY_TOOLTIP'	=> sprintf($user->lang['SUMMARY_TOOLTIP'], $sums[1]+$sums[5]),
+			'SUMMARY_LINK'		=> sprintf($user->lang['SUMMARY_LINK'], $sums[1], $sums[2], $sums[3], $sums[4], $sums[5]),
+			'SUMMARY_TOOLTIP'	=> sprintf($user->lang['SUMMARY_TOOLTIP'], $sums[1]+$sums[5], $sum_attendance),
+			'SUMMARY_DETAIL_LINK' => sprintf($user->lang['SUMMARY_DETAIL_LINK'], 
+				$sums[1], $sums[2], $sums[3], $sums[4], $sums[5],
+				$user->lang['LEGEND_STATUS_ON'], $user->lang['LEGEND_STATUS_OFF'], $user->lang['LEGEND_STATUS_NOSHOW'], $user->lang['LEGEND_STATUS_LATE'], $user->lang['LEGEND_STATUS_SUBSTITUTE']),
 		));
+		$num_days = floor(sizeof($raids) / 3);
+		$raid_day_number = 0;
 		foreach ($day_names as $day)
 		{
 			$status = $static_attendance[$raider->name][$day];
@@ -108,8 +119,11 @@ if (is_raidattendance_forum($forum_id))
 				'DAY_KEY'		=> $day,
 				'STATUS'		=> $statusses[$status],
 				'TOOLTIP'		=> sprintf($user->lang[$tooltip_key[$status]], $user->lang['DAY_LONG_' . $day]),
+				'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
 				));
+			$raid_day_number++;
 		}
+		$raid_day_number = 0;
 		foreach ($raids as $raid)
 		{
 			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
@@ -129,6 +143,7 @@ if (is_raidattendance_forum($forum_id))
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_STATIC'		=> $is_static ? 1 : 0,
 				'S_CANCELLED'	=> $attendance['__RAID__'][$raid] == STATUS_CANCELLED ? 1 : 0,
+				'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
 			));
 			if (!is_array($raidData[$raid]))
 			{
@@ -141,10 +156,12 @@ if (is_raidattendance_forum($forum_id))
 				'rank'=>$raider->rank, 
 				'status'=>$status
 			);
+			$raid_day_number++;
 		}
 		$rowno++;
 	}
 	$num_raiders = sizeof($raiders);
+	$raid_day_number = 0;
 	foreach ($raids as $raid)
 	{
 		$tm = strptime($raid, '%Y%m%d');
@@ -161,7 +178,9 @@ if (is_raidattendance_forum($forum_id))
 			'S_FUTURE'		=> $future,
 			'RAID_DATA'		=> get_raid_data_as_string($raidData[$raid]),
 			'S_CANCELLED'	=> $attendance['__RAID__'][$raid] == STATUS_CANCELLED ? 1 : 0,
+			'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
 		));
+		$raid_day_number++;
 	}
 
 	$mode = request_var('mode', 'normal');
@@ -203,6 +222,7 @@ if (is_raidattendance_forum($forum_id))
 		'SORT_CLASS'			=> ($dir_sort[4] == ' v' ? '-4,2,1' : '4,2,1'),
 		'DUMP_START'			=> $dump_start,
 		'DUMP_END'				=> $dump_end,
+		'DUMP_MONTHS'			=> $dump_months,
 	));
 
 	$raids = get_raids();
