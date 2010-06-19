@@ -806,7 +806,8 @@ function set_attendance($raider, $night, $status, $comment = '')
 	$res = $db->sql_query($sql);
 
 	// Bail out (don't add) - perhaps we should add... if it's a static signoff??
-	if ($status === STATUS_CLEAR)
+	// If affectedrows == 0 we assume we have hit a "static"
+	if ($status === STATUS_CLEAR and $db->sql_affectedrows() != 0)
 	{
 		return;
 	}
