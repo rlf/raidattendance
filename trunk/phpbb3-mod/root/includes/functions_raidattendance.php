@@ -111,6 +111,41 @@ function get_default_raid_id()
 	return $raid_id;
 }
 
+/**
+ * Takes the raiding-day-name (e.g. "Mon") and returns the corresponding weekday-number.
+ **/
+function get_day_number($raid_day_name)
+{
+	$day_nums = array('Mon' => 1, 'Tue' => 2, 'Wed' => 3, 'Thu' => 4, 'Fri' => 5, 'Sat' => 6, 'Sun' => 0);
+	return $day_nums[$raid_day_name];
+}
+/**
+ * Takes a range and an array of day-indices and returns all the "real-raiding-days" in between
+ * the start_time and end_time (of the format %Y%m%d).
+ **/
+function get_raiding_dates($start_time, $end_time, $day_nums)
+{
+	global $error;
+	$all_days = array();
+	$d = getdate($start_time);
+	$week_start = mktime(0, 0, 0, $d['mon'], $d['mday']-$d['wday'], $d['year']);
+	while ($week_start <= $end_time) 
+	{
+		$d = getdate($week_start);
+		foreach ($day_nums as $day_num) 
+		{
+			$raid_time = mktime(0, 0, 0, $d['mon'], $d['mday'] + $day_num, $d['year']);
+			if ($raid_time >= $start_time && $raid_time <= $end_time) 
+			{
+				$raid = strftime('%Y%m%d', $raid_time);
+				$all_days[] = $raid;
+			}
+		}
+		$week_start = mktime(0, 0, 0, $d['mon'], $d['mday']+7, $d['year']);
+	}
+	return $all_days;
+}
+
 function get_raiding_days($current_week, $raid_id)
 {
 	$date_array = getdate($current_week);
@@ -718,7 +753,7 @@ function set_raid_status($raid_id, $night, $status)
 		$error[] = $res;
 	}
 }
-function set_attendance($raider, $night, $status)
+function set_attendance($raider, $night, $status, $comment = '')
 {
 	global $error, $success, $db;
 	$data = array(
@@ -726,9 +761,50 @@ function set_attendance($raider, $night, $status)
 		'night'				=> $night,
 		'status'			=> $status,
 		'time'				=> time(),
+		'comment'			=> $comment,
 		);
+	if (!is_numeric($night) && $status == STATUS_CLEAR) 
+	{
+		// A range of nights, convert all nights from start till end to the state
+		$sql = 'SELECT time, comment, status FROM ' . RAIDATTENDANCE_TABLE . " WHERE raider_id={$raider->id} AND night='{$night}'";
+		$res = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($res);
+		$time = $row['time'];
+		$old_comment = $row['comment'];
+		$old_status = $row['status'];
+		$db->sql_freeresult($res);
+		$day_num = get_day_number($night);
+		$all_nights = get_raiding_dates($time, $data['time'], array($day_num));
+		$ary = array();
+		foreach ($all_nights as $raid_night)
+		{
+			// Check whether the night already has another status
+			$sql = 'SELECT COUNT(status) cnt FROM ' . RAIDATTENDANCE_TABLE . " WHERE raider_id={$raider->id} AND night='{$raid_night}'";
+			$res = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($res);
+			$already_have_status = $row['cnt'] > 0;
+			$db->sql_freeresult($res);
+			if (!$already_have_status) 
+			{
+				$ary[] = array(
+					'raider_id' => $raider->id, 
+					'night' => $raid_night, 
+					'status' => $old_status, 
+					'time' => $time,
+					'comment' => $old_comment,
+				);
+			}
+		}
+		$res = $db->sql_multi_insert(RAIDATTENDANCE_TABLE, $ary);
+		if (is_dbal_error()) 
+		{
+			$error[] = $res;
+		}
+	}
+	// One night
 	$sql = 'DELETE FROM ' . RAIDATTENDANCE_TABLE . " WHERE raider_id={$raider->id} AND night='{$night}'"; 
 	$res = $db->sql_query($sql);
+
 	// Bail out (don't add) - perhaps we should add... if it's a static signoff??
 	if ($status === STATUS_CLEAR)
 	{
@@ -838,6 +914,7 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 		}
 		for ($i = 1; $i <= 6; $i++)
 		{
+			$nights['summary_' . $i . '_num'] = $nights['summary_' . $i];
 			$nights['summary_' . $i] = $nights['summary_' . $i]*100/$sum;
 		}
 	}
@@ -850,21 +927,18 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 function get_attendance($nights, $raid_id = 0)
 {
 	global $db;
-	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
+	$sql = 'SELECT n.status status, r.name name, n.night night, n.comment comment FROM ' 
 		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $nights);
-	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . ' AND ' . $db->sql_in_set('n.night', $nights);
+	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night, n.comment comment FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . ' AND ' . $db->sql_in_set('n.night', $nights);
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
-		if (is_array($attendance[$row['name']]))
+		if (!is_array($attendance[$row['name']]))
 		{
-			$attendance[$row['name']][$row['night']] = $row['status'];
+			$attendance[$row['name']] = array();
 		}
-		else
-		{
-			$attendance[$row['name']] = array($row['night'] => $row['status']);
-		}
+		$attendance[$row['name']][$row['night']] = array('status' => $row['status'], 'comment' => $row['comment']);
 	}
 	$db->sql_freeresult($result);
 	return $attendance;
@@ -876,22 +950,25 @@ function get_static_attendance($raids)
 	return get_static_attendance_days($day_names);
 }
 
+/**
+ * Returns an array of [raider-name][night-name] => array(status,time)
+ **/
 function get_static_attendance_days($day_names)
 {
 	global $db, $success;
-	$sql = 'SELECT n.status status, r.name name, n.night, n.time time FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $day_names);
+	$sql = 'SELECT n.status status, r.name name, n.night, n.time time, n.comment comment FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $day_names);
 	$result = $db->sql_query($sql);
 	$raider_day_attendance = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
-		if (is_array($raider_day_attendance[$row['name']]))
+		if (!is_array($raider_day_attendance[$row['name']]))
 		{
-			$raider_day_attendance[$row['name']][$row['night']] = $row['status'];
+			$raider_day_attendance[$row['name']] = array();
 		}
-		else
-		{
-			$raider_day_attendance[$row['name']] = array($row['night'] => $row['status']);
-		}
+		$raider_day_attendance[$row['name']][$row['night']] = array(
+			'status' => $row['status'], 
+			'time' => $row['time'], 
+			'comment' => $row['comment']);
 	}
 	$db->sql_freeresult($result);
 	return $raider_day_attendance;
@@ -902,6 +979,7 @@ function get_static_attendance_days($day_names)
  **/
 function add_static_attendance($raids, &$attendance, $raider_day_attendance)
 {
+	global $error;
 	foreach ($raider_day_attendance as $raider => $days)
 	{
 		if (!is_array($attendance[$raider]))
@@ -911,7 +989,7 @@ function add_static_attendance($raids, &$attendance, $raider_day_attendance)
 		foreach ($raids as $raid)
 		{
 			$day_name = get_raiding_day_name($raid);
-			if (!isset($attendance[$raider][$raid]) and array_key_exists($day_name, $days))
+			if (!isset($attendance[$raider][$raid]) and array_key_exists($day_name, $days) and strftime('%Y%m%d', $days[$day_name]['time']) <= $raid)
 			{
 				$attendance[$raider][$raid] = $days[$day_name];
 			}
@@ -1066,10 +1144,10 @@ class raider
 		set_attendance($this, $raid, STATUS_ON);
 	}
 
-	function signoff($raid)
+	function signoff($raid, $comment = '')
 	{
 		add_history($this, array('SIGNOFF', $raid));
-		set_attendance($this, $raid, STATUS_OFF);
+		set_attendance($this, $raid, STATUS_OFF, $comment);
 	}
 
 	function clear_attendance($raid)

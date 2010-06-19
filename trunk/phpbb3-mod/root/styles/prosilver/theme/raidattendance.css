@@ -117,6 +117,12 @@ table#raid_table tr th a.selected {
 	text-decoration: underline;
 	font-weight: bold;
 }
+a img.comment {
+	position: relative;
+	float: right;
+	top: -65%;
+	right: -15%;
+}
 
 table#raid_table tr td.first_day_in_week, table#raid_table tr th.first_day_in_week {
 	border-left: 6px solid #black;

@@ -55,7 +55,7 @@ if (is_raidattendance_forum($forum_id))
 	$rowno = 0;
 	$names = array_keys($raiders);
 	$statusses = array(STATUS_ON=>'on', STATUS_OFF=>'off', STATUS_NOSHOW=>'noshow', STATUS_LATE=>'late', STATUS_SUBSTITUTE=>'substitute', 0=>'future', -1=>'past', -2=>'unset');
-	$sums = array();
+	$raid_sums = array();
 	$raidData = array(); // data used in the addon...
 	$armory_link = $config['raidattendance_armory_link'];
 	$realm = $config['raidattendance_realm_name'];
@@ -64,7 +64,7 @@ if (is_raidattendance_forum($forum_id))
 	$date_array = getdate($tstamp);
 	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
 	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
-	$dump_months = request_var('dump_months', 3);
+	$dump_months = request_var('dump_months', 1);
 	$dump_start = strftime('%Y%m%d', mktime(0, 0, 0, $date_array['mon']-$dump_months, $date_array['mday'], $date_array['year']));
 	$dump_end = strftime('%Y%m%d', $tstamp);
 
@@ -111,7 +111,7 @@ if (is_raidattendance_forum($forum_id))
 		$raid_day_number = 0;
 		foreach ($day_names as $day)
 		{
-			$status = $static_attendance[$raider->name][$day];
+			$status = $static_attendance[$raider->name][$day]['status'];
 			$status = $status ? $status : -2;
 			$tooltip_key = array(2=>'STATIC_SIGNOFF_CLEAR', -2=>'STATIC_SIGNOFF');
 			$template->assign_block_vars('raiders.days', array(
@@ -127,22 +127,21 @@ if (is_raidattendance_forum($forum_id))
 		foreach ($raids as $raid)
 		{
 			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
-			$status = $attendance[$raider->name][$raid];
+			$status = $attendance[$raider->name][$raid]['status'];
 			$status = isset($status) ? $status : ($future ? 0 : -1);
-			if (!is_array($sums[$raid])) 
+			if (!is_array($raid_sums[$raid])) 
 			{
-				$sums[$raid] = array(STATUS_OFF=>0, STATUS_NOSHOW=>0);
+				$raid_sums[$raid] = array(STATUS_OFF=>0, STATUS_NOSHOW=>0);
 			}
-			$sums[$raid][$status] = $sums[$raid][$status] + 1;
+			$raid_sums[$raid][$status] = $raid_sums[$raid][$status] + 1;
 			$day_name = get_raiding_day_name($raid);
-			$is_static = $static_attendance[$raider->name][$day_name] == 2;
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
 				'STATUS'		=> $statusses[$status],
+				'COMMENT'		=> $attendance[$raider->name][$raid]['comment'],
 				'S_FUTURE'		=> $future,
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
-				'S_STATIC'		=> $is_static ? 1 : 0,
-				'S_CANCELLED'	=> $attendance['__RAID__'][$raid] == STATUS_CANCELLED ? 1 : 0,
+				'S_CANCELLED'	=> $attendance['__RAID__'][$raid]['status'] == STATUS_CANCELLED ? 1 : 0,
 				'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
 			));
 			if (!is_array($raidData[$raid]))
@@ -162,22 +161,29 @@ if (is_raidattendance_forum($forum_id))
 	}
 	$num_raiders = sizeof($raiders);
 	$raid_day_number = 0;
+	$wol_baseurl_calendar = false;
+	$wol_baseurl_report = false;
+	if (!$config['raidattendance_wws_guild_id'])
+	{
+		$wol_baseurl_calendar = 'http://www.worldoflogs.com/guilds/' . $config['raidattendance_wws_guild_id'] . '/calendar/';
+	}
 	foreach ($raids as $raid)
 	{
 		$tm = strptime($raid, '%Y%m%d');
 		$time = tm2time($tm);
 		$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
 		$date = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%b', $time));
+		
 		$template->assign_block_vars('raid_days', array(
 			'RAID'			=> $raid,
 			'DATE'			=> $date,
 			'DAY'			=> strftime('%a', $time),
-			'SUM_NOSHOW'	=> $sums[$raid][STATUS_NOSHOW],
-			'SUM_OFF'		=> $sums[$raid][STATUS_OFF],
-			'SUM_ON'		=> $num_raiders - $sums[$raid][STATUS_NOSHOW] - $sums[$raid][STATUS_OFF],
+			'SUM_NOSHOW'	=> $raid_sums[$raid][STATUS_NOSHOW],
+			'SUM_OFF'		=> $raid_sums[$raid][STATUS_OFF],
+			'SUM_ON'		=> $num_raiders - $raid_sums[$raid][STATUS_NOSHOW] - $raid_sums[$raid][STATUS_OFF],
 			'S_FUTURE'		=> $future,
 			'RAID_DATA'		=> get_raid_data_as_string($raidData[$raid]),
-			'S_CANCELLED'	=> $attendance['__RAID__'][$raid] == STATUS_CANCELLED ? 1 : 0,
+			'S_CANCELLED'	=> $attendance['__RAID__'][$raid]['status'] == STATUS_CANCELLED ? 1 : 0,
 			'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
 		));
 		$raid_day_number++;
@@ -223,6 +229,7 @@ if (is_raidattendance_forum($forum_id))
 		'DUMP_START'			=> $dump_start,
 		'DUMP_END'				=> $dump_end,
 		'DUMP_MONTHS'			=> $dump_months,
+		'DEFAULT_COMMENT'		=> $user->lang['DEFAULT_COMMENT_' . rand(1, $user->lang['NUM_DEFAULT_COMMENTS'])],
 	));
 
 	$raids = get_raids();
@@ -276,6 +283,7 @@ function handle_action($action, $raiders)
 	$rid = request_var('rid', 0);
 	$raid = request_var('raid', '');
 	$raid_id = request_var('raid_id', 0);
+	$comment = request_var('comment', '');
 
 	if (!$action or !$raid)
 	{	
@@ -309,7 +317,7 @@ function handle_action($action, $raiders)
 	}
 	else if ($action == '-')
 	{
-		$raider->signoff($raid);
+		$raider->signoff($raid, $comment);
 	}
 	else if ($action == 'x')
 	{

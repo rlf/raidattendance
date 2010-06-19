@@ -40,6 +40,13 @@ $Id: install.xml 190 2009-11-08 17:10:54Z exreaction $ -->
 
     <history>
       <entry>
+        <date>2010-06-19</date>
+        <rev-version>1.2.0</rev-version>
+        <changelog lang="en">
+			<change>Better handling of "static signoffs" + comments when signing off</change>
+        </changelog>
+      </entry>
+      <entry>
         <date>2010-04-20</date>
         <rev-version>1.1.5</rev-version>
         <changelog lang="en">
