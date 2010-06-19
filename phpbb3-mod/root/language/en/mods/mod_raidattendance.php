@@ -140,6 +140,13 @@ $lang = array_merge($lang, array(
 		'SUMMARY_TOOLTIP'			=> 'Availability: %1$01.1f%% &#013;Attendance: %2$01.1f%%',
 		'MONTHS'					=> 'months',
 
+		'SIGNOFF_COMMENT'			=> 'So, what RL issue is keeping you away from raid this time?',
+		'NUM_DEFAULT_COMMENTS'		=> 3,
+		'DEFAULT_COMMENT_1'			=> "My mom won't let me!",
+		'DEFAULT_COMMENT_2'			=> "My first cousins baby-brothers mothers husbands sister is having a stomach-ache",
+		'DEFAULT_COMMENT_3'			=> "The weather is simply too nice outside",
+
+
 	)
 );
 ?>
