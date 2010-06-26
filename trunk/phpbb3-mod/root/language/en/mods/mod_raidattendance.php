@@ -135,16 +135,18 @@ $lang = array_merge($lang, array(
 		'DUMP_XML'					=> '[XML]',
 
 		'SUMMARY'					=> 'Attendancy',
-		'SUMMARY_LINK'				=> 'http://chart.apis.google.com/chart?cht=bhs&chs=75x24&chd=t:%1$01.0f|%2$01.0f|%3$01.0f|%4$01.0f|%5$01.0f&chco=0da300,004aaf,9b0f03,e6c301,00a39e&chbh=a&chf=bg,s,00000000',
-		'SUMMARY_DETAIL_LINK'		=> 'http://chart.apis.google.com/chart?cht=p&chs=800x375&chd=t:%1$01.0f,%2$01.0f,%3$01.0f,%4$01.0f,%5$01.0f&chco=0da300|004aaf|9b0f03|e6c301|00a39e&chl=%6$s|%7$s|%8$s|%9$s|%10$s&chma=120,120,0,0|0,0',
+		'SUMMARY_LINK'				=> 'http://chart.apis.google.com/chart?cht=bhs&chs=115x24&chd=t:%1$01.0f|%2$01.0f|%3$01.0f|%4$01.0f|%5$01.0f&chco=086800,003c8f,900e03,c5a701,008d89&chbh=a&chf=bg,s,00000000',
+		'SUMMARY_DETAIL_LINK'		=> 'http://chart.apis.google.com/chart?cht=p&chs=800x375&chd=t:%1$01.0f,%2$01.0f,%3$01.0f,%4$01.0f,%5$01.0f&chco=086800|003c8f|900e03|c5a701|008d89&chl=%6$s|%7$s|%8$s|%9$s|%10$s&chma=120,120,0,0|0,0',
 		'SUMMARY_TOOLTIP'			=> 'Availability: %1$01.1f%% &#013;Attendance: %2$01.1f%%',
 		'MONTHS'					=> 'months',
 
 		'SIGNOFF_COMMENT'			=> 'So, what RL issue is keeping you away from raid this time?',
-		'NUM_DEFAULT_COMMENTS'		=> 3,
+		'NUM_DEFAULT_COMMENTS'		=> 5,
 		'DEFAULT_COMMENT_1'			=> "My mom won't let me!",
 		'DEFAULT_COMMENT_2'			=> "My first cousins baby-brothers mothers husbands sister is having a stomach-ache",
 		'DEFAULT_COMMENT_3'			=> "The weather is simply too nice outside",
+		'DEFAULT_COMMENT_4'			=> "Sry I cant raid. I am in the middle of huge discussion with God and he wont let me break it off",
+		'DEFAULT_COMMENT_5'			=> "My house is on fire, but i just might be a little late",
 
 
 	)
