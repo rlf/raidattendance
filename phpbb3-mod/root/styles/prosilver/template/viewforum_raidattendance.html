@@ -4,12 +4,15 @@
 function signoff(rid, raid)
 {
 	var comment = prompt("{L_SIGNOFF_COMMENT}", "{DEFAULT_COMMENT}");
-	var form = document.getElementById('attendance');
-	form.comment.value = comment;
-	form.rid.value = rid;
-	form.raid.value = raid;
-	form.u_action.value = '-';
-	form.submit();
+	if (comment) 
+	{
+		var form = document.getElementById('attendance');
+		form.comment.value = comment;
+		form.rid.value = rid;
+		form.raid.value = raid;
+		form.u_action.value = '-';
+		form.submit();
+	}
 }
 function go(action, rid, raid)
 {
@@ -94,10 +97,10 @@ function submitWith(field,value)
 		<th><a class="sort" href="javascript:sortOrder('{SORT_RANK}')">{L_RANK}{DIR_RANK}</a></th>
 		<th><a class="nav" href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
 		<!-- BEGIN raid_days -->
-		<th<!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> class="first_day_in_week"<!-- ENDIF -->>{raid_days.DAY}<!-- IF S_MODERATOR -->&nbsp;<!-- IF raid_days.S_CANCELLED --><a href="javascript:go('xr', 0, '{raid_days.RAID}')"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a><!-- ELSE --><a href="javascript:go('cr', 0, '{raid_days.RAID}')"><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/></a><!-- ENDIF --><!-- ENDIF --><br/>{raid_days.DATE}</th>
+		<th class="<!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raid_days.S_NEXT_RAID --> next_raid<!-- ENDIF -->">{raid_days.DAY}<!-- IF S_MODERATOR -->&nbsp;<!-- IF raid_days.S_CANCELLED --><a href="javascript:go('xr', 0, '{raid_days.RAID}')"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a><!-- ELSE --><a href="javascript:go('cr', 0, '{raid_days.RAID}')"><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/></a><!-- ENDIF --><!-- ENDIF --><br/>{raid_days.DATE}</th>
 		<!-- END --><!-- raid_days -->
-		<th>{L_SUMMARY}<br/><a <!-- IF DUMP_MONTHS == 1 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 1)">1</a> / <a <!-- IF DUMP_MONTHS == 2 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 2)">2</a> / <a <!-- IF DUMP_MONTHS == 3 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 3)">3</a> {L_MONTHS}</th>
 		<th><a class="nav" href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
+		<th>{L_SUMMARY}<br/><a <!-- IF DUMP_MONTHS == 1 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 1)">1</a> / <a <!-- IF DUMP_MONTHS == 2 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 2)">2</a> / <a <!-- IF DUMP_MONTHS == 3 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 3)">3</a> {L_MONTHS}</th>
 	</tr>
 	<!-- BEGIN raiders -->
 	<tr class="{raiders.ROW_CLASS}">
@@ -117,7 +120,7 @@ function submitWith(field,value)
 		<td>{raiders.ROLE}</td>
 		<td colspan="2">{raiders.RANK}</td>
 		<!-- BEGIN raids -->
-		<td class="{raids.STATUS}_{raiders.ROW_CLASS} raid<!-- IF raids.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF -->" align="center">
+		<td class="{raids.STATUS}_{raiders.ROW_CLASS} raid<!-- IF raids.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raids.S_NEXT_RAID --> next_raid<!-- ENDIF -->" align="center">
 			<!-- IF raids.STATUS == 'on' or raids.STATUS == 'off' or raids.STATUS == 'noshow' -->
 			<!--img src="images/{raids.STATUS}_active.png"/-->
 			<!-- ENDIF -->
@@ -154,14 +157,13 @@ function submitWith(field,value)
 			<!-- IF raids.COMMENT != '' --><a title="{raids.COMMENT}"><img src="images/comment.png" class="comment"/></a><!-- ENDIF -->
 		</td>
 		<!-- END -->
-		<td><a href="{raiders.SUMMARY_DETAIL_LINK}" title="{raiders.SUMMARY_TOOLTIP}"><img src="{raiders.SUMMARY_LINK}" alt="{raiders.SUMMARY_TOOLTIP}" title="{raiders.SUMMARY_TOOLTIP}"/></a></td>
-		<td>&nbsp;</td>
+		<td colspan="2"><a href="{raiders.SUMMARY_DETAIL_LINK}" title="{raiders.SUMMARY_TOOLTIP}"><img src="{raiders.SUMMARY_LINK}" alt="{raiders.SUMMARY_TOOLTIP}" title="{raiders.SUMMARY_TOOLTIP}"/></a></td>
 	</tr>
 	<!-- END --><!-- raiders -->
 	<tr>
 		<td colspan="5">&nbsp;</td>
 		<!-- BEGIN raid_days -->
-		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF --><!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF -->">
+		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF --><!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raid_days.S_NEXT_RAID --> sum_next_raid<!-- ENDIF -->">
 			<b class="on">{raid_days.SUM_ON}</b>/<b class="off">{raid_days.SUM_OFF}</b>/<b class="noshow">{raid_days.SUM_NOSHOW}</b>
 			<br/><a href="javascript:prompt('{L_ADDON_CODE}', '{raid_days.RAID_DATA}');return false">{L_ADDON}</a>
 		</td>

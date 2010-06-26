@@ -6,46 +6,31 @@
 }
 .uneven {
 }
-.on_even {
-	background: #0da300;
+.on_even, .on_uneven {
+	background: #086800;
 }
-.on_uneven {
-	background: #0da300;
+.off_even, .off_uneven {
+	background: #003c8f;
 }
-.off_even {
-	background: #004aaf;
+.late_even, .late_uneven {
+	background: #c5a701;
 }
-.off_uneven {
-	background: #004aaf;
-}
-.late_uneven {
-	background: #e6c301;
-}
-.late_even {
-	background: #e6c301;
-}
-.noshow_even {
-	background: #9b0f03;
-}
-.noshow_uneven {
-	background: #9b0f03;
+.noshow_even, .noshow_uneven {
+	background: #900e03;
 }
 .substitute_even, .substitute_uneven {
-	background: #00a39e
+	background: #008d89
 }
-.future_even, .sum_future {
+.future_uneven, .future_even {
 	text-align: center;
-	background: #004000;
+	background: #002000;
 }
-.future_uneven {
-	background: #004000;
-}
-.past_even, .sum_past {
+.past_even, .past_uneven {
 	text-align: center;
-	background: #400000;
+	background: #200000;
 }
-.past_uneven {
-	background: #400000;
+.sum_past, .sum_future {
+	text-align: center;
 }
 .small {
 	width: 20px;
@@ -113,6 +98,9 @@ table#raid_table tr td.raid {
 	border-style: solid;
 	border-color: black;
 }
+table#raid_table tr th {
+	height: 32px;
+}
 table#raid_table tr th a.selected {
 	text-decoration: underline;
 	font-weight: bold;
@@ -120,30 +108,26 @@ table#raid_table tr th a.selected {
 a img.comment {
 	position: relative;
 	float: right;
-	top: -65%;
-	right: -15%;
+	top: -50%;
+	right: -5%;
 }
 
 table#raid_table tr td.first_day_in_week, table#raid_table tr th.first_day_in_week {
-	border-left: 6px solid #black;
+	border-left: 6px solid black;
 	padding-left: 6px;
 }
-
-.even_future {
-	background: #005000;
-	border-color: #00002f
+table#raid_table tr th.next_raid {
+	border-bottom: 4px solid #ffcc2d;
 }
-.even_past {
-	background: #500000;
-	border-color: #00002f
+table#raid_table tr td.sum_next_raid {
+	border-width: 1px 4px 4px 4px;
+	border-style: solid;
+	border-color: black #ffcc2d #ffcc2d #ffcc2d;
 }
-.uneven_future {
-	background: #006000;
-	border-color: #00003f
-}
-.uneven_past {
-	background: #600000;
-	border-color: #00003f
+table#raid_table tr td.next_raid {
+	border-width: 1px 4px 0px 4px;
+	border-style: solid;
+	border-color: black #ffcc2d black #ffcc2d;
 }
 a.static:visited, a.static:link, a.static:active, a.nav {
 	text-decoration: none;

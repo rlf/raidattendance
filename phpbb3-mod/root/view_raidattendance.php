@@ -124,6 +124,7 @@ if (is_raidattendance_forum($forum_id))
 			$raid_day_number++;
 		}
 		$raid_day_number = 0;
+		$last_future = false;
 		foreach ($raids as $raid)
 		{
 			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
@@ -143,6 +144,7 @@ if (is_raidattendance_forum($forum_id))
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_CANCELLED'	=> $attendance['__RAID__'][$raid]['status'] == STATUS_CANCELLED ? 1 : 0,
 				'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
+				'S_NEXT_RAID'	=> $last_future != $future,
 			));
 			if (!is_array($raidData[$raid]))
 			{
@@ -156,6 +158,7 @@ if (is_raidattendance_forum($forum_id))
 				'status'=>$status
 			);
 			$raid_day_number++;
+			$last_future = $future;
 		}
 		$rowno++;
 	}
@@ -167,6 +170,7 @@ if (is_raidattendance_forum($forum_id))
 	{
 		$wol_baseurl_calendar = 'http://www.worldoflogs.com/guilds/' . $config['raidattendance_wws_guild_id'] . '/calendar/';
 	}
+	$last_future = false;
 	foreach ($raids as $raid)
 	{
 		$tm = strptime($raid, '%Y%m%d');
@@ -185,14 +189,16 @@ if (is_raidattendance_forum($forum_id))
 			'RAID_DATA'		=> get_raid_data_as_string($raidData[$raid]),
 			'S_CANCELLED'	=> $attendance['__RAID__'][$raid]['status'] == STATUS_CANCELLED ? 1 : 0,
 			'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
+			'S_NEXT_RAID'	=> $last_future != $future,
 		));
 		$raid_day_number++;
+		$last_future = $future;
 	}
 
 	$mode = request_var('mode', 'normal');
 	$is_admin = $auth->acl_get('m_') or $auth->acl_get('a_');
 	$is_moderator = $is_admin && $mode == 'admin';
-	$num_cols = 6 + sizeof($raids);
+	$num_cols = 7 + sizeof($raids);
 	$col_sort = explode(',', $sort_order);
 
 	$dir_sort = array(
