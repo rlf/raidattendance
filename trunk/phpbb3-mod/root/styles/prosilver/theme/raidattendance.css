@@ -111,6 +111,12 @@ a img.comment {
 	top: -50%;
 	right: -5%;
 }
+img.cancelled {
+	position: relative;
+	float: left;
+	left: 35%;
+	bottom: 0%;
+}
 
 table#raid_table tr td.first_day_in_week, table#raid_table tr th.first_day_in_week {
 	border-left: 6px solid black;
