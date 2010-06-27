@@ -25,6 +25,8 @@ if (is_raidattendance_forum($forum_id))
 	global $user, $auth, $config;
 	$raid_id = request_var('raid_id', 0);
 	$sort_order = request_var('sort_order', '2,4,3,1');
+	$col_sort = explode(',', $sort_order);
+
 	if ($raid_id == 0) 
 	{
 		$raid_id = get_default_raid_id();
@@ -53,7 +55,6 @@ if (is_raidattendance_forum($forum_id))
 	add_static_attendance($raids, $attendance, $static_attendance);
 
 	$rowno = 0;
-	$names = array_keys($raiders);
 	$statusses = array(STATUS_ON=>'on', STATUS_OFF=>'off', STATUS_NOSHOW=>'noshow', STATUS_LATE=>'late', STATUS_SUBSTITUTE=>'substitute', 0=>'future', -1=>'past', -2=>'unset');
 	$raid_sums = array();
 	$raidData = array(); // data used in the addon...
@@ -70,6 +71,14 @@ if (is_raidattendance_forum($forum_id))
 
 	// For now... just for the summary... should be merged in the future...
 	$summary_attendance = get_attendance_for_time($dump_start, $dump_end, $raid_id);
+
+	// Sort, if were sorting on availability (col 7)
+	if ($col_sort[0] == 7 or $col_sort[0] == -7)
+	{
+		$sort_obj = new summary_sort($summary_attendance, $col_sort[0]);
+		uasort($raiders, array($sort_obj, 'sort'));
+	}
+
 	foreach ($raiders as $name => $raider) 
 	{
 		$sums = array(
@@ -199,13 +208,13 @@ if (is_raidattendance_forum($forum_id))
 	$is_admin = $auth->acl_get('m_') or $auth->acl_get('a_');
 	$is_moderator = $is_admin && $mode == 'admin';
 	$num_cols = 7 + sizeof($raids);
-	$col_sort = explode(',', $sort_order);
 
 	$dir_sort = array(
 		1 => ($col_sort[0] == 1 ? ' v' : ($col_sort[0] == -1 ? ' ^' : '')),
 		2 => ($col_sort[0] == 2 ? ' v' : ($col_sort[0] == -2 ? ' ^' : '')),
 		3 => ($col_sort[0] == 3 ? ' v' : ($col_sort[0] == -3 ? ' ^' : '')),
 		4 => ($col_sort[0] == 4 ? ' v' : ($col_sort[0] == -4 ? ' ^' : '')),
+		7 => ($col_sort[0] == 7 ? ' v' : ($col_sort[0] == -7 ? ' ^' : '')),
 		);
 	$template->assign_vars(array(
 		'NUM_COLS'				=> $num_cols,
@@ -232,6 +241,8 @@ if (is_raidattendance_forum($forum_id))
 		'SORT_RANK'				=> ($dir_sort[3] == ' v' ? '-3,2,4,1' : '3,2,4,1'),
 		'DIR_CLASS'				=> $dir_sort[4],
 		'SORT_CLASS'			=> ($dir_sort[4] == ' v' ? '-4,2,1' : '4,2,1'),
+		'DIR_AVAILABILITY'		=> $dir_sort[7],
+		'SORT_AVAILABILITY'		=> ($dir_sort[7] == ' v' ? '-7,1,2,3' : '7,1,2,3'),
 		'DUMP_START'			=> $dump_start,
 		'DUMP_END'				=> $dump_end,
 		'DUMP_MONTHS'			=> $dump_months,
@@ -248,6 +259,35 @@ if (is_raidattendance_forum($forum_id))
 		));
 	}
 }
+/**
+ * Enables sorting on the availability column
+ **/
+class summary_sort 
+{
+	/**
+	 * Argument 1 - Array containing raider-name => array('summary_n') columns.
+	 * Argument 2 - Direction, if negative, it's ascending, otherwise it's descending.
+	 **/
+	function summary_sort($sum_array, $direction)
+	{
+		$this->sum_array = $sum_array;
+		$this->direction = $direction;
+	}
+	function sort($a, $b)
+	{
+		$sum_array_a = $this->sum_array[$a->name];
+		$sum_array_b = $this->sum_array[$b->name];
+		// ON + SUBSTITUTE
+		$sum_a = $sum_array_a['summary_1'] + $sum_array_a['summary_5'];
+		$sum_b = $sum_array_b['summary_1'] + $sum_array_b['summary_5'];
+		if ($this->direction > 0) 
+		{
+			return $sum_b - $sum_a;
+		}
+		return $sum_a - $sum_b;
+	}
+}
+
 function get_array_as_string($ary)
 {
 	if (!is_array($ary)) {

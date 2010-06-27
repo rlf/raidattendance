@@ -380,11 +380,15 @@ class raider_db
 		{
 			$col = intval($column);
 			$sort_exp = $sort_key_map[abs($col)];
-			if ($col < 0) 
+			// Only add sorting cols, if this is one of the "database columns" (i.e. don't handle 7).
+			if ($sort_exp)
 			{
-				$sort_exp = $sort_exp . ' DESC';
+				if ($col < 0) 
+				{
+					$sort_exp = $sort_exp . ' DESC';
+				}
+				$sort[] = $sort_exp;
 			}
-			$sort[] = $sort_exp;
 		}
 		if (sizeof($sort) == 0) 
 		{

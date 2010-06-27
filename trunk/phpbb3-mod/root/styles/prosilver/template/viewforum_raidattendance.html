@@ -100,7 +100,7 @@ function submitWith(field,value)
 		<th class="<!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raid_days.S_NEXT_RAID --> next_raid<!-- ENDIF -->">{raid_days.DAY}<!-- IF S_MODERATOR -->&nbsp;<!-- IF raid_days.S_CANCELLED --><a href="javascript:go('xr', 0, '{raid_days.RAID}')"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a><!-- ELSE --><a href="javascript:go('cr', 0, '{raid_days.RAID}')"><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/></a><!-- ENDIF --><!-- ENDIF --><br/>{raid_days.DATE}</th>
 		<!-- END --><!-- raid_days -->
 		<th><a class="nav" href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
-		<th>{L_SUMMARY}<br/><a <!-- IF DUMP_MONTHS == 1 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 1)">1</a> / <a <!-- IF DUMP_MONTHS == 2 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 2)">2</a> / <a <!-- IF DUMP_MONTHS == 3 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 3)">3</a> {L_MONTHS}</th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_AVAILABILITY}')">{L_SUMMARY}{DIR_AVAILABILITY}</a><br/><a <!-- IF DUMP_MONTHS == 1 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 1)">1</a> / <a <!-- IF DUMP_MONTHS == 2 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 2)">2</a> / <a <!-- IF DUMP_MONTHS == 3 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 3)">3</a> {L_MONTHS}</th>
 	</tr>
 	<!-- BEGIN raiders -->
 	<tr class="{raiders.ROW_CLASS}">
