@@ -1,0 +1,209 @@
+<link rel="stylesheet" href="{T_THEME_PATH}/raidattendance.css" type="text/css"/>
+<script language="JavaScript">
+<!--
+function signoff(rid, raid)
+{
+	var comment = prompt("{L_SIGNOFF_COMMENT}", "{DEFAULT_COMMENT}");
+	if (comment) 
+	{
+		var form = document.getElementById('attendance');
+		form.comment.value = comment;
+		form.rid.value = rid;
+		form.raid.value = raid;
+		form.u_action.value = '-';
+		form.submit();
+	}
+}
+function go(action, rid, raid)
+{
+	var form = document.getElementById('attendance');
+	form.rid.value = rid;
+	form.raid.value = raid;
+	form.u_action.value = action;
+	form.submit();
+}
+function nav(tstamp)
+{
+	var form = document.getElementById('attendance');
+	form.tstamp.value = tstamp;
+	form.submit();
+}
+function mode(mode)
+{
+	var form = document.getElementById('attendance');
+	form.mode.value = mode;
+	form.submit();
+}
+function gotoRaid(raid_id)
+{
+	var form = document.getElementById('attendance');
+	form.raid_id.value = raid_id;
+	form.submit();
+}
+function sortOrder(order)
+{
+	var form = document.getElementById('attendance');
+	form.sort_order.value = order;
+	form.submit();
+}
+function submitWith(field,value)
+{
+	var form = document.getElementById('attendance');
+	form[field].value = value;
+	form.submit();
+}
+//-->
+</script>
+<!-- IF S_ERROR -->
+<div class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF S_SUCCESS -->
+<div class="successbox">
+	<h3>{L_SUCCESS}</h3>
+	<p>{SUCCESS_MSG}</p>
+</div>
+<!-- ENDIF -->
+<form method="POST" action="{S_FORUM_ACTION}" name="attendance" id="attendance">
+	<input type="hidden" name="rid" id="rid" value="0"/>
+	<input type="hidden" name="raid" id="raid" value="0"/>
+	<input type="hidden" name="tstamp" id="tstamp" value="-1"/>
+	<input type="hidden" name="u_action" id="u_action" value="0"/>
+	<input type="hidden" name="mode" id="mode" value="{MODE}"/>
+	<input type="hidden" name="raid_id" id="raid_id" value="{RAID_ID}"/>
+	<input type="hidden" name="sort_order" id="sort_order" value="{SORT_ORDER}"/>
+	<input type="hidden" name="dump_months" id="dump_months" value="{DUMP_MONTHS}"/>
+	<input type="hidden" name="comment" id="comment" value=""/>
+<table id="raid_table" name="raid_table" cellspacing="0" cellpadding="0">
+	<tr>
+		<td colspan="{NUM_COLS}">
+	<table id="raids" name="raids" cellspacing="0" cellpadding="0">
+		<tr>
+			<td class="left"><table id="innerraids"><tr>
+						<!-- BEGIN raids --><td class="left <!-- IF raids.SELECTED --> selected<!-- ENDIF -->"><a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="javascript:gotoRaid('{raids.ID}')" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a></td><!-- END --></tr></table></td>
+<!-- IF S_ADMIN -->
+<td class="right"><table><tr><td><a class="raid" href="view_raid_logs.php">&nbsp;{L_VIEW_RAID_LOGS}&nbsp;</a></td></tr></table></td>
+<!-- ENDIF -->
+</tr>
+</table>
+		</td>
+	</tr>
+	<tr>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_NAME}')">{L_NAME}{DIR_NAME}</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_CLASS}')">{L_CLASS}{DIR_CLASS}</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_ROLE}')">{L_ROLE}{DIR_ROLE}</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_RANK}')">{L_RANK}{DIR_RANK}</a></th>
+		<th><a class="nav" href="javascript:nav({TSTAMP_PREV})">&lt;</a></th>
+		<!-- BEGIN raid_days -->
+		<th class="<!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raid_days.S_NEXT_RAID --> next_raid<!-- ENDIF -->">{raid_days.DAY}<!-- IF S_MODERATOR -->&nbsp;<!-- IF raid_days.S_CANCELLED --><a href="javascript:go('xr', 0, '{raid_days.RAID}')"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a><!-- ELSE --><a href="javascript:go('cr', 0, '{raid_days.RAID}')"><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/></a><!-- ENDIF --><!-- ENDIF --><br/>{raid_days.DATE}</th>
+		<!-- END --><!-- raid_days -->
+		<th><a class="nav" href="javascript:nav({TSTAMP_NEXT})">&gt;</a></th>
+		<th><a class="sort" href="javascript:sortOrder('{SORT_AVAILABILITY}')">{L_SUMMARY}{DIR_AVAILABILITY}</a><br/><a <!-- IF DUMP_MONTHS == 1 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 1)">1</a> / <a <!-- IF DUMP_MONTHS == 2 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 2)">2</a> / <a <!-- IF DUMP_MONTHS == 3 -->class="selected" <!-- ENDIF -->href="javascript:submitWith('dump_months', 3)">3</a> {L_MONTHS}</th>
+	</tr>
+	<!-- BEGIN raiders -->
+	<tr class="{raiders.ROW_CLASS}">
+		<td class="{raiders.CSS_CLASS} class_style"><a class="{raiders.CSS_CLASS}" href="{raiders.ARMORY_LINK}">{raiders.NAME}</a>
+		<!-- IF S_MODERATOR or raiders.S_EDITABLE -->
+		<br/>
+		<!-- BEGIN days -->
+			<!-- IF days.STATUS == 'unset' -->
+			<a class="{days.STATUS} static" href="javascript:signoff({raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
+			<!-- ELSE -->
+			<a class="{days.STATUS} static" href="javascript:go('x', {raiders.ID}, '{days.DAY_KEY}')" title="{days.TOOLTIP}">{days.DAY}</a>
+			<!-- ENDIF -->
+		<!-- END -->
+		<!-- ENDIF -->
+		</td>
+		<td><img src="images/{raiders.CSS_CLASS}.gif"/></td>
+		<td>{raiders.ROLE}</td>
+		<td colspan="2">{raiders.RANK}</td>
+		<!-- BEGIN raids -->
+		<td class="{raids.STATUS}_{raiders.ROW_CLASS} raid<!-- IF raids.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raids.S_NEXT_RAID --> next_raid<!-- ENDIF -->" align="center">
+			<!-- IF raids.STATUS == 'on' or raids.STATUS == 'off' or raids.STATUS == 'noshow' -->
+			<!--img src="images/{raids.STATUS}_active.png"/-->
+			<!-- ENDIF -->
+			<!-- IF S_MODERATOR -->
+			<!-- IF raids.STATUS != 'on' and not raids.S_FUTURE -->
+			<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on.png" alt="{L_SIGNON}" title="{L_SIGNON}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'substitute' and not raids.S_FUTURE -->
+			<a href="javascript:go('z',{raiders.ID},'{raids.RAID}')" alt="{L_SUBSTITUTE}"><img src="images/substitute.png" alt="{L_SUBSTITUTE}" title="{L_SUBSTITUTE}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'late' and not raids.S_FUTURE -->
+			<a href="javascript:go('%',{raiders.ID},'{raids.RAID}')" alt="{L_LATE}"><img src="images/late.png" alt="{L_LATE}" title="{L_LATE}"/></a>
+			<!-- ENDIF -->
+			<br/>
+			<!-- IF raids.STATUS != 'off' -->
+			<a href="javascript:signoff({raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'noshow' and not raids.S_FUTURE -->
+			<a href="javascript:go('!',{raiders.ID},'{raids.RAID}')" alt="{L_NOSHOW}"><img src="images/noshow.png" alt="{L_NOSHOW}" title="{L_NOSHOW}"/></a>
+			<!-- ENDIF -->
+			<!-- IF raids.STATUS != 'past' and raids.STATUS != 'future' -->
+			<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+			<!-- ENDIF -->
+			<!-- ELSE  -->
+				<!-- IF raids.S_EDITABLE and raids.S_STATIC != 1 -->
+				<!-- IF raids.STATUS == 'off' -->
+				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
+				<!-- ELSE -->
+				<a href="javascript:signoff({raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
+				<!-- ENDIF -->
+				<!-- ENDIF -->
+			<!-- ENDIF -->
+			<!-- IF raids.S_CANCELLED --><img class="cancelled" src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/><!-- ENDIF -->
+			<!-- IF raids.COMMENT != '' --><a title="{raids.COMMENT}"><img src="images/comment.png" class="comment"/></a><!-- ENDIF -->
+		</td>
+		<!-- END -->
+		<td colspan="2"><a href="{raiders.SUMMARY_DETAIL_LINK}" title="{raiders.SUMMARY_TOOLTIP}"><img src="{raiders.SUMMARY_LINK}" alt="{raiders.SUMMARY_TOOLTIP}" title="{raiders.SUMMARY_TOOLTIP}"/></a></td>
+	</tr>
+	<!-- END --><!-- raiders -->
+	<tr>
+		<td colspan="5">&nbsp;</td>
+		<!-- BEGIN raid_days -->
+		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF --><!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raid_days.S_NEXT_RAID --> sum_next_raid<!-- ENDIF -->">
+			<b class="on">{raid_days.SUM_ON}</b>/<b class="off">{raid_days.SUM_OFF}</b>/<b class="noshow">{raid_days.SUM_NOSHOW}</b>
+			<br/><a href="javascript:prompt('{L_ADDON_CODE}', '{raid_days.RAID_DATA}');return false">{L_ADDON}</a>
+		</td>
+		<!-- END -->
+	</tr>
+	<tr><td colspan="{NUM_COLS_LEGEND}">
+<table class="legend" cellspacing="0" cellpadding="0">
+<tr>
+	<td valign="top" align="left"><b>{L_LEGEND}</b><br/>
+		<table>
+			<tr><td class="on_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNON}</td><td class="late_even">&nbsp;&nbsp;&nbsp;</td><td>{L_LATE}</td></tr>
+			<tr><td class="off_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNOFF}</td><td class="substitute_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SUBSTITUTE}</td></tr>
+			<tr><td class="noshow_even">&nbsp;&nbsp;&nbsp;</td><td>{L_NOSHOW}</td><td class="past_even"><img src="images/skull.png"/></td><td>{L_CANCELLED}</td></tr>
+		</table>
+	</td>
+<td valign="top" align="left">
+						<b>{L_ACTIONS}</b><br/>
+			<img src="images/off.png"> {L_LEGEND_ACTION_OFF}<br/>
+			<img src="images/clear.png"> {L_LEGEND_ACTION_CLEAR}<br/>
+			<!-- IF S_MODERATOR -->
+			<img src="images/on.png"> {L_LEGEND_ACTION_ON}<br/>
+			<img src="images/substitute.png"> {L_LEGEND_ACTION_SUBSTITUTE}<br/>
+			<img src="images/late.png"> {L_LEGEND_ACTION_LATE}<br/>
+			<img src="images/noshow.png"> {L_LEGEND_ACTION_NOSHOW}<br/>
+			<img src="images/skull.png"> {L_LEGEND_ACTION_CANCELLED}
+			<!-- ENDIF -->
+			</td></tr></table>
+			</td><td colspan="2" valign="top" align="right">
+		<!-- IF S_ADMIN -->
+		<!-- IF MODE == 'admin' -->
+		<a href="javascript:mode('normal')"/>{L_NORMAL}</a><br/>
+		<!-- ELSE -->
+		<a href="javascript:mode('admin')"/>{L_ADMIN}</a><br/>
+		<!-- ENDIF -->
+		{L_EXPORT_AS} <a href="raidattendance_dump.php?start={DUMP_START}&end={DUMP_END}&raid_id={RAID_ID}&output=HTML">{L_DUMP_HTML}</a>&nbsp;<a href="raidattendance_dump.php?start={DUMP_START}&end={DUMP_END}&raid_id={RAID_ID}&output=CSV">{L_DUMP_CSV}</a><br/>
+		<!-- ENDIF -->
+		<a target="_new" href="http://code.google.com/p/raidattendance/wiki/FAQphpBB3">{L_FAQ}</a><br/>
+		{MOD_VERSION}
+		</td>
+	</tr>
+</table>
+</td></tr></table>
+</form>
