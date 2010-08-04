@@ -9,7 +9,7 @@ include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup();
-$user->add_lang(array('mods/logs_raidattendance'));
+$user->add_lang(array('mods/mod_raidattendance', 'mods/logs_raidattendance'));
 if ($user->data['user_id'] == ANONYMOUS)
 {
     login_box('', $user->lang['LOGIN']);

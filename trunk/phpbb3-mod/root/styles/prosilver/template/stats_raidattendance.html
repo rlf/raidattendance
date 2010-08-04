@@ -1,0 +1,74 @@
+<!-- INCLUDE overall_header.html -->
+<link rel="stylesheet" href="{T_THEME_PATH}/raidattendance.css" type="text/css"/>
+
+<h2>{RAID_STATS_TITLE}</h2>
+
+<!-- IF S_ERROR -->
+<div class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF S_SUCCESS -->
+<div class="successbox">
+	<h3>{L_SUCCESS}</h3>
+	<p>{SUCCESS_MSG}</p>
+</div>
+<!-- ENDIF -->
+
+<!-- INCLUDE pagination.html -->
+
+
+<form name="stats">
+<table id="statistics">
+<tr><td colspan="4">	
+	<table id="raids" name="raids" cellspacing="0" cellpadding="0">
+		<tr>
+			<td class="left"><table id="innerraids"><tr>
+						<!-- BEGIN raids --><td class="left <!-- IF raids.SELECTED --> selected<!-- ENDIF -->"><a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="viewforum.php?f={FORUM_ID}&raid_id={raids.ID}" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a></td><!-- END --></tr></table></td>
+			<td class="right"><table><tr>
+						<td><a class="raid selected" href="stats_raidattendance.php?raid_id={RAID_ID}">&nbsp;{L_VIEW_STATS}</a></td>
+						<td><a class="raid" href="view_raid_logs.php">&nbsp;{L_VIEW_RAID_LOGS}&nbsp;</a></td></tr></table></td>
+</tr>
+</table></td></tr>				
+	<tr>
+		<!-- BEGIN months -->
+		<th>{months.NAME}</th>
+		<!-- END -->
+	</tr>
+	<tr>
+		<!-- BEGIN months -->
+		<td valign="top"><table>
+	<tr class="month">
+		<td class="name">{L_NUM_RAIDS}</td>
+		<td colspan="2">{months.NUM_RAIDS}</td>
+	</tr>
+	<tr class="month">
+		<td class="name">{L_AVG_RAIDERS}</td>
+		<td colspan="2">{months.AVG}</td>
+	</tr>
+	<!-- BEGIN roles -->
+	<tr class="role" style="font-weight: bold">
+		<td class="name">{roles.NAME}</td>
+		<td>{roles.AVG}</td>
+		<td>&nbsp;</td>
+	</tr>
+	<!-- BEGIN classes -->
+	<tr class="class">
+		<td class="class">&nbsp;&nbsp;&nbsp;{classes.NAME}</td>
+		<td>&nbsp;</td>
+		<td>{classes.AVG}</td>
+	</tr>
+	<!-- END -->
+	<!-- END -->
+</table></td>
+<!-- END -->
+</tr>
+</table>
+				
+</form>
+
+
+<!-- INCLUDE jumpbox.html -->
+<!-- INCLUDE pagination.html -->
+<!-- INCLUDE overall_footer.html -->
