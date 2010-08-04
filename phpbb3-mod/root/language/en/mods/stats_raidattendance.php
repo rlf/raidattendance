@@ -28,24 +28,8 @@ if (empty($lang) || !is_array($lang)) {
 // Common Language Resources for Raid Attendance
 //
 $lang = array_merge($lang, array(
-	'RAID_LOGS_TITLE'	=> 'Raidattendance History',
-	'ID'				=> 'ID',
-	'USER'				=> 'User',
-	'RAIDER'			=> 'Raider',
-	'TIME'				=> 'Timestamp',
-	'ACTION'			=> 'Action',
-	'TIMESTAMP_FORMAT'	=> '%Y-%m-%d %H:%M',
-	'RAIDERS_ALL'		=> 'All',
-	'LOG_SIGNOFF'		=> 'Signed of from raid %s',
-	'LOG_SIGNON'		=> 'Signed on to raid %s',
-	'LOG_CLEAR'			=> 'Cleared attendancy for raid %s',
-	'LOG_NOSHOW'		=> 'Was AWOL for raid %s',
-	'LOG_LATE'			=> 'Was late for raid %s',
-	'LOG_SUBSTITUTE'	=> 'Sat out on raid %s',
-	'LOG_CANCELLED'		=> 'Raid %s was cancelled',
-	'LOG_CLEAR_RAID'	=> 'Raid %s was re-activated',
-	'RAID_UNKNOWN'		=> 'Unknown',
-	'FILTER'			=> 'Filter',
+	'NUM_RAIDS'		=> 'Number of raids',
+	'AVG_RAIDERS'	=> 'Average attendance',
 	)
 );
 ?>

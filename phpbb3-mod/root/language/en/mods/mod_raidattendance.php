@@ -140,15 +140,24 @@ $lang = array_merge($lang, array(
 		'SUMMARY_TOOLTIP'			=> 'Availability: %1$01.1f%% &#013;Attendance: %2$01.1f%%',
 		'MONTHS'					=> 'months',
 
+		'NEXT_WEEK'					=> '<b style="font-size:14pt">&gt;&gt;</b>',
+		'PREV_WEEK'					=> '<b style="font-size:14pt">&lt;&lt;</b>',
+		'NEXT_WEEK_TOOLTIP'			=> "See further into the future! Almost like fortune telling",
+		'PREV_WEEK_TOOLTIP'			=> 'See into the past',
+		'PROVIDE_A_COMMENT'			=> "I'm sorry, but that reason is simply not good enough! Please provide another",
 		'SIGNOFF_COMMENT'			=> 'So, what RL issue is keeping you away from raid this time?',
-		'NUM_DEFAULT_COMMENTS'		=> 5,
-		'DEFAULT_COMMENT_1'			=> "My mom won't let me!",
+		'NUM_DEFAULT_COMMENTS'		=> 6,
+		'DEFAULT_COMMENT_1'			=> 'Type reason for signing off here',
 		'DEFAULT_COMMENT_2'			=> "My first cousins baby-brothers mothers husbands sister is having a stomach-ache",
 		'DEFAULT_COMMENT_3'			=> "The weather is simply too nice outside",
 		'DEFAULT_COMMENT_4'			=> "Sry I cant raid. I am in the middle of huge discussion with God and he wont let me break it off",
 		'DEFAULT_COMMENT_5'			=> "My house is on fire, but i just might be a little late",
+		'DEFAULT_COMMENT_6'			=> "My mom won't let me!",
 
+		'VIEW_STATS'				=> 'Statistics',
 
+		'VIEW_RAID_LOGS'			=> 'History',
+		
 	)
 );
 ?>
