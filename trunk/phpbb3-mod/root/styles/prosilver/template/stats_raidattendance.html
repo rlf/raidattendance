@@ -28,7 +28,7 @@
 						<!-- BEGIN raids --><td class="left <!-- IF raids.SELECTED --> selected<!-- ENDIF -->"><a class="raid <!-- IF raids.SELECTED --> selected<!-- ENDIF -->" href="viewforum.php?f={FORUM_ID}&raid_id={raids.ID}" alt="{raids.NAME}">&nbsp;{raids.NAME}&nbsp;</a></td><!-- END --></tr></table></td>
 			<td class="right"><table><tr>
 						<td><a class="raid selected" href="stats_raidattendance.php?raid_id={RAID_ID}">&nbsp;{L_VIEW_STATS}</a></td>
-						<td><a class="raid" href="view_raid_logs.php">&nbsp;{L_VIEW_RAID_LOGS}&nbsp;</a></td></tr></table></td>
+</tr></table></td>
 </tr>
 </table></td></tr>				
 	<tr>
@@ -41,22 +41,20 @@
 		<td valign="top"><table>
 	<tr class="month">
 		<td class="name">{L_NUM_RAIDS}</td>
-		<td colspan="2">{months.NUM_RAIDS}</td>
+		<td>{months.NUM_RAIDS}</td>
 	</tr>
 	<tr class="month">
 		<td class="name">{L_AVG_RAIDERS}</td>
-		<td colspan="2">{months.AVG}</td>
+		<td>{months.AVG}</td>
 	</tr>
 	<!-- BEGIN roles -->
 	<tr class="role" style="font-weight: bold">
 		<td class="name">{roles.NAME}</td>
 		<td>{roles.AVG} [{roles.COUNT}]</td>
-		<td>&nbsp;</td>
 	</tr>
 	<!-- BEGIN classes -->
 	<tr class="class">
 		<td class="class">&nbsp;&nbsp;&nbsp;{classes.NAME}</td>
-		<td>&nbsp;</td>
 		<td>{classes.AVG} [{classes.COUNT}]</td>
 	</tr>
 	<!-- END -->
