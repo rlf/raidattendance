@@ -165,11 +165,10 @@ function get_stats_for_months($starttime, $endtime, $raid_id = 0)
 				{
 					$rolearr['classes'][$class] = array('sum' => 0, 'avg' => 0, 'count' => 0);
 				}
-				$classarr = $rolearr['classes'][$class];
 				if ($montharr['count'] > 0) 
 				{
-					$classarr['avg'] = $classarr['sum']/$montharr['count'];
-					$classarr['count'] = $classarr['count']/$montharr['count'];
+					$rolearr['classes'][$class]['avg'] = $rolearr['classes'][$class]['sum']/$montharr['count'];
+					$rolearr['classes'][$class]['count'] = $rolearr['classes'][$class]['count']/$montharr['count'];
 				}
 			}
 		}
