@@ -56,9 +56,10 @@ function get_stats_for_months($starttime, $endtime, $raid_id = 0)
 {
 	global $db, $error;
 	$arr = array();
+	$role_class = array();
 	// Find total signons per raid...
 	$sql = "SELECT count(n.night) sum, n.night night, DATE_FORMAT(STR_TO_DATE(n.night,'%Y%m%d'),'%M') m FROM " . RAIDATTENDANCE_TABLE 
-		. ' n, ' . RAIDERRAIDS_TABLE . ' rr, ' . RAIDS_TABLE . ' raids' 
+		. ' n, ' . RAIDERRAIDS_TABLE . ' rr, ' . RAIDS_TABLE . ' raids'
 		. ' WHERE ' . $db->sql_in_set('n.status', array(STATUS_ON, STATUS_SUBSTITUTE)) 
 		. " AND n.night >= '$starttime' AND n.night <= '$endtime'" 
 		. ' AND n.raider_id = rr.raider_id AND rr.raid_id = ' . $raid_id
@@ -81,7 +82,9 @@ function get_stats_for_months($starttime, $endtime, $raid_id = 0)
 	}
 	$db->sql_freeresult($res);
 	$sql = "SELECT count(n.night) sum, r.role role, r.class class, DATE_FORMAT(STR_TO_DATE(n.night,'%Y%m%d'),'%M') m FROM " 
-		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r, ' . RAIDERRAIDS_TABLE . ' rr, ' . RAIDS_TABLE . ' raids' 
+		. RAIDATTENDANCE_TABLE . ' n, ' 
+		. RAIDER_TABLE . ' r, ' 
+		. RAIDERRAIDS_TABLE . ' rr, ' . RAIDS_TABLE . ' raids' 
 		. ' WHERE ' 
 		. $db->sql_in_set('n.status', array(STATUS_ON, STATUS_SUBSTITUTE)) 
 		. " AND n.raider_id = r.id AND n.night >= '$starttime' AND n.night <= '$endtime' " 
@@ -106,8 +109,44 @@ function get_stats_for_months($starttime, $endtime, $raid_id = 0)
 		{
 			$arr[$m]['roles'][$role]['classes'][$class] = array('sum' => 0, 'avg' => 0);
 		}
+		if (!isset($role_class[$role]))
+		{
+			$role_class[$role] = array();
+		}
+		if (!isset($role_class[$role][$class]))
+		{
+			$role_class[$role][$class] = 1;
+		}
 		$arr[$m]['roles'][$role]['sum'] = $arr[$m]['roles'][$role]['sum'] + $row['sum'];
 		$arr[$m]['roles'][$role]['classes'][$class]['sum'] = $row['sum'];
+	}
+	$db->sql_freeresult($res);
+	// NOTE: This will not count "static sign offs"
+	$sql = "SELECT count(n.night) cnt, r.role role, r.class class, DATE_FORMAT(STR_TO_DATE(n.night,'%Y%m%d'),'%M') m FROM " 
+		. RAIDATTENDANCE_TABLE . ' n, ' 
+		. RAIDER_TABLE . ' r, ' 
+		. RAIDERRAIDS_TABLE . ' rr, ' . RAIDS_TABLE . ' raids' 
+		. ' WHERE ' 
+		. " n.raider_id = r.id AND n.night >= '$starttime' AND n.night <= '$endtime' " 
+		. ' AND n.raider_id = rr.raider_id AND rr.raid_id = ' . $raid_id
+		. " AND raids.id = rr.raid_id AND raids.days LIKE CONCAT('%',LOWER(DATE_FORMAT(STR_TO_DATE(n.night,'%Y%m%d'),'%a')),'%') "
+		. ' GROUP BY m, role, class';
+	$res = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($res))
+	{
+		$m = $row['m'];
+		$role =  '' . $row['role'];
+		if (!isset($arr[$m]['roles'][$role]))
+		{
+			$arr[$m]['roles'][$role] = array('sum' => 0, 'avg' => 0, 'classes' => array());
+		}
+		$class = '' . $row['class'];
+		if (!isset($arr[$m]['roles'][$role]['classes'][$class]))
+		{
+			$arr[$m]['roles'][$role]['classes'][$class] = array('sum' => 0, 'avg' => 0);
+		}
+		$arr[$m]['roles'][$role]['count'] = $arr[$m]['roles'][$role]['count'] + $row['cnt'];
+		$arr[$m]['roles'][$role]['classes'][$class]['count'] = $row['cnt'];
 	}
 	$db->sql_freeresult($res);
 	// Now, calc the avg. for roles + classes
@@ -118,12 +157,19 @@ function get_stats_for_months($starttime, $endtime, $raid_id = 0)
 			if ($montharr['count'] > 0) 
 			{
 				$rolearr['avg'] = $rolearr['sum']/$montharr['count'];
+				$rolearr['count'] = $rolearr['count']/$montharr['count'];
 			}
-			foreach ($rolearr['classes'] as $class => &$classarr)
+			foreach ($role_class[$role] as $class => $num)
 			{
-			if ($montharr['count'] > 0) 
+				if (!isset($rolearr['classes'][$class]))
+				{
+					$rolearr['classes'][$class] = array('sum' => 0, 'avg' => 0, 'count' => 0);
+				}
+				$classarr = $rolearr['classes'][$class];
+				if ($montharr['count'] > 0) 
 				{
 					$classarr['avg'] = $classarr['sum']/$montharr['count'];
+					$classarr['count'] = $classarr['count']/$montharr['count'];
 				}
 			}
 		}

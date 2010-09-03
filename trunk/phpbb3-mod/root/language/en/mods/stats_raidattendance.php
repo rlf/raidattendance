@@ -30,6 +30,7 @@ if (empty($lang) || !is_array($lang)) {
 $lang = array_merge($lang, array(
 	'NUM_RAIDS'		=> 'Number of raids',
 	'AVG_RAIDERS'	=> 'Average attendance',
+	'FRACTION_FORMAT' => '%0.2f',
 	)
 );
 ?>

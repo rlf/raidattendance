@@ -53,12 +53,13 @@ foreach ($raids as $raid)
 	));
 }
 
+uksort($arr, month_sort);
 foreach ($arr as $m => $marr)
 {
 	$template->assign_block_vars('months', array(
 		'NAME'			=> $m,
 		'NUM_RAIDS'		=> $marr['count'],
-		'AVG'			=> $marr['avg'],
+		'AVG'			=> sprintf($user->lang['FRACTION_FORMAT'], $marr['avg']),
 	));
 	foreach ($marr['roles'] as $role => $rarr)
 	{
@@ -69,14 +70,16 @@ foreach ($arr as $m => $marr)
 		$template->assign_block_vars('months.roles', array(
 			'ROLE_ID'		=> $role,
 			'NAME'			=> $user->lang['ROLE_' . $role],
-			'AVG'			=> $rarr['avg'],
+			'AVG'			=> sprintf($user->lang['FRACTION_FORMAT'], $rarr['avg']),
+			'COUNT'		=> sprintf($user->lang['FRACTION_FORMAT'], $rarr['count']),
 		));
 		foreach ($rarr['classes'] as $class => $carr)
 		{
 			$template->assign_block_vars('months.roles.classes', array(
 				'CLASS_ID'	=> $class,
 				'NAME'		=> $user->lang['CLASS_' . $class],
-				'AVG'		=> $carr['avg'],
+				'AVG'		=> sprintf($user->lang['FRACTION_FORMAT'], $carr['avg']),
+				'COUNT'		=> sprintf($user->lang['FRACTION_FORMAT'], $carr['count']),
 			));
 		}
 	}
@@ -91,5 +94,11 @@ $template->assign_vars(array(
 make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 page_footer();
 
+function month_sort($a, $b)
+{
+	$a1 = strptime($a, '%B');
+	$b1 = strptime($b, '%B');
+	return $a1['tm_mon'] - $b1['tm_mon'];
+}
 ?>
 
