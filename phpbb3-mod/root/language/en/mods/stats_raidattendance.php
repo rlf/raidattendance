@@ -29,8 +29,24 @@ if (empty($lang) || !is_array($lang)) {
 //
 $lang = array_merge($lang, array(
 	'NUM_RAIDS'		=> 'Number of raids',
+	'NUM_CANCELLED'	=> ' - Cancelled',
 	'AVG_RAIDERS'	=> 'Average attendance',
 	'FRACTION_FORMAT' => '%0.2f',
+	'GRAPHS'		=> 'Graphs',
+	'TANKS'			=> 'Tanks',
+	'HEALERS'		=> 'Healers',
+	'MELEE'			=> 'Melee',
+	'RANGED'		=> 'Ranged',
+	'CLASS_COLOR_1'	=> 'C79C6E',
+	'CLASS_COLOR_2' => 'F58CBA',
+	'CLASS_COLOR_3' => 'ABD473',
+	'CLASS_COLOR_4' => 'FFF569',
+	'CLASS_COLOR_5' => 'FFFFFF',
+	'CLASS_COLOR_6' => 'C41F3B',
+	'CLASS_COLOR_7' => '2459FF',
+	'CLASS_COLOR_8' => '69CCF0',
+	'CLASS_COLOR_9' => '9482C9',
+	'CLASS_COLOR_11' => 'FF7D0A',
 	)
 );
 ?>

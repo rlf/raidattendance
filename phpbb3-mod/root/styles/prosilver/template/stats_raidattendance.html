@@ -44,6 +44,10 @@
 		<td>{months.NUM_RAIDS}</td>
 	</tr>
 	<tr class="month">
+		<td class="name">{L_NUM_CANCELLED}</td>
+		<td>{months.NUM_CANCELLED}</td>
+	</tr>
+	<tr class="month">
 		<td class="name">{L_AVG_RAIDERS}</td>
 		<td>{months.AVG}</td>
 	</tr>
@@ -66,6 +70,11 @@
 				
 </form>
 
+<h2>{L_GRAPHS}</h2>
+<!-- BEGIN graphs -->
+<h3>{graphs.TITLE}</h3>
+<img src="http://chart.apis.google.com/chart?chs=800x200&cht=lc&chxt=x,y&chf=bg,s,00000000{graphs.DATA}"><br/>
+<!-- END -->
 
 <!-- INCLUDE jumpbox.html -->
 <!-- INCLUDE pagination.html -->
