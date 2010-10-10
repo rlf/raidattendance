@@ -63,6 +63,8 @@ $lang = array_merge($lang, array(
 		'RAID_NIGHT_SUN'			=> 'Sunday',
 		'RAID_TIME'					=> 'Raiding time',
 		'RAID_TIME_EXPLAIN'			=> 'The time when raids commense. I.e. when raiders can no more signoff and admins can mark raiders as being AWOL.',
+		'RAID_LATE'					=> 'Raider sign-off',
+		'RAID_LATE_EXPLAIN'			=> 'The time at which raiders are expected to sign-off. Later signoffs will still be marked, but marked as being "late signoffs"',
 
 		'RAIDER_RANKS'				=> 'Rank of Raiders',
 		'MIN_LEVEL'					=> 'Raider Level',

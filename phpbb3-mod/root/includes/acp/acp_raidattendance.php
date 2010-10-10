@@ -66,6 +66,7 @@ class acp_raidattendance
 				'legend3'					=> 'RAIDS',
 				'raidattendance_raidsetup'	=> array('lang' => 'RAID_SETUP',	'type' => 'custom', 'explain' => true, 'function' => 'raid_setup'),
 				'raidattendance_raid_time'	=> array('lang' => 'RAID_TIME', 	'validate' => 'time', 'type' => 'text:5:5', 'explain' => true),
+				'raidattendance_raid_late'  => array('lang' => 'RAID_LATE',     'validate' => 'time', 'type' => 'text:5:5', 'explain' => true),
 
 				'legend4'						=> 'RAIDER_RANKS',
 				'raidattendance_min_level'		=> array('lang' => 'MIN_LEVEL',	'validate' => 'int', 'type' => 'text:2:2', 'explain' => true),
@@ -280,6 +281,15 @@ class acp_raidattendance
 	{
 		global $db, $user, $auth, $template, $config;
 		global $error, $success;
+		if (!is_array($error)) 
+		{
+			$error = array();
+		}
+		if (!is_array($success))
+		{
+			$success = array();
+		}
+		
 		$this->tpl_name = 'acp_raidattendance_sync';
 		$resync	= request_var('resync', '');
 		$save = request_var('save', '');
@@ -350,14 +360,6 @@ class acp_raidattendance
 				'SUM'	=> $raid['sum'],
 				'NAME'	=> $raid['name'],
 				));
-		}
-		if (!is_array($error)) 
-		{
-			$error = array();
-		}
-		if (!is_array($success))
-		{
-			$success = array();
 		}
 
 		$template->assign_vars(array(
