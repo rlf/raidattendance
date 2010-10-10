@@ -303,7 +303,7 @@ class raider_armory
 			);
 			if ($data['level'] >= $this->min_level && array_search($data['rank'], $this->ranks) !== FALSE) 
 			{
-				$name = $attrs['name'];
+				$name = utf8_normalize_nfc($attrs['name']);
 				if (array_key_exists($name, $this->raiders))
 				{
 					$this->raiders[$name]->update($data);
@@ -362,6 +362,7 @@ class raider_db
 		}
 		$sql = $sql . ' ORDER BY ' . implode(',', $sort);
 		$result = $db->sql_query($sql);
+		$raider_ids = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$name = $row['name'];
@@ -382,8 +383,25 @@ class raider_db
 			{
 				$raiders[$name] = new raider($data);
 			}
+			$raider = $raiders[$name];
+			$raider_ids[$raider->id] = $raider;
 		}
 		$db->sql_freeresult($result);
+		// Add the raids info
+		if (sizeof($raider_ids) > 0)
+		{
+			$sql = 'SELECT raid_id, raider_id FROM ' . RAIDERRAIDS_TABLE . ' WHERE ' . $db->sql_in_set('raider_id', array_keys($raider_ids));
+			//$error[] = 'SQL: ' . $sql;
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				if (isset($raider_ids[$row['raider_id']]))
+				{
+					$raider_ids[$row['raider_id']]->add_raid($row['raid_id']);
+				} 
+			}
+			$db->sql_freeresult($result);
+		}
 	}
 
 	function save_raider_list(&$rows)
@@ -1088,22 +1106,21 @@ class raider
 		}
 	}
 
-	// RAIDS
-	function get_raids()
+	function add_raid($raid_id)
 	{
-		$raids = array();
-		if ($this->id) 
+		if (!isset($this->raids)) 
 		{
-			global $db;
-			$sql = 'SELECT raid_id FROM ' . RAIDERRAIDS_TABLE . ' WHERE raider_id=' . $this->id;
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$raids[] = $row['raid_id'];
-			}
-			$db->sql_freeresult($result);
+			$this->raids = array();
 		}
-		$this->raids = $raids;
+		$this->raids[] = $raid_id;
+	}
+
+	function &get_raids()
+	{
+		if (!isset($this->raids))
+		{
+			$this->raids = array();
+		}
 		return $this->raids;
 	}
 

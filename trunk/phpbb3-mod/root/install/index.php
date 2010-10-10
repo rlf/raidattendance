@@ -72,6 +72,7 @@ $options = array(
 
 	'legend3'		=> 'RAID_SETTINGS',
 	'raid_time'		=> array('lang' => 'RAID_TIME', 'validate' => 'time', 'type' => 'text:5:5', 'explain' => true, 'default' => '19:45'),
+	'raid_late'		=> array('lang' => 'RAID_LATE', 'validate' => 'time', 'type' => 'text:5:5', 'explain' => true, 'default' => '18:30'),
 );
 
  
@@ -315,6 +316,11 @@ $versions = array(
 	), // v1.1.8
 	'1.2.0' => array(
 	), // v1.2.0
+	'1.3.0' => array(
+		'config_add' => array(
+			array('raidattendance_raid_late', request_var('raid_late', '18:30')),
+		),
+	), // v1.3.0
 );
  
 function v103_110($action, $version)

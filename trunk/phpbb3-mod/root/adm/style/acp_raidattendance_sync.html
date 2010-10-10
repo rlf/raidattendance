@@ -19,12 +19,56 @@
 </div>
 <!-- ENDIF -->
 <form id="acp_ban" method="post" action="{U_ACTION}">
-
-<table class="raiders">
+<script type="text/javascript">
+raiders = new Array();
+function filterOnName(name, event)
+{
+	if (!name || name == '')
+	{
+		return false;
+	}
+	for (var id in raiders)
+	{
+		var row = document.getElementById('raiderrow_' + id);
+		var rname = raiders[id];
+		if (eval('rname.search(/' + name + '/i)') != -1)
+		{
+			row.style.display = '';
+		}
+		else 
+		{
+			row.style.display = 'none';
+		}
+	}
+	return false;
+}
+function toggleChecks(check)
+{
+	var toggle = 0;
+	if (check && check.checked)
+	{
+		toggle = 1;
+	}
+	else 
+	{
+		toggle = 0;
+	}
+	for (var id in raiders)
+	{
+		var check = document.getElementById('checked[' + id + ']');
+		if (check) 
+		{
+			check.checked = toggle;
+		}
+	}
+}
+</script>
+<table class="raiders" id="raiders" name="raiders" width="400">
 	<thead>
 		<tr>
-			<th colspan="2">&nbsp;</th>
-			<th>{L_RAIDERS}</th>
+			<th>&nbsp;</th>
+			<th><input type="checkbox" name="checkall" id="checkall" onChange="toggleChecks(this)"/></th>
+			<th>{L_RAIDERS}<br/><input type="text" size="40" maxlength="40" onKeyUp="return filterOnName(this.value, event)"/></th>
 			<th>{L_LEVEL}</th>
 			<th>{L_RANK}</th>
 			<th>{L_ROLE}</th>
@@ -37,7 +81,10 @@
 	</thead>
 	<tbody>
 <!-- BEGIN raiders -->
-<tr class="{raiders.ROW_CLASS}">
+<script language="javascript">
+	raiders['{raiders.ID}'] = '{raiders.NAME}';
+</script>
+<tr class="{raiders.ROW_CLASS}" id="raiderrow_{raiders.ID}">
 	<td class="small">#{raiders.ROWNO}</td>
 	<td class="mini"><input type="checkbox" name="checked[{raiders.ID}]" id="checked[{raiders.ID}]"{raiders.CHECKED}/></td>
 	<td class="{raiders.CSS_CLASS}">{raiders.STATUS}{raiders.NAME}</td>
@@ -51,6 +98,7 @@
 	<td><input type="checkbox" name="raiderraid[{raiders.ID}][{raids.ID}]"<!-- IF raids.S_IN_RAID --> checked<!-- ENDIF -->/></td>
 	<!-- END -->
 </tr>
+
 <!-- END raiders -->
 <tr class="new_raider">
 	<td colspan="2">{L_ADD_RAIDER}</td>
