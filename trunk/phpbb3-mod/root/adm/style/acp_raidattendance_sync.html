@@ -23,15 +23,11 @@
 raiders = new Array();
 function filterOnName(name, event)
 {
-	if (!name || name == '')
-	{
-		return false;
-	}
 	for (var id in raiders)
 	{
 		var row = document.getElementById('raiderrow_' + id);
 		var rname = raiders[id];
-		if (eval('rname.search(/' + name + '/i)') != -1)
+		if (!name || eval('rname.search(/' + name + '/i)') != -1)
 		{
 			row.style.display = '';
 		}
