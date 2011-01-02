@@ -17,7 +17,8 @@ if (!defined('IN_PHPBB'))
 }
 global $phpEx;
 
-include 'constants_raidattendance.' . $phpEx;
+require_once 'constants.' . $phpEx;
+require_once 'functions.' . $phpEx;
 
 /**
  * Returns an associative array with the following syntax:

@@ -39,7 +39,7 @@ define('CLASS_PALADIN', 2);
 define('CLASS_HUNTER', 3);
 define('CLASS_ROGUE', 4);
 define('CLASS_PRIEST', 5);
-define('CLASS_DEATH KNIGHT', 6);
+define('CLASS_DEATH_KNIGHT', 6);
 define('CLASS_SHAMAN', 7);
 define('CLASS_MAGE', 8);
 define('CLASS_WARLOCK', 9);

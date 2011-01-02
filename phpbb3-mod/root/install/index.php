@@ -64,8 +64,7 @@ $options = array(
 	'legend1'		=> 'GUILD_SETTINGS',
 	'guild'			=> array('lang' => 'GUILD_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false, 'default' => 'The Awakening'),
 	'realm'			=> array('lang' => 'REALM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => false, 'default' => 'Bloodhoof'),
-	'armory_link'	=> array('lang' => 'ARMORY_LINK',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'http://eu.wowarmory.com'),
-	'wws_guild_id'	=> array('lang' => 'WWS_GUILD_ID',			'validate' => 'int',	'type' => 'text:5:5', 'explain' => true, 'default' => '15320'),
+	'armory_link'	=> array('lang' => 'ARMORY_LINK',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'http://eu.battle.net'),
 
 	'legend2'		=> 'FORUM_SETTINGS',
 	'forum_name'	=> array('lang' => 'FORUM_NAME',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true, 'default' => 'Raid Availability'),
@@ -321,6 +320,23 @@ $versions = array(
 			array('raidattendance_raid_late', request_var('raid_late', '18:30')),
 		),
 	), // v1.3.0
+	'1.4.0' => array(
+		'module_remove' => array(
+			// Add the wws mode 
+			array('acp', 'ACP_CAT_RAIDATTENDANCE', 
+				array(
+					'module_basename'		=> 'raidattendance',
+					'module_langname'		=> 'ACP_RAIDATTENDANCE_WWS',
+					'module_mode'			=> 'wws',
+					'module_auth'			=> 'acl_a_raidattendance',
+				), 
+			),
+		),
+		'config_update' => array(
+			array('raidattendance_min_level', request_var('min_level', 85)),
+			array('raidattendance_armory_link', request_var('armory_link', 'http://eu.battle.net')),
+		),
+	), // v1.4.0
 );
  
 function v103_110($action, $version)

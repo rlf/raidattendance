@@ -26,11 +26,6 @@ class acp_raidattendance_info
 					'auth'	=> 'acl_a_raidattendance',
 					'cat'	=> array('ACP_CAT_RAIDATTENDANCE'),
 				),
-				'wws' => array(
-					'title' => 'ACP_RAIDATTENDANCE_WWS',
-					'auth'	=> 'acl_a_raidattendance',
-					'cat'	=> array('ACP_CAT_RAIDATTENDANCE'),
-				),
 			)
 		);
 	}

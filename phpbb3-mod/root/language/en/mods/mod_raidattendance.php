@@ -134,6 +134,7 @@ $lang = array_merge($lang, array(
 		'DUMP_CSV'					=> '[CSV]',
 		'DUMP_XML'					=> '[XML]',
 
+		'CHARACTER_ARMORY_LINK'		=> '%1$s/wow/en/character/%2$s/%3$s/simple',
 		'SUMMARY'					=> 'Attendancy',
 		'SUMMARY_LINK'				=> 'http://chart.apis.google.com/chart?cht=bhs&chs=115x24&chd=t:%1$01.0f|%2$01.0f|%3$01.0f|%4$01.0f|%5$01.0f&chco=086800,003c8f,900e03,c5a701,008d89&chbh=a&chf=bg,s,00000000',
 		'SUMMARY_DETAIL_LINK'		=> 'http://chart.apis.google.com/chart?cht=p&chs=800x375&chd=t:%1$01.0f,%2$01.0f,%3$01.0f,%4$01.0f,%5$01.0f&chco=086800|003c8f|900e03|c5a701|008d89&chl=%6$s|%7$s|%8$s|%9$s|%10$s&chma=120,120,0,0|0,0',
