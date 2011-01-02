@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB'))
 
 global $forum_id, $phpbb_root_path, $phpEx, $template;
 
-include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
+include($phpbb_root_path . 'includes/raidattendance/functions.' . $phpEx);
 
 if (is_raidattendance_forum($forum_id)) 
 {
@@ -109,7 +109,7 @@ if (is_raidattendance_forum($forum_id))
 			'CHECKED'			=> $raider->is_checked() ? ' checked' : '',
 			'CSS_CLASS'			=> 'class_' . $raider->class,
 			'S_EDITABLE'		=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)),
-			'ARMORY_LINK'		=> $url_base . urlencode($raider->name),
+			'ARMORY_LINK'		=> sprintf($user->lang['CHARACTER_ARMORY_LINK'], $armory_link, rawurlencode($realm), rawurlencode($raider->name)),
 			'SUMMARY_LINK'		=> sprintf($user->lang['SUMMARY_LINK'], $sums[1], $sums[2], $sums[3], $sums[4], $sums[5]),
 			'SUMMARY_TOOLTIP'	=> sprintf($user->lang['SUMMARY_TOOLTIP'], $sums[1]+$sums[5], $sum_attendance),
 			'SUMMARY_DETAIL_LINK' => sprintf($user->lang['SUMMARY_DETAIL_LINK'], 
@@ -173,12 +173,6 @@ if (is_raidattendance_forum($forum_id))
 	}
 	$num_raiders = sizeof($raiders);
 	$raid_day_number = 0;
-	$wol_baseurl_calendar = false;
-	$wol_baseurl_report = false;
-	if (!$config['raidattendance_wws_guild_id'])
-	{
-		$wol_baseurl_calendar = 'http://www.worldoflogs.com/guilds/' . $config['raidattendance_wws_guild_id'] . '/calendar/';
-	}
 	$last_future = false;
 	foreach ($raids as $raid)
 	{

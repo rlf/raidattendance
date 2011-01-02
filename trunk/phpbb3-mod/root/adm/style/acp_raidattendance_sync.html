@@ -99,8 +99,9 @@ function toggleChecks(check)
 <tr class="new_raider">
 	<td colspan="2">{L_ADD_RAIDER}</td>
 	<td><input id="new_name" name="new_name" size="35" maxlength="255" type="text" value=""/></td>
-	<td><input id="new_level" name="new_level" size="2" maxlength="2" type="text" value="80"/></td>
+	<td><input id="new_level" name="new_level" size="2" maxlength="2" type="text" value="85"/></td>
 	<td><select id="new_rank" name="new_rank">{OPTIONS_NEW_RANK}</select></td>
+	<td><select id="new_role" name="new_role">{OPTIONS_NEW_ROLE}</select></td>
 	<td><select id="new_class" name="new_class">{OPTIONS_NEW_CLASS}</select></td>
 	<td><select id="new_user_id" name="new_user_id">{OPTIONS_NEW_USER}</select></td>
 </tr>
@@ -113,6 +114,8 @@ function toggleChecks(check)
 </table>
 
 <p class="submit-buttons">
+<!--
+<input class="button1" type="submit" id="merge" name="merge" value="{L_MERGE_SELECTED}" />&nbsp;-->
 	<input class="button1" type="submit" id="delete" name="delete" value="{L_DELETE_SELECTED}" />&nbsp;
 	<input class="button1" type="submit" id="resync" name="resync" value="{L_RESYNC}" />&nbsp;
 	<input class="button1" type="submit" id="save" name="save" value="{L_SAVE}" />&nbsp;

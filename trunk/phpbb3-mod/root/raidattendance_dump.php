@@ -25,7 +25,7 @@ $user->add_lang(array('mods/dump_raidattendance'));
 // TODO: Add check for login...
 global $forum_id, $phpbb_root_path, $phpEx, $template;
 
-include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx); 
+include($phpbb_root_path . 'includes/raidattendance/functions.' . $phpEx); 
 
 $start=request_var('start', '');
 $end=request_var('end', '');

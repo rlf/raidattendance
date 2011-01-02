@@ -10,7 +10,7 @@ define('DAYS', 'mon:tue:wed:thu:fri:sat:sun');
 define('NL', "\n");
 
 global $phpbb_root_path, $phpEx;
-include($phpbb_root_path . 'includes/functions_raidattendance.' . $phpEx);
+include($phpbb_root_path . 'includes/raidattendance/functions.' . $phpEx);
 
 global $error, $success;
 class acp_raidattendance 
@@ -306,10 +306,6 @@ class acp_raidattendance
 		if ($save or $resync) 
 		{
 			$raider_db->save_raider_list($rows);
-			if ($save) 
-			{
-				$success[] = get_text('SAVED');
-			}
 		}
 		else if ($delete)
 		{
@@ -329,7 +325,7 @@ class acp_raidattendance
 				'LEVEL'				=> $raider->level,
 				'CLASS'				=> $user->lang['CLASS_' . $raider->class],
 				'USER'				=> $raider->user_id,
-				'STATUS'			=> $raider->get_status(),
+				'STATUS'			=> $user->lang['STATUS_' . $raider->get_status()],
 				'ROW_CLASS'			=> $rowno % 2 == 0 ? 'even' : 'uneven',
 				'USER_OPTIONS'		=> $this->get_user_options($users, $raider->name, $raider->user_id),
 				'ROLE_OPTIONS'		=> $this->get_raider_role_options($roles, $raider),
@@ -362,6 +358,7 @@ class acp_raidattendance
 				));
 		}
 
+		$dummyraider = new raider(array('class'=>CLASS_DRUID, 'role'=>ROLE_UNASSIGNED));
 		$template->assign_vars(array(
 			'L_TITLE'			=> $user->lang['ACP_RAIDATTENDANCE_SYNC'],
 			'L_TITLE_EXPLAIN'	=> $user->lang['ACP_RAIDATTENDANCE_SYNC_EXPLAIN'],
@@ -375,6 +372,7 @@ class acp_raidattendance
 			'U_ACTION'			=> $this->u_action,
 			'OPTIONS_NEW_RANK'	=> $this->get_rank_options(),
 			'OPTIONS_NEW_CLASS'	=> $this->get_class_options(),
+			'OPTIONS_NEW_ROLE'	=> $this->get_raider_role_options($roles, $dummyraider),
 			'OPTIONS_NEW_USER'	=> $this->get_user_options($users, ''),
 		)
 		);
@@ -445,7 +443,7 @@ class acp_raidattendance
 	function get_user_list()
 	{
 		global $db, $user;
-		$sql = 'SELECT user_id, username FROM ' . USERS_TABLE . ' WHERE user_type <> ' . USER_IGNORE;
+		$sql = 'SELECT user_id, username FROM ' . USERS_TABLE . ' WHERE user_type <> ' . USER_IGNORE . ' ORDER BY username';
 		$result = $db->sql_query($sql);
 		$users = array(array('id' => 0, 'name' => $user->lang['UNKNOWN_USER']));
 		while ($row = $db->sql_fetchrow($result)) 
@@ -513,15 +511,16 @@ class acp_raidattendance
 		$checked = request_var('checked', array(0=>'false'));
 		$raider_role = request_var('raider_role', array(0=>0));
 		$new_raider = null;
-		$new_name = request_var('new_name', '');
+		$new_name = request_var('new_name', '', true);
 		if (strlen($new_name) > 0)
 		{
 			$row = array(
 				'name' => $new_name,
-				'level' => request_var('new_level', 80),
+				'level' => request_var('new_level', 85),
 				'rank' => request_var('new_rank', 9),
 				'class' => request_var('new_class', 1),
 				'user_id' => request_var('new_user_id', 0),
+				'role' => request_var('new_role', 0),
 			);
 			// TODO verify input!
 			$new_raider = new raider($row);
@@ -553,8 +552,13 @@ class acp_raidattendance
 				$raider->raids = array();
 				foreach ($raiderraid[$raider->id] as $raid_id => $check)
 				{
-					$raider->raids[] = $raid_id;
+					$raider->raids[] = intval($raid_id);
 				}
+			}
+			else if (isset($user_ids[$raider->id]) || isset($raider_role[$raider->id]))
+			{
+				// A bit hacky, but otherwise we cannot remove a raider from the raid-list
+				$raider->raids = array();
 			}
 			if (isset($raider_role[$raider->id])) 
 			{
