@@ -1,0 +1,261 @@
+/*  RaidAttendance Stylesheet
+    --------------------------------------------------------------
+*/
+
+.even {
+}
+.uneven {
+}
+.on_even, .on_uneven {
+	background: #086800;
+}
+.off_even, .off_uneven {
+	background: #003c8f;
+}
+.late_even, .late_uneven {
+	background: #c5a701;
+}
+.noshow_even, .noshow_uneven {
+	background: #900e03;
+}
+.substitute_even, .substitute_uneven {
+	background: #008d89
+}
+.future_uneven, .future_even {
+	text-align: center;
+	background: #002000;
+}
+.past_even, .past_uneven {
+	text-align: center;
+	background: #200000;
+}
+.sum_past, .sum_future {
+	text-align: center;
+}
+.small {
+	width: 20px;
+}
+.mini {
+	width: 10px;
+}
+table.logs {
+	width: 100%;
+}	
+td.right {
+	vertical-align: right;
+	text-align: right;
+}
+table#raids tr td table {
+	border-spacing: 10px 0px;
+	border-collapse: separate;
+}
+table#raids tr td table tr td {
+	border-width: 1px 1px 1px 1px;
+	border-style: solid solid solid solid;
+	color: #005abf;
+	border-color: #005abf;
+	text-decoration: none;
+}
+
+table#raids {
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+table#raids tr td table tr td.selected {
+	border-bottom: 1px none;
+}
+table#raids a.selected {
+	font-weight: bold;
+	color: #404aaf;
+	font-size: 120%;
+}
+td.sum_past, td.sum_future {
+	text-align: center;
+	border-width: 1px 1px 0px 0px;
+	border-style: solid;
+	border-color: black;
+}
+b.on {
+	color: #00ff00;
+	font-weight: bold;
+	font-size: 140%;
+}
+b.off {
+	color: #005abf;
+	font-weight: bold;
+	font-size: 140%;
+}
+b.noshow {
+	color: #ab1f03;
+	font-weight: bold;
+	font-size: 140%;
+}
+
+table#raid_table tr td.raid {
+	height: 24px;
+	border-width: 1px 1px 0px 0px;
+	border-style: solid;
+	border-color: black;
+}
+table#raid_table tr th {
+	height: 32px;
+}
+table#raid_table tr th a.selected {
+	text-decoration: underline;
+	font-weight: bold;
+}
+a img.comment {
+	position: relative;
+	float: right;
+	top: -50%;
+	right: -5%;
+}
+img.cancelled {
+	position: relative;
+	float: left;
+	left: 35%;
+	bottom: 0%;
+}
+
+table#raid_table tr td.first_day_in_week, table#raid_table tr th.first_day_in_week {
+	border-left: 6px solid black;
+	padding-left: 6px;
+}
+table#raid_table tr th.next_raid {
+	border-bottom: 4px solid #ffcc2d;
+}
+table#raid_table tr td.sum_next_raid {
+	border-width: 1px 4px 4px 4px;
+	border-style: solid;
+	border-color: black #ffcc2d #ffcc2d #ffcc2d;
+}
+table#raid_table tr td.next_raid {
+	border-width: 1px 4px 0px 4px;
+	border-style: solid;
+	border-color: black #ffcc2d black #ffcc2d;
+}
+a.static:visited, a.static:link, a.static:active, a.nav {
+	text-decoration: none;
+	font-weight: bold;
+	color: #777777;
+}
+a.off, a.static:visited.signoff, a.static:link.off, a.static:active.off {
+	color: yellow;
+	background: none;
+}
+#raid_table tr td a:hover {
+	text-decoration: underline;
+	/*font-weight: bold;*/
+	color: #770000;
+}
+#raid_table tr td:first-child {
+	padding-left: 5px;
+}
+td.legend {
+	vertical-align: middle;
+}
+table.legend {
+	width: 100%;
+}
+/**
+ * Status Boxes
+ **/
+.successbox, .errorbox {
+	padding: 8px;
+	margin: 10px 0;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.success {
+	color: #228822;
+}
+
+.error {
+	color: #BC2A4D;
+}
+
+.successbox {
+	background-color: #228822;
+}
+
+.errorbox {
+	background-color: #BC2A4D;
+}
+
+* html .errorbox, * html .successbox { height: 1%; } /* Pixel shift fix for IE */
+
+.successbox h3, .errorbox h3 {
+	color: #FFFFFF;
+	margin: 0 0 0.5em;
+	font-size: 1.10em;
+	font-family: "Lucida Grande",Verdana,Helvetica,Arial,sans-serif;
+}
+
+.successbox p, .errorbox p {
+	color: #FFFFFF;
+	font-size: 0.85em;
+	margin-bottom: 0;
+}
+
+.errorbox a:link, .errorbox a:active, .errorbox a:visited,
+.successbox a:link, .successbox a:active, .successbox a:visited {
+	color: #DBD7D1;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.errorbox a:hover, .successbox a:hover {
+	color: #FFFFFF;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.class_style {
+	font-weight: bold;
+	font-size: 1.10em;
+}
+/**
+ * Class Colors as taken from http://www.wowwiki.com/Class_colors
+ **/
+/* Warrior */
+.class_1, a.class_1:link, a.class_1:active, a.class_1:visited {
+	color: #C79C6E;
+}
+/* Paladin */
+.class_2, a.class_2:link, a.class_2:active, a.class_2:visited {
+	color: #F58CBA;
+}
+/* Hunter */
+.class_3, a.class_3:link, a.class_3:active, a.class_3:visited {
+	color: #ABD473;
+}
+/* Rogue */
+.class_4, a.class_4:link, a.class_4:active, a.class_4:visited {
+	color: #FFF569;
+}
+/* Priest */
+.class_5, a.class_5:link, a.class_5:active, a.class_5:visited {
+	color: #FFFFFF;
+}
+/* Death Knight */
+.class_6, a.class_6:link, a.class_6:active, a.class_6:visited {
+	color: #C41F3B;
+}
+/* Shaman */
+.class_7, a.class_7:link, a.class_7:active, a.class_7:visited {
+	color: #2459FF;
+}
+/* Mage */
+.class_8, a.class_8:link, a.class_8:active, a.class_8:visited {
+	color: #69CCF0;
+}
+/* Warlock */
+.class_9, a.class_9:link, a.class_9:active, a.class_9:visited {
+	color: #9482C9;
+}
+/* Druid */
+.class_11, a.class_11:link, a.class_11:active, a.class_11:visited {
+	color: #FF7D0A;
+}
