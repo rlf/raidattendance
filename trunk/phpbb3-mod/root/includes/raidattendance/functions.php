@@ -43,7 +43,7 @@ function get_raider_ranks()
 	global $config;
 	$ranks = array();
 	$key = 'raidattendance_raider_rank';
-	for ($i = 0; $i <= 6; $i++) 
+	for ($i = 0; $i <= MAX_RANK; $i++) 
 	{
 		if ($config[$key . $i]) 
 		{

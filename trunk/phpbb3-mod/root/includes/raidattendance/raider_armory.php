@@ -20,88 +20,6 @@ global $phpEx;
 require_once 'constants.' . $phpEx;
 require_once 'raider.' . $phpEx;
 
-// ---- 
-// Snagged from []
-// ---
-function getRosterInformation() {
- 
-    $roster = file_get_contents("/path/to/roster/file/roster.html");
- 
-    $dom = new domDocument;
-    $dom->loadHTML($roster);
-    $dom->preserveWhiteSpace = false;
- 
-    //The first tbody tag marks the start of the actual
-    //'roster' part of the html.
-    $roster = $dom->getElementsByTagName('tbody');
- 
-    //Each Character has its own tr block.
-    $char = $roster->item(0)->getElementsByTagName('tr');
- 
-    foreach ($char as $c) {
- 
-        //Character information is split into individual
-        //td blocks.
-        $charInfo = $c->getElementsByTagName('td');
-        $charImages = $c->getElementsByTagName('img');
- 
-        //I only care about active characters. Inactive characters
-        //will display 0 Achievement points.
-        if((int)$charInfo->item(5)->nodeValue > 0) {
- 
-                $name = $charInfo->item(0)->nodeValue;
-                $race = $charImages->item(0)->getAttribute('src');
-                $class = $charImages->item(1)->getAttribute('src');
-                $level = $charInfo->item(3)->nodeValue;
-                $rank = trim($charInfo->item(4)->nodeValue);
-                $ap = trim($charInfo->item(5)->nodeValue);
- 
-                //Returns an array containing the professions name/level and
-                //talents of each individual character.
-                $charArray = getCharacterInformation($name);
-                $query = "INSERT INTO roster(name,race,class,level,rank,ap,prof1name,prof1value,prof2name,prof2value,talent1,talent2)
-                                VALUES('$name','$race','$class','$level','$rank','$ap','$charArray[profName1]','$charArray[profValue1]',
-                                '$charArray[profName2]','$charArray[profValue2]','$charArray[talent1]','$charArray[talent2]')";
- 
-                mysql_query($query) or die(mysql_error());
- 
-                //Wait 5 seconds inbetween queries to keep from getting banned from WoW Armory servers.
-                //This can probably be adjusted to three or four seconds, but if you do get banned, it can
-                //last las long as 48 hours.
-                sleep(5);
-        }
-    }
-}
- 
-function getCharacterInformation($charName) {
- 
-    //link to characters page on WoW Armory
-    $charInfo = file_get_contents("http://us.battle.net/wow/en/character/eitrigg/".$charName."/simple");
- 
-    $dom = new domDocument;
-    $dom->loadHTML($charInfo);
-    $dom->preserveWhiteSpace = false;
- 
-    //Profession Names
-    $xpath = new DOMXPath($dom);
-    $profName = $xpath->query('//span[@class="profession-details"]/span[@class="name"]');
- 
-    //Profession Values
-    $profValue = $xpath->query('//span[@class="profession-details"]/span[@class="value"]');
- 
-    //Talents
-    $talents = $xpath->query('//span[@class="name-build"]/span[@class="name"]');
- 
-    $charArray = array("profName1" => $profName->item(0)->nodeValue,
-                        "profValue1" => $profValue->item(0)->nodeValue,
-                        "profName2" => $profName->item(1)->nodeValue,
-                        "profValue2" => $profValue->item(1)->nodeValue,
-                        "talent1" => $talents->item(0)->nodeValue,
-                        "talent2" => $talents->item(1)->nodeValue);
- 
-    return $charArray;
-}
-
 function get_class_as_number($class_name) 
 {
 	switch ($class_name) 
@@ -135,7 +53,6 @@ class raider_armory
 
 		$this->raiders = &$raiders;
 		$this->min_level = $min_level;
-		$this->ranks = $ranks;
 		$url = $armory_link . '/wow/en/guild/' . rawurlencode($realm) . '/' . rawurlencode($guild) . '/roster';
 		$this->newly_added = array();
 		$this->get_raiders($url, $ranks, $min_level);
@@ -164,6 +81,10 @@ class raider_armory
 	function get_raiders($url, $ranks, $min_level)
 	{
 		global $success, $error;
+		ob_start();
+		var_dump($ranks);
+		$ranks_text = ob_get_contents();
+		ob_end_clean();
 		$doc = new DOMDocument();
 		$doc->strictErrorChecking = false;
 		$doc->resolveExternals = false;
@@ -231,7 +152,7 @@ class raider_armory
 				//$name = utf8_decode($data['name']);
 				//$name = utf8_encode ($data['name']);
 				$name = $data['name'];
-				if (array_search($data['rank'], $this->ranks) !== FALSE) 
+				if (array_search($data['rank'], $ranks) !== FALSE) 
 				{
 					if (array_key_exists($name, $this->raiders))
 					{
