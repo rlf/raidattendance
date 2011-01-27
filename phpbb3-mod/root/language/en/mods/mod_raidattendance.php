@@ -158,7 +158,11 @@ $lang = array_merge($lang, array(
 		'VIEW_STATS'				=> 'Statistics',
 
 		'VIEW_RAID_LOGS'			=> 'History',
-		
+
+		'COMMENT_TIME_HOUR'			=> '%1$d min ago: ',
+		'COMMENT_TIME_DAY'			=> '%H:%M: ',
+		'COMMENT_TIME_WEEK'			=> '%A %H:%M: ',
+		'COMMENT_TIME'				=> '%a %#d %b %H:%M: ',
 	)
 );
 ?>

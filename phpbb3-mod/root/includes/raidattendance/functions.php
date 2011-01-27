@@ -439,9 +439,9 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 function get_attendance($nights, $raid_id = 0)
 {
 	global $db;
-	$sql = 'SELECT n.status status, r.name name, n.night night, n.comment comment FROM ' 
+	$sql = 'SELECT n.status status, r.name name, n.night night, n.comment comment, n.time time FROM ' 
 		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $nights);
-	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night, n.comment comment FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . ' AND ' . $db->sql_in_set('n.night', $nights);
+	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night, n.comment comment, n.time time FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . ' AND ' . $db->sql_in_set('n.night', $nights);
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	while ($row = $db->sql_fetchrow($result))
@@ -451,7 +451,7 @@ function get_attendance($nights, $raid_id = 0)
 		{
 			$attendance[$name] = array();
 		}
-		$attendance[$name][$row['night']] = array('status' => $row['status'], 'comment' => $row['comment']);
+		$attendance[$name][$row['night']] = array('status' => $row['status'], 'comment' => $row['comment'], 'time' => $row['time']);
 	}
 	$db->sql_freeresult($result);
 	return $attendance;

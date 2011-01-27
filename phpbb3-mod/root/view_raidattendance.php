@@ -35,9 +35,10 @@ if (is_raidattendance_forum($forum_id))
 	$success = array();
 	$error = array();
 	$tstamp = request_var('tstamp', 0);
-	$tstamp = $tstamp > 0 ? $tstamp : time();
-	$now = strftime('%H:%M', time());
-	$today = strftime('%Y%m%d', time());
+	$tnow = time();
+	$tstamp = $tstamp > 0 ? $tstamp : $tnow;
+	$now = strftime('%H:%M', $tnow);
+	$today = strftime('%Y%m%d', $tnow);
 	$raid_time =  $config['raidattendance_raid_time'];
 	
 	$raids = get_raiding_days($tstamp, $raid_id);
@@ -117,6 +118,10 @@ if (is_raidattendance_forum($forum_id))
 				$user->lang['LEGEND_STATUS_ON'], $user->lang['LEGEND_STATUS_OFF'], $user->lang['LEGEND_STATUS_NOSHOW'], $user->lang['LEGEND_STATUS_LATE'], $user->lang['LEGEND_STATUS_SUBSTITUTE']),
 		));
 		$num_days = floor(sizeof($raids) / 3);
+		if ($num_days <= 0 or !is_numeric($num_days)) 
+		{
+			$num_days = 1;
+		}
 		$raid_day_number = 0;
 		foreach ($day_names as $day)
 		{
@@ -145,10 +150,29 @@ if (is_raidattendance_forum($forum_id))
 			}
 			$raid_sums[$raid][$status] = $raid_sums[$raid][$status] + 1;
 			$day_name = get_raiding_day_name($raid);
+			$difftime = $tnow - $attendance[$raider->name][$raid]['time'];
+			$difftime = round($difftime / 60);
+			$diffcomment = '';
+			if ($difftime < 60) 
+			{
+				$diffcomment = sprintf($user->lang['COMMENT_TIME_HOUR'], $difftime);
+			} 
+			else if ($difftime < 60*24) 
+			{
+				$diffcomment = strftime($user->lang['COMMENT_TIME_DAY'], $attendance[$raider->name][$raid]['time']);
+			}
+			else if ($difftime < 60*24*7) 
+			{
+				$diffcomment = strftime($user->lang['COMMENT_TIME_WEEK'], $attendance[$raider->name][$raid]['time']);
+			}
+			else 
+			{
+				$diffcomment = strftime($user->lang['COMMENT_TIME'], $attendance[$raider->name][$raid]['time']);
+			}
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
 				'STATUS'		=> $statusses[$status],
-				'COMMENT'		=> $attendance[$raider->name][$raid]['comment'],
+				'COMMENT'		=> $attendance[$raider->name][$raid]['comment'] ? $diffcomment . $attendance[$raider->name][$raid]['comment'] : '',
 				'S_FUTURE'		=> $future,
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_CANCELLED'	=> $attendance['__RAID__'][$raid]['status'] == STATUS_CANCELLED ? 1 : 0,
