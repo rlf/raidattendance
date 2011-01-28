@@ -35,7 +35,7 @@ if (is_raidattendance_forum($forum_id))
 	$success = array();
 	$error = array();
 	$tstamp = request_var('tstamp', 0);
-	$tnow = time();
+	$tnow = $user->time_now;
 	$tstamp = $tstamp > 0 ? $tstamp : $tnow;
 	$now = strftime('%H:%M', $tnow);
 	$today = strftime('%Y%m%d', $tnow);
@@ -150,24 +150,28 @@ if (is_raidattendance_forum($forum_id))
 			}
 			$raid_sums[$raid][$status] = $raid_sums[$raid][$status] + 1;
 			$day_name = get_raiding_day_name($raid);
-			$difftime = $tnow - $attendance[$raider->name][$raid]['time'];
+			$comment_time = $attendance[$raider->name][$raid]['time'];
+			$difftime = $tnow - $comment_time;
 			$difftime = round($difftime / 60);
 			$diffcomment = '';
-			if ($difftime < 60) 
+			$comment_time += 60 * 60 * $user->data['user_timezone'];
+			if ($difftime < 60) // Within an hour
 			{
 				$diffcomment = sprintf($user->lang['COMMENT_TIME_HOUR'], $difftime);
 			} 
-			else if ($difftime < 60*24) 
+			else if ($difftime < 60*24) // Within a day
 			{
-				$diffcomment = strftime($user->lang['COMMENT_TIME_DAY'], $attendance[$raider->name][$raid]['time']);
+				$diffcomment = strftime($user->lang['COMMENT_TIME_DAY'], $comment_time);
 			}
-			else if ($difftime < 60*24*7) 
+			else if ($difftime < 60*24*7) // Within a week
 			{
-				$diffcomment = strftime($user->lang['COMMENT_TIME_WEEK'], $attendance[$raider->name][$raid]['time']);
+				$diffcomment = strftime($user->lang['COMMENT_TIME_WEEK'], $comment_time);
 			}
 			else 
 			{
-				$diffcomment = strftime($user->lang['COMMENT_TIME'], $attendance[$raider->name][$raid]['time']);
+				// Sigh, why does phpbb use the date-format for formatting dates?
+				// No localization then...
+				$diffcomment = date($user->data['user_dateformat'], $comment_time) . ': ';
 			}
 			$template->assign_block_vars('raiders.raids', array(
 				'RAID'			=> $raid,
