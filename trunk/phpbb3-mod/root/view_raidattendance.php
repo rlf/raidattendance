@@ -36,10 +36,12 @@ if (is_raidattendance_forum($forum_id))
 	$error = array();
 	$tstamp = request_var('tstamp', 0);
 	$tnow = $user->time_now;
+	$tnow += (60*60*$config['raidattendance_timezone']);
 	$tstamp = $tstamp > 0 ? $tstamp : $tnow;
 	$now = strftime('%H:%M', $tnow);
 	$today = strftime('%Y%m%d', $tnow);
 	$raid_time =  $config['raidattendance_raid_time'];
+	$signoff_time = $config['raidattendance_raid_late'];
 	
 	$raids = get_raiding_days($tstamp, $raid_id);
 	$raider_db = new raider_db();
@@ -56,7 +58,7 @@ if (is_raidattendance_forum($forum_id))
 	add_static_attendance($raids, $attendance, $static_attendance);
 
 	$rowno = 0;
-	$statusses = array(STATUS_ON=>'on', STATUS_OFF=>'off', STATUS_NOSHOW=>'noshow', STATUS_LATE=>'late', STATUS_SUBSTITUTE=>'substitute', 0=>'future', -1=>'past', -2=>'unset');
+	$statusses = array(STATUS_ON=>'on', STATUS_OFF=>'off', STATUS_NOSHOW=>'noshow', STATUS_LATE=>'late', STATUS_SUBSTITUTE=>'substitute', 0=>'future', -1=>'past', -2=>'unset', STATUS_LATE_SIGNOFF=>'late_signoff');
 	$raid_sums = array();
 	$raidData = array(); // data used in the addon...
 	$armory_link = $config['raidattendance_armory_link'];
@@ -139,6 +141,7 @@ if (is_raidattendance_forum($forum_id))
 		}
 		$raid_day_number = 0;
 		$last_future = false;
+		$game_time = $tnow;
 		foreach ($raids as $raid)
 		{
 			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
@@ -151,6 +154,15 @@ if (is_raidattendance_forum($forum_id))
 			$raid_sums[$raid][$status] = $raid_sums[$raid][$status] + 1;
 			$day_name = get_raiding_day_name($raid);
 			$comment_time = $attendance[$raider->name][$raid]['time'];
+			$game_time_comment = $comment_time;
+			$game_time_comment += 60 * 60 * $config['raidattendance_timezone'];
+			$comment_day = strftime('%Y%m%d', $game_time_comment);
+			$comment_hour = strftime('%H:%M', $game_time_comment);
+			if ($comment_day == $raid && $comment_hour > $signoff_time && $status == STATUS_OFF) 
+			{
+				$status = STATUS_LATE_SIGNOFF;
+			}
+
 			$difftime = $tnow - $comment_time;
 			$difftime = round($difftime / 60);
 			$diffcomment = '';

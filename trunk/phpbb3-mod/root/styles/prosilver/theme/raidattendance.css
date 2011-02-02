@@ -15,6 +15,9 @@
 .late_even, .late_uneven {
 	background: #c5a701;
 }
+.late_signoff_even, .late_signoff_uneven {
+	background: #5d0068;
+}
 .noshow_even, .noshow_uneven {
 	background: #900e03;
 }

@@ -52,6 +52,7 @@ define('STATUS_NOSHOW', 3);
 define('STATUS_LATE', 4);
 define('STATUS_SUBSTITUTE', 5);
 define('STATUS_CANCELLED', 6);
+define('STATUS_LATE_SIGNOFF', -3);
 // RANK
 define('MAX_RANK', 9);
 ?>
