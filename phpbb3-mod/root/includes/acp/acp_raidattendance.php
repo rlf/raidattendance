@@ -67,6 +67,7 @@ class acp_raidattendance
 				'raidattendance_raidsetup'	=> array('lang' => 'RAID_SETUP',	'type' => 'custom', 'explain' => true, 'function' => 'raid_setup'),
 				'raidattendance_raid_time'	=> array('lang' => 'RAID_TIME', 	'validate' => 'time', 'type' => 'text:5:5', 'explain' => true),
 				'raidattendance_raid_late'  => array('lang' => 'RAID_LATE',     'validate' => 'time', 'type' => 'text:5:5', 'explain' => true),
+				'raidattendance_timezone'	=> array('lang' => 'RAID_TZONE', 	'type' => 'select', 'explain' => true, 'function' => 'timezone'),
 
 				'legend4'						=> 'RAIDER_RANKS',
 				'raidattendance_min_level'		=> array('lang' => 'MIN_LEVEL',	'validate' => 'int', 'type' => 'text:2:2', 'explain' => true),
@@ -700,6 +701,21 @@ function raid_setup($default, $key)
 	$html = $html . get_raid_html_row($new_row);
 	$html = $html . '</table>';
 	$db->sql_freeresult($result);
+	return $html;
+}
+
+function timezone($default = '1', $all = false)
+{
+	global $user;
+	$html = '';
+	if ($user->lang['tz_zones'])
+	{
+		foreach ($user->lang['tz_zones'] as $offset => $zone) 
+		{
+			$selected = ($offset == $default) ? ' selected' : '';
+			$html .= '<option value="' . $offset . '"' . $selected . '>' . $zone . '</option>';
+		}
+	}
 	return $html;
 }
 

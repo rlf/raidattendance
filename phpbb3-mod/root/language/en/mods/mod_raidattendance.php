@@ -77,6 +77,7 @@ $lang = array_merge($lang, array(
 		'SIGNOFF'					=> 'Sign off',
 		'NOSHOW'					=> "Raider didn't show",
 		'LATE'						=> 'Raider showed, but late',
+		'LATE_SIGNOFF'				=> 'Raider signed off, but too late',
 		'SUBSTITUTE'				=> 'Raider showed, but was asked to sit out',
 		'CANCELLED'					=> 'Raid was cancelled',
 		'EMPTY'						=> 'Clear selection',

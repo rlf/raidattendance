@@ -65,6 +65,8 @@ $lang = array_merge($lang, array(
 		'RAID_TIME_EXPLAIN'			=> 'The time when raids commense. I.e. when raiders can no more signoff and admins can mark raiders as being AWOL.',
 		'RAID_LATE'					=> 'Raider sign-off',
 		'RAID_LATE_EXPLAIN'			=> 'The time at which raiders are expected to sign-off. Later signoffs will still be marked, but marked as being "late signoffs"',
+		'RAID_TZONE'				=> 'Time-zone',
+		'RAID_TZONE_EXPLAIN'		=> 'The time-zone of the game-server.',
 
 		'RAIDER_RANKS'				=> 'Rank of Raiders',
 		'MIN_LEVEL'					=> 'Raider Level',
@@ -132,6 +134,7 @@ $lang = array_merge($lang, array(
 		'SAVED'						=> 'Changes have been saved',
 		'BETA_TITLE'				=> 'This functionality is still in beta!',
 		'BETA_BODY'					=> "Please use at your own risk (or don't use it at all)",
+		'LOG_CONFIG_RAIDATTENDANCE_SETTINGS' => 'Saved Raid Attendance Configuration',
 	)
 );
 ?>

@@ -337,6 +337,11 @@ $versions = array(
 			array('raidattendance_armory_link', request_var('armory_link', 'http://eu.battle.net')),
 		),
 	), // v1.4.0
+	'1.4.3' => array(
+		'config_add' => array(
+			array('raidattendance_timezone', request_var('game_timezone', '1')),
+		),
+	), // v1.4.3
 );
  
 function v103_110($action, $version)
