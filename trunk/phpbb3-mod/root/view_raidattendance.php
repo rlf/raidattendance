@@ -35,7 +35,9 @@ if (is_raidattendance_forum($forum_id))
 	$success = array();
 	$error = array();
 	$tstamp = request_var('tstamp', 0);
-	$tnow = $user->time_now;
+	#$tnow = $user->time_now;
+	date_default_timezone_set("Etc/UTC");
+	$tnow = time();
 	$tnow += (60*60*$config['raidattendance_timezone']);
 	$tstamp = $tstamp > 0 ? $tstamp : $tnow;
 	$now = strftime('%H:%M', $tnow);
@@ -141,7 +143,6 @@ if (is_raidattendance_forum($forum_id))
 		}
 		$raid_day_number = 0;
 		$last_future = false;
-		$game_time = $tnow;
 		foreach ($raids as $raid)
 		{
 			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
