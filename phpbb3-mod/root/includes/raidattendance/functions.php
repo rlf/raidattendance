@@ -346,7 +346,10 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
 		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . " r WHERE r.id = n.raider_id AND ((n.night >='$starttime' AND n.night <= '$endtime' AND (" 
 		. $db->sql_in_set("DATE_FORMAT(STR_TO_DATE(n.night,'%Y%m%d'),'%a')", $raiding_day_names) . ')) OR ('
-		. $db->sql_in_set('n.night', $raiding_day_names) . '))';
+		. $db->sql_in_set('n.night', $raiding_day_names) 
+		. '))';
+	// TODO: day_name <= now (static shouldn't be counted when in future...)
+	// Overlay instead of one query!
 	$sql = $sql . " UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . " AND n.night >='$starttime' AND n.night <= '$endtime'";
 	$result = $db->sql_query($sql);
 	$attendance = array();
@@ -414,7 +417,11 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 			{
 				$rnights['summary_' . $rnights[$night]] = 0;
 			}
-			$rnights['summary_' . $rnights[$night]] = 1 + ($rnights['summary_' . $rnights[$night]]);
+			// Only count the nights within the begin-end
+			if ($night >= $begintime && $night <= $endtime) 
+			{
+				$rnights['summary_' . $rnights[$night]] = 1 + ($rnights['summary_' . $rnights[$night]]);
+			}
 		}
 	}
 	foreach ($attendance as $raider => &$nights)
