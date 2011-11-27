@@ -62,6 +62,7 @@ class acp_raidattendance
 
 				'legend2'					=> 'FORUM_SETTINGS',
 				'raidattendance_forum_id'	=> array('lang' => 'FORUM_NAME',	'validate' => 'string',	'type' => 'custom', 'explain' => true, 'function' => 'forum_id'),
+				'raidattendance_signon'		=> array('lang' => 'FORUM_SIGNON', 	'validate' => 'bool', 'type'=> 'radio:yes_no', 'explain' => true),
 
 				'legend3'					=> 'RAIDS',
 				'raidattendance_raidsetup'	=> array('lang' => 'RAID_SETUP',	'type' => 'custom', 'explain' => true, 'function' => 'raid_setup'),

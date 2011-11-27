@@ -76,6 +76,7 @@ if (is_raidattendance_forum($forum_id))
 
 	// For now... just for the summary... should be merged in the future...
 	$summary_attendance = get_attendance_for_time($dump_start, $dump_end, $raid_id);
+	// TODO: Adjust for the signon-feature
 
 	// Sort, if were sorting on availability (col 7)
 	if ($col_sort[0] == 7 or $col_sort[0] == -7)
@@ -261,6 +262,7 @@ if (is_raidattendance_forum($forum_id))
 		'S_ERROR'				=> sizeof($error) ? true : false,
 		'ERROR_MSG'				=> implode('<br/>', $error),
 		'S_MODERATOR'			=> $is_moderator,
+		'S_SIGNON'				=> $config['raidattendance_signon'],
 		'TSTAMP_NEXT'			=> $next_week,
 		'TSTAMP_PREV'			=> $last_week,
 		'MODE'					=> $mode,
