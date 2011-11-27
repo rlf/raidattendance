@@ -342,6 +342,13 @@ $versions = array(
 			array('raidattendance_timezone', request_var('game_timezone', '1')),
 		),
 	), // v1.4.3
+	'1.4.3b' => array(
+	), // v1.4.3b
+	'1.5' => array(
+		'config_add' => array(
+			array('raidattendance_signon', request_var('signon', true)),
+		),
+	), // v1.5
 );
  
 function v103_110($action, $version)
