@@ -1,0 +1,35 @@
+
+
+# Installation #
+See the `install.xml` and `install/index.php` files in the root folder for details.
+
+  1. Use AutoMOD to install the MOD into the ACP.
+  1. Go to the `phpBB3/install` and follow the instructions.
+
+# Configuration #
+## Where do I find the raidattendance MOD on the ACP? ##
+`ACP > FORUMS > CONFIGURATION`
+
+_I've logged in as administrator in the ACP, but can't find the freaking Raid attendance, where is it?_
+
+It is located under the FORUMS tab (per default the second tab):
+
+## How do I add raiders to the raider-list? ##
+`ACP > FORUMS > RAIDERS`
+
+As an administrator you can add raiders from the armory using the _Resync with armory_ button on the _Raiders_ pane, or manually add raiders using the very last row on the list and the _Save_ button.
+
+## How do I add or delete raids? ##
+`ACP > FORUMS > CONFIGURAION`
+
+As an admin you can remove already configured raid-setups simply by editing their name to an empty name and saving the changes.
+
+There will always be an "empty raid" as the last in the raid-setup, fill this out to add a new raid to the configuration.
+
+# Usage #
+## How do I actually mark people as being AWOL, late, on time or as being signed off? ##
+As an admin you will have a different interface on the raid-availability forum than "normal" users.
+
+Esp. you will notice an `[ Admin ]` link in the lower right-hand corner, when clicking this link, the table will change and allow you to change status of all raiders on all nights.
+
+**Note:** It's not possible to sign ppl on or mark them as late or AWOL for future raids.

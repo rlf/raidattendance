@@ -1,0 +1,37 @@
+# Introduction #
+
+This page will keep the design decisions and howto's related to the development of the phpBB3 mod.
+
+# Design #
+This design is (for now) centered around the user-experience we are aiming at - i.e. there will be no mentioning about how to configure/install/setup the MOD.
+![http://raidattendance.googlecode.com/files/raid_availability_forum.jpg](http://raidattendance.googlecode.com/files/raid_availability_forum.jpg)
+
+# Architecture #
+The mod will be divided into 3 parts as described below.
+
+**ACP** (Admin Control Panel) will be the part used to configure and install the mod - it will only be available to the phpBB3 administrators.
+
+**MCP** (Moderator Control Panel) will be available to moderators of the forum in which the raidattendance resides - here the moderators can change the raid-setup and in time sync with wowarmory.
+
+**MOD** will be a page integrated into one of the forums (e.g. "Raid Attendancy") which will always be shown as a table on top/bottom of the forum - displaying the current raider signon/signoff/noshow status.
+
+  * ACP - Admin Control Panel
+    * Settings for the raidattendance mod
+    * Install wizard for database
+    * Sync. feature with wowarmory (code reuse of MCP below)
+  * MCP - Moderator Control Panel
+    * Links raiders with forum-usernames.
+    * Sync. raiders with armory
+  * MOD - Page under a specific forum
+    * Current raider-status
+    * Signon/Signoff
+    * Change history (who did what)
+
+# References #
+## Internal ##
+  * [PhpBB3Backlog](PhpBB3Backlog.md)
+## External ##
+  * HTML entities used above : http://www.danshort.com/HTMLentities/index.php?w=dingb
+  * phpBB wiki http://wiki.phpbb.com/
+  * http://eu.wowarmory.com
+  * http://forums.worldoflogs.com/viewtopic.php?f=2&t=461

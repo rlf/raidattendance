@@ -1,0 +1,87 @@
+
+
+# Backlog #
+Maintained under [Issues](http://code.google.com/p/raidattendance/issues/list) and a thread on The Awakening phpBB forum.
+
+# Completed #
+
+## v1.1.7 - 3rd of May 2010 - Download as CSV + Attendancy bars ##
+  * Admins can download the last 3 months as either HTML or CSV.
+  * Raiders have a bar-histogram showing the complete attendance for the last 3 months.
+
+## v1.1.6 - 23rd of April 2010 - Cancellation of raids ##
+  * It's now possible to cancel a whole raid - it will be indicated by a skull-icon.
+  * Simple export of a single raid-night (pre-Addon implementation).
+
+## v1.1.5 - 20th of April 2010 - Substitute status + experimental WoW Addon ##
+  * Sorting now possible on Class as well + changed sorting of Role to have Class as sub-sorting.
+  * Added a new status for raiders called SUBSTITUTE for raiders sitting out on a raid (but being on-time etc.).
+  * Added experimental support for integeration with the RaidAttendancy WoW Addon.
+
+## v1.1.4 - 6th of April 2010 - Sorting + coloring ##
+  * Sorting now possible on Name, Role, Rank.
+  * Coloring made more simple (since we have so many colors in play).
+
+## v1.1.3 - 3rd of April 2010 - Raider status LATE ##
+  * Possible to mark raiders as being LATE - not just AWOL / ON.
+
+## v1.1.2 - 2nd of April 2010 - Raider roles added ##
+  * Possible to assign roles to raiders.
+
+## v1.1.1 - 31st of March 2010 - Raid time setting ##
+  * Possible to set a raid-time, at which admins can start marking raiders as AWOL etc.
+  * Fixed a bug in the sorting of raids (i.e. some weeks were not shown chronologically).
+
+## v1.1.0c - 25th of March 2010 - Multiple raids ##
+  * Defects/Issues:
+    * #5 style should be limited to prosilver
+    * #8 Link to the FAQ on the Raid Availability page
+    * #9 Version of the MOD should be shown   Usability
+    * #11 Multiple raid-setups
+  * raidattendance - include a FAQ - possibly link to a wiki - or use the forum options.
+
+## v1.0.3 - 16th of December 2009 - Save/Delete raider bugfix ##
+  * bugfix#3 - Save and deletion of raiders from ACP
+  * improvement - initial draft version of World of Logs integration
+
+## v1.0.2 - 7th of December 2009 - MODX compliance ##
+  * bugfix#2 - tooltips on actions
+  * bugfix#1 - MODX compliance
+  * improvement - better icons and colors
+
+## v1.0.1 - 6th of December 2009 - Icons + bugfix ##
+  * bugfix - users can now only signoff for them selves permanently.
+  * improvement - better icons (Yorrick rulez).
+    * beutification - better icons for changing attendancy-status - part 2
+
+## v1.0.0 - 6th of December 2009 - Multiple ranks and permanent signoff ##
+  * general - better support for multiple ranks 0-9 + naming of these.
+  * forum\_raidattendance - allow users to permanently signoff for specific days.
+
+## v0.0.4 - 28th of November 2009 - Icons and better sign[on|off] actions ##
+  * beutification - better icons for changing attendancy-status - part 1
+  * forum\_raidattendance - Uses icons and only relevant actions
+  * forum\_raidattendance - If no user\_id is mapped to a raider, but the username matches the raider-name, the user can edit the raider signon status.
+
+## v0.0.3 - 24th of November 2009 - Signon/signoff + pagination ##
+  * forum\_raidattendance - pagination - possible to step forward/back on weeks
+  * forum\_raidattendance - moderators can change sign-on status of raiders (signon/signoff/noshow)
+    * change-history is updated (updated, but not viewable yet)
+  * forum\_raidattendance - users with valid raider-forum-user mapping can change status of self (only signon/signoff).
+    * change-history is updated
+
+## v0.0.2 - 20th of November 2009 - Integration of raid-attendance in viewforum ##
+  * acp\_raidattendance - it's possible to install the mod in phpBB3 (ACP)
+  * acp\_raidattendance - install-wizard - it's possible to create table of raiders
+    * possibly from armory?
+  * forum\_raidattendance/view\_forum - a page that shows:
+    * raiders in rows, 3 weeks of raid-nights with current week in center
+  * acp\_raidattendance - link raider-name with forum-user
+
+## v0.0.1 - 18th of November 2009 - Initial release comitted in svn/trunk ##
+  * acp\_raidattendance - it's possible to edit and save settings:
+    * raid-nights : The days we raid - e.g. 'mon,wed,thu'
+    * guildname : The name of the guild - 'The Awakening'
+    * realm : The Realm - 'Bloodhoof'
+    * armory : The armory link - 'eu.wowarmory.com'
+    * forum\_id : The id of the forum on which the attendence will be shown.

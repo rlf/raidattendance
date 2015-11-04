@@ -1,0 +1,24 @@
+
+
+**Legend**
+|<font color='red'>red</font>|Must be solved before next release|
+|:---------------------------|:---------------------------------|
+|<font color='black'>black</font>|Should be solved before next release|
+|<font color='green'>green</font>|Nice to have - can be a future release|
+
+### Backlog ###
+The user/player should
+  * Import raid from phpBB MOD.
+    * Date, raid-time, raiders, roles, classes, status.
+    * Some security hash - raider-name + content
+  * Update status based on current online-status.
+    * If before or at raid-invite-time mark online raiders as ON.
+    * If after raid-invite-time mark offline raiders as LATE.
+    * If after raid-time mark offline raiders as AWOL.
+  * Setup raid-time
+    * Automatically fire "update" at raid-invite-time + raid-time.
+  * Edit raider-status
+    * Enable the user to toggle between all statusses.
+    * If the user has manually set a status, the auto-update should NOT overrule it.
+  * Export raid to phpBB MOD
+    * Some security hash - login-name + content.

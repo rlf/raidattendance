@@ -1,0 +1,27 @@
+
+# Sign On/Off #
+## How do I sign off from a raid? ##
+Simply click the signoff icon (X) of the future raid you wish to signoff from.
+
+## How come I can't sign off? ##
+_When I login as 'Cool Forum User' I cannot sign off as 'Cool Raider', how come?_
+
+Because the MOD doesn't know you well enough to map 'Cool Forum User' to 'Cool Raider'.
+
+An admin of the forum may be able to help you out there - otherwise change your forum-username to your raider-name.
+
+## How come I can't signoff from a raid in the past? ##
+Because it's in the past... You should've signed off before hand... SLACKER!
+
+# Availabiliy and Attendance #
+## How the freaking f`**`king god do you come up with those numbers?? ##
+Well, the numbers are taken from 3 months back and up till the date currently displayed.
+Static sign-offs (e.g. all Mondays for some) is merged into the calculation, starting from the first non-static-status (i.e. first time raider either attended a raid, was AWOL etc.).
+
+The **Availability** percentage displayed in the tooltip is how often the raider have been available and on time.
+
+The **Attendance** is how big a fraction of the times the raider have been available, the raider has actually raided - i.e. how often have this raider been asked to sit out compared to how often he shows.
+
+## What if I have been off the raider-list for a while and re-join the team? ##
+Then your attendancy will be rather low I'm afraid.
+Bug in the design - nothing that can be done about it for the time being.
