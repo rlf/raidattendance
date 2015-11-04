@@ -24,16 +24,39 @@ function get_class_as_number($class_name)
 {
 	switch ($class_name) 
 	{
-	case 'warrior': return CLASS_WARRIOR;
-	case 'paladin': return CLASS_PALADIN;
-	case 'hunter': return CLASS_HUNTER;
-	case 'rogue': return CLASS_ROGUE;
-	case 'priest': return CLASS_PRIEST;
-	case 'death knight': return CLASS_DEATH_KNIGHT;
-	case 'shaman': return CLASS_SHAMAN;
-	case 'mage': return CLASS_MAGE;
-	case 'warlock': return CLASS_WARLOCK;
-	case 'druid': return CLASS_DRUID;
+	case CLASS_WARRIOR:
+	case 'warrior': 
+		return CLASS_WARRIOR;
+	case CLASS_PALADIN:
+	case 'paladin': 
+		return CLASS_PALADIN;
+	case CLASS_HUNTER:
+	case 'hunter': 
+		return CLASS_HUNTER;
+	case CLASS_ROGUE:
+	case 'rogue': 
+		return CLASS_ROGUE;
+	case CLASS_PRIEST:
+	case 'priest': 
+		return CLASS_PRIEST;
+	case CLASS_DEATH_KNIGHT:
+	case 'death knight': 
+		return CLASS_DEATH_KNIGHT;
+	case CLASS_SHAMAN:
+	case 'shaman': 
+		return CLASS_SHAMAN;
+	case CLASS_MAGE:
+	case 'mage': 
+		return CLASS_MAGE;
+	case CLASS_WARLOCK:
+	case 'warlock': 
+		return CLASS_WARLOCK;
+	case CLASS_DRUID:
+	case 'druid': 
+		return CLASS_DRUID;
+	case CLASS_MONK:
+	case 'monk': 
+		return CLASS_MONK;
 	}
 	throw new Exception("Unsupported class : " . $class_name);
 }

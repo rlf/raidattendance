@@ -102,7 +102,7 @@ function submitWith(field,value)
 		<th><a class="sort" href="javascript:sortOrder('{SORT_NAME}')">{L_NAME}{DIR_NAME}</a></th>
 		<th><a class="sort" href="javascript:sortOrder('{SORT_CLASS}')">{L_CLASS}{DIR_CLASS}</a></th>
 		<th><a class="sort" href="javascript:sortOrder('{SORT_ROLE}')">{L_ROLE}{DIR_ROLE}</a></th>
-		<th><a class="sort" href="javascript:sortOrder('{SORT_RANK}')">{L_RANK}{DIR_RANK}</a></th>
+		<!--<th><a class="sort" href="javascript:sortOrder('{SORT_RANK}')">{L_RANK}{DIR_RANK}</a></th>-->
 		<th><a class="nav" href="javascript:nav({TSTAMP_PREV})" title="{L_PREV_WEEK_TOOLTIP}">{L_PREV_WEEK}</a></th>
 		<!-- BEGIN raid_days -->
 		<th class="<!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raid_days.S_NEXT_RAID --> next_raid<!-- ENDIF -->">{raid_days.DAY}<!-- IF S_MODERATOR -->&nbsp;<!-- IF raid_days.S_CANCELLED --><a href="javascript:go('xr', 0, '{raid_days.RAID}')"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a><!-- ELSE --><a href="javascript:go('cr', 0, '{raid_days.RAID}')"><img src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/></a><!-- ENDIF --><!-- ENDIF --><br/>{raid_days.DATE}</th>
@@ -125,8 +125,8 @@ function submitWith(field,value)
 		<!-- ENDIF -->
 		</td>
 		<td><img src="images/{raiders.CSS_CLASS}.gif"/></td>
-		<td>{raiders.ROLE}</td>
-		<td colspan="2">{raiders.RANK}</td>
+		<td colspan="2">{raiders.ROLE}</td>
+		<!--<td colspan="2">{raiders.RANK}</td>-->
 		<!-- BEGIN raids -->
 		<td class="{raids.STATUS}_{raiders.ROW_CLASS} raid<!-- IF raids.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raids.S_NEXT_RAID --> next_raid<!-- ENDIF -->" align="center">
 			<!-- IF raids.STATUS == 'on' or raids.STATUS == 'off' or raids.STATUS == 'noshow' -->
@@ -154,30 +154,34 @@ function submitWith(field,value)
 			<!-- ENDIF -->
 			<!-- ELSE  -->
 				<!-- IF raids.S_EDITABLE and raids.S_STATIC != 1 -->
-				<!-- IF S_SIGNON and raids.STATUS != 'on' -->
-				<a href="javascript:go('+',{raiders.ID},'{raids.RAID}')" alt="{L_SIGNON}"><img src="images/on.png" alt="{L_SIGNON}" title="{L_SIGNON}"/></a>
-				<!-- ENDIF -->
-				<!-- IF raids.STATUS == 'off' or raids.STATUS == 'on' -->
+				<!-- IF raids.STATUS == 'off' -->
 				<a href="javascript:go('x',{raiders.ID},'{raids.RAID}')" alt="{L_EMPTY}"><img src="images/clear.png" alt="{L_EMPTY}" title="{L_EMPTY}"/></a>
-				<!-- ENDIF -->
-				<!-- IF raids.STATUS != 'off' -->
+				<!-- ELSE -->
 				<a href="javascript:signoff({raiders.ID},'{raids.RAID}')" alt="{L_SIGNOFF}"><img src="images/off.png" alt="{L_SIGNOFF}" title="{L_SIGNOFF}"/></a>
 				<!-- ENDIF -->
 				<!-- ENDIF -->
 			<!-- ENDIF -->
 			<!-- IF raids.S_CANCELLED --><img class="cancelled" src="images/skull.png" alt="{L_CANCELLED}" title="{L_CANCELLED}"/><!-- ENDIF -->
 			<!-- IF raids.COMMENT != '' --><a title="{raids.COMMENT}"><img src="images/comment.png" class="comment"/></a><!-- ENDIF -->
+			<!-- IF S_MODERATOR -->
+			  <!-- IF raids.STARRED != '' --><a title="{L_STARRED}" href="javascript:go('!*','{raiders.ID}','{raids.RAID}')"><img src="images/tick.png" class="star"/></a>
+			  <!-- ELSE -->
+			  <a title="{L_STARRED}" href="javascript:go('*','{raiders.ID}','{raids.RAID}')"><img src="images/no_tick.png" class="star"/></a>
+			  <!-- ENDIF -->
+			<!-- ELSE -->
+			  <!-- IF raids.STARRED != '' --><a title="{L_STARRED}"><img src="images/tick.png" class="star"/></a><!-- ENDIF -->
+			<!-- ENDIF -->
 		</td>
 		<!-- END -->
 		<td colspan="2"><a href="{raiders.SUMMARY_DETAIL_LINK}" title="{raiders.SUMMARY_TOOLTIP}"><img src="{raiders.SUMMARY_LINK}" alt="{raiders.SUMMARY_TOOLTIP}" title="{raiders.SUMMARY_TOOLTIP}"/></a></td>
 	</tr>
 	<!-- END --><!-- raiders -->
 	<tr>
-		<td colspan="5">&nbsp;</td>
+		<td colspan="4">&nbsp;</td>
 		<!-- BEGIN raid_days -->
 		<td class="sum_<!-- IF raid_days.S_FUTURE -->future<!-- ELSE -->past<!-- ENDIF --><!-- IF raid_days.S_FIRST_DAY_IN_WEEK --> first_day_in_week<!-- ENDIF --><!-- IF raid_days.S_NEXT_RAID --> sum_next_raid<!-- ENDIF -->">
 			<b class="on">{raid_days.SUM_ON}</b>/<b class="off">{raid_days.SUM_OFF}</b>/<b class="noshow">{raid_days.SUM_NOSHOW}</b>
-			<br/><a href="javascript:prompt('{L_ADDON_CODE}', '{raid_days.RAID_DATA}');return false">{L_ADDON}</a>
+			<!--<br/><a href="javascript:prompt('{L_ADDON_CODE}', '{raid_days.RAID_DATA}');return false">{L_ADDON}</a>-->
 		</td>
 		<!-- END -->
 	</tr>
@@ -187,7 +191,7 @@ function submitWith(field,value)
 	<td valign="top" align="left"><b>{L_LEGEND}</b><br/>
 		<table>
 			<tr><td class="on_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNON}</td><td class="late_even">&nbsp;&nbsp;&nbsp;</td><td>{L_LATE}</td><td class="past_even"><img src="images/skull.png"/></td><td>{L_CANCELLED}</td></tr>
-			<tr><td class="off_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNOFF}</td><td class="substitute_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SUBSTITUTE}</td><td colspan="2">&nbsp;</td></tr>
+			<tr><td class="off_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SIGNOFF}</td><td class="substitute_even">&nbsp;&nbsp;&nbsp;</td><td>{L_SUBSTITUTE}</td><td class="future_even"><img src="images/tick.png"/></td><td>{L_STARRED}</td></tr>
 			<tr><td class="noshow_even">&nbsp;&nbsp;&nbsp;</td><td>{L_NOSHOW}</td><td class="late_signoff_even">&nbsp;&nbsp;&nbsp;</td><td>{L_LATE_SIGNOFF}</td><td colspan="2">&nbsp;</td></tr>
 		</table>
 	</td>
@@ -200,7 +204,8 @@ function submitWith(field,value)
 			<img src="images/substitute.png"> {L_LEGEND_ACTION_SUBSTITUTE}<br/>
 			<img src="images/late.png"> {L_LEGEND_ACTION_LATE}<br/>
 			<img src="images/noshow.png"> {L_LEGEND_ACTION_NOSHOW}<br/>
-			<img src="images/skull.png"> {L_LEGEND_ACTION_CANCELLED}
+			<img src="images/skull.png"> {L_LEGEND_ACTION_CANCELLED}<br/>
+			<img src="images/tick.png"> {L_LEGEND_STARRED}
 			<!-- ENDIF -->
 			</td></tr></table>
 			</td><td colspan="2" valign="top" align="right">

@@ -225,6 +225,12 @@ class raider
 		add_history($this, array('SUBSTITUTE', $raid));
 		set_attendance($this, $raid, STATUS_SUBSTITUTE);
 	}
+
+	function set_star($raid, $star) 
+	{
+		add_history($this, array('STAR', $raid, $star));
+		set_star($this, $raid, $star);
+	}
 }
 
 ?>

@@ -53,11 +53,7 @@ table#raids tr td table {
 	border-collapse: separate;
 }
 table#raids tr td table tr td {
-	border-width: 1px 1px 1px 1px;
-	border-style: solid solid solid solid;
-	color: #005abf;
-	border-color: #005abf;
-	text-decoration: none;
+	border: 0px none;
 }
 
 table#raids {
@@ -66,11 +62,9 @@ table#raids {
 	margin: 0px;
 }
 table#raids tr td table tr td.selected {
-	border-bottom: 1px none;
 }
 table#raids a.selected {
 	font-weight: bold;
-	color: #404aaf;
 	font-size: 120%;
 }
 td.sum_past, td.sum_future {
@@ -113,6 +107,10 @@ a img.comment {
 	float: right;
 	top: -50%;
 	right: -5%;
+}
+a img.star {
+	position: relative;
+	float: center;
 }
 img.cancelled {
 	position: relative;
@@ -258,7 +256,12 @@ table.legend {
 .class_9, a.class_9:link, a.class_9:active, a.class_9:visited {
 	color: #9482C9;
 }
+/* Monk */
+.class_10, a.class_10:link, a.class_10:active, a.class_10:visited {
+	color: #00FF96;
+}
 /* Druid */
 .class_11, a.class_11:link, a.class_11:active, a.class_11:visited {
 	color: #FF7D0A;
 }
+

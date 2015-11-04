@@ -58,6 +58,7 @@ $lang = array_merge($lang, array(
 		'CLASS_7'					=> 'Shaman',
 		'CLASS_8'					=> 'Mage',
 		'CLASS_9'					=> 'Warlock',
+		'CLASS_10'					=> 'Monk',
 		'CLASS_11'					=> 'Druid',
 
 		'RANK_0'					=> 'Guild Leader',
@@ -99,6 +100,8 @@ $lang = array_merge($lang, array(
 		'STATUS_CHANGE_RAID_CLEAR'	=> '%1$s reactivated the raid on %2$s',	
 		'STATIC_SIGNOFF'			=> "Sorry, but I'm never able to raid on %s",
 		'STATIC_SIGNOFF_CLEAR'		=> 'Forget it, I might be able raid on %s anyway!',
+		'STATUS_CHANGE_STAR_CLEAR'	=> '%1$s unstarred %2$s on %3$s',	
+		'STATUS_CHANGE_STAR_SET'	=> '%1$s starred %2$s on %3$s',	
 
 		'DAY_LONG_Mon'				=> 'Mondays',
 		'DAY_LONG_Tue'				=> 'Tuesdays',
@@ -123,6 +126,8 @@ $lang = array_merge($lang, array(
 		'LEGEND_ACTION_SUBSTITUTE'	=> 'Mark raider as being a substitute for raid',
 		'LEGEND_ACTION_CANCELLED'	=> 'Cancel the raid',
 		'LEGEND_ACTION_CLEAR'		=> 'Undo previous sign-off',
+		'LEGEND_STARRED'		=> 'Raider is expected to show',
+		'STARRED'			=> 'Raider is expected to show',
 		'ADMIN'						=> '[ Admin ]',
 		'NORMAL'					=> '[ Normal ]',
 		'FAQ'						=> '[ FAQ ]',

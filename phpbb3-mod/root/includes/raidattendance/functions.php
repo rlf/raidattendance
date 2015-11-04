@@ -106,29 +106,30 @@ function get_raiding_dates($start_time, $end_time, $day_nums)
 		}
 		$week_start = mktime(0, 0, 0, $d['mon'], $d['mday']+7, $d['year']);
 	}
+	sort($all_days);
 	return $all_days;
 }
 
+/**
+ * Returns the raiding days for the last 3 raid-weeks
+ **/
 function get_raiding_days($current_week, $raid_id)
 {
+	global $error;
 	$date_array = getdate($current_week);
-	$this_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-$date_array['wday'], $date_array['year']);
-	$date_array = getdate($this_week);
-	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
-	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
-	$days = get_raiding_day_numbers($raid_id);
-	$raiding_days = array();
-	$weeks = array($last_week, $this_week, $next_week);
-	foreach ($weeks as $week)
+	$week_day = $date_array['wday'];
+	$raid_start_day = 3; // Wednesday - should (eventually) be configurable
+	$start_offset = $raid_start_day; // This weeks raid-day
+	if ($week_day < $raid_start_day) 
 	{
-		$date_array = getdate($week);
-		foreach ($days as $day)
-		{
-			$raiding_days[] = strftime('%Y%m%d', mktime(0,0,0, $date_array['mon'], $date_array['mday'] + $day, $date_array['year']));
-		}
+		$start_offset = ($raid_start_day-7); // Last weeks raid-day
 	}
-	asort($raiding_days);
-	return $raiding_days;
+	$this_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-$week_day+$start_offset, $date_array['year']);
+	$date_array = getdate($this_week);
+	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']); // raid-week-start
+	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7+6, $date_array['year']); // raid-week-end
+	$days = get_raiding_day_numbers($raid_id);
+	return get_raiding_dates($last_week, $next_week, $days);
 }
 
 function get_raiding_day_name($raid)
@@ -262,6 +263,29 @@ function set_raid_status($raid_id, $night, $status)
 		$error[] = $res;
 	}
 }
+function set_star($raider, $night, $star)
+{
+    global $error, $success, $db;
+    // One night
+    $data = array('starred' => $star, 'star_time' => time());
+    $sql = 'UPDATE ' . RAIDATTENDANCE_TABLE . " SET " . $db->sql_build_array('UPDATE', $data) . " WHERE raider_id={$raider->id} AND night='{$night}'";
+    $res = $db->sql_query($sql, 0);
+
+    if ($db->sql_affectedrows() == 1)
+    {
+	    return;
+    }
+    // Bail out (don't add) - perhaps we should add... if it's a static signoff??
+    // If affectedrows == 0 we assume we have updated something "static"
+    $data = array(
+	    'raider_id'			=> $raider->id,
+	    'night'				=> $night,
+	    'status'			=> 0,
+	    'time'				=> time(),
+	    'starred'			=> $star,
+    );
+    $res = $db->sql_query('INSERT INTO ' . RAIDATTENDANCE_TABLE . ' '. $db->sql_build_array('INSERT', $data));
+}
 function set_attendance($raider, $night, $status, $comment = '')
 {
 	global $error, $success, $db;
@@ -311,12 +335,11 @@ function set_attendance($raider, $night, $status, $comment = '')
 		}
 	}
 	// One night
-	$sql = 'DELETE FROM ' . RAIDATTENDANCE_TABLE . " WHERE raider_id={$raider->id} AND night='{$night}'"; 
-	$res = $db->sql_query($sql);
+	$up_array = array('status' => $status, 'comment' => $comment);
+	$sql = 'UPDATE ' . RAIDATTENDANCE_TABLE . " SET " . $db->sql_build_array('UPDATE', $up_array) . " WHERE raider_id={$raider->id} AND night='{$night}'"; 
+	$res = $db->sql_query($sql, 0);
 
-	// Bail out (don't add) - perhaps we should add... if it's a static signoff??
-	// If affectedrows == 0 we assume we have hit a "static"
-	if ($status === STATUS_CLEAR and $db->sql_affectedrows() != 0)
+	if ($db->sql_affectedrows() >= 1)
 	{
 		return;
 	}
@@ -337,6 +360,8 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 {
 	global $db, $error;
 	$raiding_days = get_raiding_days($endtime, $raid_id);
+	$start_raid = strftime("%Y%m%d", $starttime);
+	$end_raid = strftime("%Y%m%d", $endtime);
 	$raiding_day_names = array();
 	// raiding_days is for 3 weeks
 	for ($i = 0; $i < sizeof($raiding_days)/3; $i++)
@@ -344,13 +369,13 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 		$raiding_day_names[] = get_raiding_day_name($raiding_days[$i]); 
 	}
 	$sql = 'SELECT n.status status, r.name name, n.night night FROM ' 
-		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . " r WHERE r.id = n.raider_id AND ((n.night >='$starttime' AND n.night <= '$endtime' AND (" 
+		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . " r WHERE r.id = n.raider_id AND ((n.night >='$start_raid' AND n.night <= '$end_raid' AND (" 
 		. $db->sql_in_set("DATE_FORMAT(STR_TO_DATE(n.night,'%Y%m%d'),'%a')", $raiding_day_names) . ')) OR ('
 		. $db->sql_in_set('n.night', $raiding_day_names) 
 		. '))';
 	// TODO: day_name <= now (static shouldn't be counted when in future...)
 	// Overlay instead of one query!
-	$sql = $sql . " UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . " AND n.night >='$starttime' AND n.night <= '$endtime'";
+	$sql = $sql . " UNION SELECT n.status status, '__RAID__' name, n.night FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . " AND n.night >='$start_raid' AND n.night <= '$end_raid'";
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	$nights = array();
@@ -418,7 +443,7 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 				$rnights['summary_' . $rnights[$night]] = 0;
 			}
 			// Only count the nights within the begin-end
-			if ($night >= $begintime && $night <= $endtime) 
+			if ($night >= $begintime && $night <= $end_raid) 
 			{
 				$rnights['summary_' . $rnights[$night]] = 1 + ($rnights['summary_' . $rnights[$night]]);
 			}
@@ -446,9 +471,9 @@ function get_attendance_for_time($starttime, $endtime, $raid_id = 0)
 function get_attendance($nights, $raid_id = 0)
 {
 	global $db;
-	$sql = 'SELECT n.status status, r.name name, n.night night, n.comment comment, n.time time FROM ' 
+	$sql = 'SELECT n.status status, r.name name, n.night night, n.comment comment, n.time time, n.starred starred FROM ' 
 		. RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $nights);
-	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night, n.comment comment, n.time time FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . ' AND ' . $db->sql_in_set('n.night', $nights);
+	$sql = $sql . "UNION SELECT n.status status, '__RAID__' name, n.night, n.comment comment, n.time time, 0 starred FROM " . RAIDATTENDANCE_TABLE . ' n WHERE n.raid_id=' . $raid_id . ' AND ' . $db->sql_in_set('n.night', $nights);
 	$result = $db->sql_query($sql);
 	$attendance = array();
 	while ($row = $db->sql_fetchrow($result))
@@ -458,7 +483,7 @@ function get_attendance($nights, $raid_id = 0)
 		{
 			$attendance[$name] = array();
 		}
-		$attendance[$name][$row['night']] = array('status' => $row['status'], 'comment' => $row['comment'], 'time' => $row['time']);
+		$attendance[$name][$row['night']] = array('status' => $row['status'], 'comment' => $row['comment'], 'time' => $row['time'], 'starred' => $row['starred']);
 	}
 	$db->sql_freeresult($result);
 	return $attendance;
@@ -475,7 +500,7 @@ function get_static_attendance($raids)
  **/
 function get_static_attendance_days($day_names)
 {
-	global $db, $success;
+	global $db, $success, $error;
 	$sql = 'SELECT n.status status, r.name name, n.night, n.time time, n.comment comment FROM ' . RAIDATTENDANCE_TABLE . ' n, ' . RAIDER_TABLE . ' r WHERE r.id = n.raider_id AND ' . $db->sql_in_set('n.night', $day_names);
 	$result = $db->sql_query($sql);
 	$raider_day_attendance = array();
@@ -511,6 +536,7 @@ function add_static_attendance($raids, &$attendance, $raider_day_attendance)
 		foreach ($raids as $raid)
 		{
 			$day_name = get_raiding_day_name($raid);
+			// Note: the below code will "remove" the static-signoffs if an officer has STARRED the raider
 			if (!isset($attendance[$raider][$raid]) and array_key_exists($day_name, $days) and strftime('%Y%m%d', $days[$day_name]['time']) <= $raid)
 			{
 				$attendance[$raider][$raid] = $days[$day_name];

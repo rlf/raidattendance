@@ -71,12 +71,11 @@ if (is_raidattendance_forum($forum_id))
 	$last_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']-7, $date_array['year']);
 	$next_week = mktime(0, 0, 0, $date_array['mon'], $date_array['mday']+7, $date_array['year']);
 	$dump_months = request_var('dump_months', 1);
-	$dump_start = strftime('%Y%m%d', mktime(0, 0, 0, $date_array['mon']-$dump_months, $date_array['mday'], $date_array['year']));
-	$dump_end = strftime('%Y%m%d', $tstamp);
+	$dump_start = mktime(0, 0, 0, $date_array['mon']-$dump_months, $date_array['mday'], $date_array['year']);
+	$dump_end = $tstamp;
 
 	// For now... just for the summary... should be merged in the future...
 	$summary_attendance = get_attendance_for_time($dump_start, $dump_end, $raid_id);
-	// TODO: Adjust for the signon-feature
 
 	// Sort, if were sorting on availability (col 7)
 	if ($col_sort[0] == 7 or $col_sort[0] == -7)
@@ -146,7 +145,7 @@ if (is_raidattendance_forum($forum_id))
 		$last_future = false;
 		foreach ($raids as $raid)
 		{
-			$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
+			$future = ($raid > $today) || ((($raid == $today) && strcmp($now, $raid_time) < 0));
 			$status = $attendance[$raider->name][$raid]['status'];
 			$status = isset($status) ? $status : ($future ? 0 : -1);
 			if (!is_array($raid_sums[$raid])) 
@@ -191,11 +190,12 @@ if (is_raidattendance_forum($forum_id))
 				'RAID'			=> $raid,
 				'STATUS'		=> $statusses[$status],
 				'COMMENT'		=> $attendance[$raider->name][$raid]['comment'] ? $diffcomment . $attendance[$raider->name][$raid]['comment'] : '',
+				'STARRED'		=> $attendance[$raider->name][$raid]['starred'] ? 1 : 0,
 				'S_FUTURE'		=> $future,
 				'S_EDITABLE'	=> ($user->data['user_id'] == $raider->user_id or ($raider->user_id == 0 and $user->data['username'] == $raider->name)) and $future ? true : false,
 				'S_CANCELLED'	=> $attendance['__RAID__'][$raid]['status'] == STATUS_CANCELLED ? 1 : 0,
 				'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
-				'S_NEXT_RAID'	=> $last_future != $future,
+				'S_NEXT_RAID'	=> $last_future != $future || strcmp($raid, $today) == 0,
 			));
 			if (!is_array($raidData[$raid]))
 			{
@@ -220,7 +220,7 @@ if (is_raidattendance_forum($forum_id))
 	{
 		$tm = strptime($raid, '%Y%m%d');
 		$time = tm2time($tm);
-		$future = $raid > $today || (($raid == $today) && $now <= $raid_time);
+		$future = ($raid > $today) || ((($raid == $today) && strcmp($now, $raid_time) < 0));
 		$date = sprintf($user->lang['DAY_MONTH'], post_num(strftime('%e', $time)), strftime('%b', $time));
 		
 		$template->assign_block_vars('raid_days', array(
@@ -234,7 +234,7 @@ if (is_raidattendance_forum($forum_id))
 			'RAID_DATA'		=> get_raid_data_as_string($raidData[$raid]),
 			'S_CANCELLED'	=> $attendance['__RAID__'][$raid]['status'] == STATUS_CANCELLED ? 1 : 0,
 			'S_FIRST_DAY_IN_WEEK' => (($raid_day_number % $num_days) == 0),
-			'S_NEXT_RAID'	=> $last_future != $future,
+			'S_NEXT_RAID'	=> $last_future != $future || strcmp($raid, $today) == 0,
 		));
 		$raid_day_number++;
 		$last_future = $future;
@@ -262,7 +262,6 @@ if (is_raidattendance_forum($forum_id))
 		'S_ERROR'				=> sizeof($error) ? true : false,
 		'ERROR_MSG'				=> implode('<br/>', $error),
 		'S_MODERATOR'			=> $is_moderator,
-		'S_SIGNON'				=> $config['raidattendance_signon'],
 		'TSTAMP_NEXT'			=> $next_week,
 		'TSTAMP_PREV'			=> $last_week,
 		'MODE'					=> $mode,
@@ -418,6 +417,14 @@ function handle_action($action, $raiders)
 	{
 		$raider->substitute($raid);
 	}
+	else if ($action == '*')
+	{
+		$raider->set_star($raid, 1);
+	}
+	else if ($action == '!*')
+	{
+		$raider->set_star($raid, 0);
+	}
 	else if ($action == 'cr')
 	{
 		add_raid_history($raid_id, array('CANCELLED', $raid));
@@ -438,6 +445,8 @@ function handle_action($action, $raiders)
 		'z' => 'STATUS_CHANGE_SUBSTITUTE',
 		'cr' => 'STATUS_CHANGE_CANCELLED',
 		'xr' => 'STATUS_CHANGE_RAID_CLEAR',
+		'!*' => 'STATUS_CHANGE_STAR_CLEAR',
+		'*' => 'STATUS_CHANGE_STAR_SET',
 	);
 	$lang_key = $lang_array[$action];
 	if ($username && $raider->name && $day && $user->lang[$lang_key]) 

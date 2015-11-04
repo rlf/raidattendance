@@ -342,13 +342,12 @@ $versions = array(
 			array('raidattendance_timezone', request_var('game_timezone', '1')),
 		),
 	), // v1.4.3
-	'1.4.3b' => array(
-	), // v1.4.3b
-	'1.5' => array(
-		'config_add' => array(
-			array('raidattendance_signon', request_var('signon', true)),
+	'1.5.1' => array(
+		'table_column_add'		=> array(
+			array('phpbb_raidattendance', 'starred', array('UINT', 0)),
+			array('phpbb_raidattendance', 'star_time', array('TIMESTAMP', 0)),
 		),
-	), // v1.5
+	), // 1.5.1
 );
  
 function v103_110($action, $version)
