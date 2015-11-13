@@ -60,6 +60,7 @@ $lang = array_merge($lang, array(
 		'CLASS_9'					=> 'Warlock',
 		'CLASS_10'					=> 'Monk',
 		'CLASS_11'					=> 'Druid',
+		'CLASS_12'					=> 'Demonhunter',
 
 		'RANK_0'					=> 'Guild Leader',
 		'RANK_1'					=> 'Rank 1',

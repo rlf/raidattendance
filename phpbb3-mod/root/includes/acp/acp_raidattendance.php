@@ -395,7 +395,7 @@ class acp_raidattendance
 	{
 		global $user;
 		$result_html = '';
-		for ($i = 0; $i <= 11; ++$i)
+		for ($i = 0; $i <= 12; ++$i)
 		{
 			$class_name = $user->lang['CLASS_' . $i];
 			if ($class_name)

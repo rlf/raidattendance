@@ -44,6 +44,7 @@ define('CLASS_SHAMAN', 7);
 define('CLASS_MAGE', 8);
 define('CLASS_WARLOCK', 9);
 define('CLASS_DRUID', 11);
+define('CLASS_DEMONHUNTER', 12);
 // STATUS
 define('STATUS_CLEAR', 0);
 define('STATUS_ON', 1);
