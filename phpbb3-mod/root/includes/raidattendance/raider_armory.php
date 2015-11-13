@@ -57,6 +57,9 @@ function get_class_as_number($class_name)
 	case CLASS_MONK:
 	case 'monk': 
 		return CLASS_MONK;
+	case CLASS_DEMONHUNTER:
+	case 'demonhunter': 
+		return CLASS_DEMONHUNTER;
 	}
 	throw new Exception("Unsupported class : " . $class_name);
 }

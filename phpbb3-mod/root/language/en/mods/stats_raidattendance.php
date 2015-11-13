@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'CLASS_COLOR_8' => '69CCF0',
 	'CLASS_COLOR_9' => '9482C9',
 	'CLASS_COLOR_11' => 'FF7D0A',
+	'CLASS_COLOR_12' => '4DD827',
 	)
 );
 ?>
